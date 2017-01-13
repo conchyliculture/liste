@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html ng-app="listeApp">
+<head>
+<meta charset="utf-8">
+<title>Liste de courses </title>
+<link rel="stylesheet"  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+<script src="liste.js"></script>
+</head>
+
+
+<body ng-controller="ListeCtrl">
+    <!--p>Nb personnes par défaut: 
+    <select ng-model="nb_gens_defaut">
+           <option ng-repeat="n in [].constructor(30) track by $index+1">{{$index+1}}</option>
+     </select>
+    </p-->
+    <p>Nb jours: 
+    <select ng-model="nb_jours" ng-change="joursChanged()">
+        <option ng-selected="{{n == nb_jours}}" ng-repeat="n in jours_tab">{{n}}</option>
+     </select>
+    </p>
+    <ul>
+        <li ng-repeat="jour in jours track by $index">
+            <input id="{{ 'jour-nom-' + $index }}" type="text" value="{{'Jour ' + $index }}">
+        <!--input id="{{ 'jour-nb-pers-' + $index}}" ng-model="gens_par_jour[$index]" type="text" ng-value="nb_gens_defaut" ng-change="mlog()"-->
+            <p>
+            <select ng-model="gens_par_jour[$index]" ng-change="updateListe()">
+                <!--option ng-repeat="n in [].constructor(30) track by $index+1">{{$index+1}}</option-->
+                <option ng-selected="{{nn == nb_gens}}" ng-repeat="nn in gens_tab">{{nn}}</option>
+
+            </select>
+            <select ng-model="recette_par_jour[$index]" ng-change="updateListe()">
+                <option ng-repeat="recette in recettes">{{recette.name}}</option>
+            </select>
+            </p>
+    </ul>
+    <textarea ng-model="liste_text">
+</body>
+</html>
+
