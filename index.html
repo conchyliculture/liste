@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8">
 <title>Liste de courses </title>
-<link rel="stylesheet"  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-sanitize.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
 <script src="liste.js"></script>
 </head>
 
@@ -19,28 +21,42 @@
            <option ng-repeat="n in [].constructor(30) track by $index+1">{{$index+1}}</option>
      </select>
     </p-->
+    <md-content>
     <p>Nb jours: 
     <select ng-model="nb_jours" ng-change="joursChanged()">
         <option ng-selected="{{n == nb_jours}}" ng-repeat="n in jours_tab">{{n}}</option>
      </select>
     </p>
-    <ul>
-        <li ng-repeat="jour in jours track by $index">
-            <input id="{{ 'jour-nom-' + $index }}" type="text" value="{{'Jour ' + $index }}">
-        <!--input id="{{ 'jour-nb-pers-' + $index}}" ng-model="gens_par_jour[$index]" type="text" ng-value="nb_gens_defaut" ng-change="mlog()"-->
-            <p>
-            <select ng-model="gens_par_jour[$index]" ng-change="updateListe()">
-                <!--option ng-repeat="n in [].constructor(30) track by $index+1">{{$index+1}}</option-->
-                <option ng-selected="{{nn == nb_gens}}" ng-repeat="nn in gens_tab">{{nn}}</option>
-
-            </select>
-            <select ng-model="recette_par_jour[$index]" ng-change="updateListe()">
-                <option ng-repeat="recette in recettes">{{recette.name}}</option>
-            </select>
-            </p>
-    </ul>
+    <md-list >
+        <md-list-item class="list-header" layout="row">
+        <span  ng-style="{width: 100/columnCount + '%'}">lol</span>
+        <span  ng-style="{width: 100/columnCount + '%'}">pers</span>
+        <span  ng-style="{width: 100/columnCount + '%'}">toto</span>
+        </md-list-item>
+        <md-list-item ng-repeat="jour in jours track by $index" layout="row">
+            <div layout="row">
+            <input type="text" value="{{'Jour ' + $index }}" layout="row">
+            <div layout="column">
+            <md-select ng-model="gens_par_dejeuner[$index]" ng-change="updateListe()" placeholder="Nb gens">
+                <md-option ng-repeat="nn in gens_tab" ng-value="nn">{{nn}}</md-option>
+            </md-select>
+            <md-select ng-model="gens_par_diner[$index]" ng-change="updateListe()" placeholder="Nb gens">
+                <md-option ng-repeat="nn in gens_tab" ng-value="nn">{{nn}}</md-option>
+            </md-select>
+            </div>
+            <div layout="column">
+            <md-select ng-model="recette_dejeuner_par_jour[$index]" ng-change="updateListe()" placeholder="Recette Dejeuner">
+                <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
+            </md-select>
+            <md-select ng-model="recette_dejeuner_par_jour[$index]" ng-change="updateListe()" placeholder="Recette Diner">
+                <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
+            </md-select>
+            </div>
+            </div>
+    </md-list>
     <p>Liste:</p>
     <div ng-bind-html="liste_html"> </div>
+    </md-content>
 </body>
 </html>
 

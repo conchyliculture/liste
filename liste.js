@@ -1,4 +1,4 @@
-var listeApp = angular.module('listeApp', ['ngSanitize']);
+var listeApp = angular.module('listeApp', ['ngSanitize','ngMaterial']);
 var recettes = [
     {   name:'Poulet champi crème',
         ingredients: [ { 'name': 'Riz', 'qty': 100, 'unit':"g" },
@@ -67,7 +67,7 @@ var recettes = [
             { 'name': 'Oignons', 'qty': 100, 'unit':"g" },
             { 'name': 'Crozets (moitié normaux moitié complets, pas de parfum à la con', 'qty': 100, 'unit':"g" },
             { 'name': 'Crème Fraiche', 'qty': 100, 'unit':"g" },
-            { 'name': 'Reblochon', 'qty': 0.2, 'unit':"" },
+            { 'name': 'Reblochon (gros, fermier si possible)', 'qty': 0.2, 'unit':"" },
             { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
             { 'name': 'Sel', 'unit':"g" },
             { 'name': 'Poivre', 'unit':"g" },
@@ -105,21 +105,31 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
     $scope.jours_tab = range(20); 
     $scope.gens_tab = range(25); 
 
-    $scope.gens_par_jour = new Array( parseInt($scope.nb_jours)).fill($scope.nb_gens);
-    $scope.recette_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
+    $scope.gens_par_diner = new Array( parseInt($scope.nb_jours)).fill($scope.nb_gens);
+    $scope.recette_diner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
+    $scope.gens_par_dejeuner = new Array( parseInt($scope.nb_jours)).fill($scope.nb_gens);
+    $scope.recette_dejeuner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
 
     var liste_json=[];
-
 
     $scope.updateListe = function() {
         liste_json=[];
         for (var i = 0; i < $scope.nb_jours; i++) {
-            r = $scope.recette_par_jour[i];
-            g = parseInt($scope.gens_par_jour[i]);
-            if (r == "") {
+            recette_diner = $scope.recette_diner_par_jour[i];
+            g = parseInt($scope.gens_par_diner[i]);
+            if (recette_diner == "") {
                 continue;
             }
-            var ings = getIngredients(r);
+            var ings = getIngredients(recette_diner);
+            for (ing in ings) {
+                ingredient = ings[ing]; 
+                addToListe(liste_json, ingredient, g);
+            }
+            recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
+            if (recette_dejeuner == "") {
+                continue;
+            }
+            var ings = getIngredients(recette_dejeuner);
             for (ing in ings) {
                 ingredient = ings[ing]; 
                 addToListe(liste_json, ingredient, g);
@@ -149,8 +159,9 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
         $scope.jours = new Array(+$scope.nb_jours);
         var n = $scope.nb_gens_defaut;
         if (typeof n === "string") {
-            $scope.gens_par_jour = new Array(parseInt($scope.nb_jours)).fill(n);
-            $scope.recette_par_jour = new Array( $scope.nb_jours);
+            $scope.gens_par_diner = new Array(parseInt($scope.nb_jours)).fill(n);
+            $scope.recette_diner_par_jour = new Array( $scope.nb_jours);
+            $scope.recette_dejeuner_par_jour = new Array( $scope.nb_jours);
         }
 
     }
