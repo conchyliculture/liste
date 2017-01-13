@@ -1,5 +1,56 @@
 var listeApp = angular.module('listeApp', ['ngSanitize','ngMaterial']);
 var recettes = [
+    {   name:'Carbo',
+        ingredients:  [
+            { 'name': 'Spaghettis (De Cecco ou Barilla)', 'qty': 2000/15, 'unit':"g" },
+            { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
+            { 'name': 'Oignons', 'qty': 50, 'unit':"g" },
+            { 'name': 'Vin blanc genre muscadet', 'qty': 75/15, 'unit':"cL" },
+            { 'name': 'Crème Fraiche', 'qty': 70/15, 'unit':"cL" },
+            { 'name': 'Parmesan', 'qty': 500/15, 'unit':"g" },
+            { 'name': 'Sel', 'unit':"g" },
+            { 'name': 'Poivre', 'unit':"g" },
+        ]
+    },
+    {   name:'Chili',
+        ingredients:  [
+            { 'name': 'Oignons', 'qty': 20, 'unit':"g" },
+            { 'name': 'Ail', 'unit':"g" },
+            { 'name': 'Poivrons', 'qty': 1/8, 'unit':"" },
+            { 'name': 'Boîte de tomates pelées', 'qty': 60, 'unit':"g" },
+            { 'name': 'Haricots rouges (en boîte, poids égoutté)', 'qty': 100, 'unit':"g" },
+            { 'name': 'Boeuf haché', 'qty': 200, 'unit':"g" },
+            { 'name': 'Bouillon cube', 'unit':"g" },
+            { 'name': 'Huile d\'olive', 'unit':"g" },
+            { 'name': 'Origan', 'unit':"g" },
+            { 'name': 'Tabasco', 'unit':"g" },
+            { 'name': 'Piment', 'unit':"g" },
+            { 'name': 'Riz', 'qty': 150, 'unit':"g" },
+        ]
+    },
+    {   name:'Croziflette',
+        ingredients:  [
+            { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
+            { 'name': 'Oignons', 'qty': 100, 'unit':"g" },
+            { 'name': 'Crozets (moitié normaux moitié complets, pas de parfum à la con', 'qty': 100, 'unit':"g" },
+            { 'name': 'Crème Fraiche', 'qty': 100, 'unit':"g" },
+            { 'name': 'Reblochon (gros, fermier si possible)', 'qty': 0.2, 'unit':"" },
+            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
+            { 'name': 'Sel', 'unit':"g" },
+            { 'name': 'Poivre', 'unit':"g" },
+            { 'name': 'Beurre', 'unit':"g" },
+        ]
+    },
+    {   name:'Omelette',
+        ingredients:  [
+            { 'name': 'Oeufs', 'qty': 2, 'unit':"" },
+            { 'name': 'Champignons', 'qty': 150, 'unit':"g" },
+            { 'name': 'Oignons', 'qty': 60, 'unit':"g" },
+            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
+            { 'name': 'Lardons', 'qty': 50, 'unit':"g" },
+            { 'name': 'Crème Fraiche', 'qty': 0.1, 'unit':"cL" },
+        ]
+    },
     {   name:'Poulet champi crème',
         ingredients: [ { 'name': 'Riz', 'qty': 100, 'unit':"g" },
             { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
@@ -26,18 +77,6 @@ var recettes = [
             { 'name': 'Poivre', 'unit':"g" },
         ]
     },
-    {   name:'Pâtes carbo',
-        ingredients:  [
-            { 'name': 'Spaghettis (De Cecco ou Barilla)', 'qty': 2000/15, 'unit':"g" },
-            { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
-            { 'name': 'Oignons', 'qty': 50, 'unit':"g" },
-            { 'name': 'Vin blanc genre muscadet', 'qty': 75/15, 'unit':"cL" },
-            { 'name': 'Crème Fraiche', 'qty': 70/15, 'unit':"cL" },
-            { 'name': 'Parmesan', 'qty': 500/15, 'unit':"g" },
-            { 'name': 'Sel', 'unit':"g" },
-            { 'name': 'Poivre', 'unit':"g" },
-        ]
-    },
     {   name:'Tartiflette',
         ingredients:  [
             { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
@@ -49,45 +88,6 @@ var recettes = [
             { 'name': 'Sel', 'unit':"g" },
             { 'name': 'Poivre', 'unit':"g" },
             { 'name': 'Beurre', 'unit':"g" },
-        ]
-    },
-    {   name:'Omelette',
-        ingredients:  [
-            { 'name': 'Oeufs', 'qty': 2, 'unit':"" },
-            { 'name': 'Champignons', 'qty': 150, 'unit':"g" },
-            { 'name': 'Oignons', 'qty': 60, 'unit':"g" },
-            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
-            { 'name': 'Lardons', 'qty': 50, 'unit':"g" },
-            { 'name': 'Crème Fraiche', 'qty': 0.1, 'unit':"cL" },
-        ]
-    },
-    {   name:'Croziflette',
-        ingredients:  [
-            { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
-            { 'name': 'Oignons', 'qty': 100, 'unit':"g" },
-            { 'name': 'Crozets (moitié normaux moitié complets, pas de parfum à la con', 'qty': 100, 'unit':"g" },
-            { 'name': 'Crème Fraiche', 'qty': 100, 'unit':"g" },
-            { 'name': 'Reblochon (gros, fermier si possible)', 'qty': 0.2, 'unit':"" },
-            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
-            { 'name': 'Sel', 'unit':"g" },
-            { 'name': 'Poivre', 'unit':"g" },
-            { 'name': 'Beurre', 'unit':"g" },
-        ]
-    },
-    {   name:'Chili',
-        ingredients:  [
-            { 'name': 'Oignons', 'qty': 20, 'unit':"g" },
-            { 'name': 'Ail', 'unit':"g" },
-            { 'name': 'Poivrons', 'qty': 1/8, 'unit':"" },
-            { 'name': 'Boîte de tomates pelées', 'qty': 60, 'unit':"g" },
-            { 'name': 'Haricots rouges (en boîte, poids égoutté)', 'qty': 100, 'unit':"g" },
-            { 'name': 'Boeuf haché', 'qty': 200, 'unit':"g" },
-            { 'name': 'Bouillon cube', 'unit':"g" },
-            { 'name': 'Huile d\'olive', 'unit':"g" },
-            { 'name': 'Origan', 'unit':"g" },
-            { 'name': 'Tabasco', 'unit':"g" },
-            { 'name': 'Piment', 'unit':"g" },
-            { 'name': 'Riz', 'qty': 150, 'unit':"g" },
         ]
     },
 ];
