@@ -1,58 +1,93 @@
 var listeApp = angular.module('listeApp', ['ngSanitize']);
 var recettes = [
-    {
-        name:'Poulet champi crème',
-        ingredients: [
-        {
-            'name': 'Riz',
-            'qty': 100,
-            'unit':"g"
-        },
-        {
-            'name': 'Filet de poulet',
-            'qty': 1,
-            'unit':""
-        },
-        {
-            'name': 'Vin blanc de cuisine',
-            'qty': 75/10,
-            'unit':"cL"
-        },
-        {
-            'name': 'Oignons',
-            'qty': 50,
-            'unit':"g"
-        },
-        {
-            'name': 'Crème fraiche',
-            'qty': 100/14,
-            'unit':"cL"
-        },
-        {
-            'name': 'Champignons',
-            'qty': 100,
-            'unit':"g"
-        }
+    {   name:'Poulet champi crème',
+        ingredients: [ { 'name': 'Riz', 'qty': 100, 'unit':"g" },
+            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
+            { 'name': 'Filet de poulet', 'qty': 1, 'unit':"" },
+            { 'name': 'Vin blanc de cuisine', 'qty': 75/10, 'unit':"cL" },
+            { 'name': 'Oignons', 'qty': 50, 'unit':"g" },
+            { 'name': 'Crème Fraiche', 'qty': 5, 'unit':"cL" },
+            { 'name': 'Champignons', 'qty': 150, 'unit':"g" },
+            { 'name': 'Sel', 'unit':"g" },
+            { 'name': 'Poivre', 'unit':"g" },
+            { 'name': 'Beurre', 'unit':"g" },
         ]
     },
-    {
-        name:'Tartiflette',
+    {   name:'Raclette',
         ingredients:  [
-            {
-                'name': 'Patates',
-                'qty': 100,
-                'unit':"g"
-            },
-            {
-                'name': 'Crème Fraiche',
-                'qty': 100,
-                'unit':"g"
-            },
-            {
-                'name': 'Reblochon',
-                'qty': 0.2,
-                'unit':""
-            },
+            { 'name': 'Patates', 'qty': 4000/15, 'unit':"g" },
+            { 'name': 'Fromage à raclette', 'qty': 4000/15, 'unit':"g" },
+            { 'name': 'Cornichons', 'unit':"" },
+            { 'name': 'Petits oignons', 'unit':"" },
+            { 'name': 'Jambon blanc à la coupe', 'qty': 1, 'unit':"t" },
+            { 'name': 'Rosette à la coupe', 'qty': 1, 'unit':"t" },
+            { 'name': 'Coppa à la coupe', 'qty': 1, 'unit':"t" },
+            { 'name': 'Viande des grisons à la coupe', 'qty': 700/15, 'unit':"g" },
+            { 'name': 'Poivre', 'unit':"g" },
+        ]
+    },
+    {   name:'Pâtes carbo',
+        ingredients:  [
+            { 'name': 'Spaghettis (De Cecco ou Barilla)', 'qty': 2000/15, 'unit':"g" },
+            { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
+            { 'name': 'Oignons', 'qty': 50, 'unit':"g" },
+            { 'name': 'Vin blanc genre muscadet', 'qty': 75/15, 'unit':"cL" },
+            { 'name': 'Crème Fraiche', 'qty': 70/15, 'unit':"cL" },
+            { 'name': 'Parmesan', 'qty': 500/15, 'unit':"g" },
+            { 'name': 'Sel', 'unit':"g" },
+            { 'name': 'Poivre', 'unit':"g" },
+        ]
+    },
+    {   name:'Tartiflette',
+        ingredients:  [
+            { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
+            { 'name': 'Oignons', 'qty': 50, 'unit':"g" },
+            { 'name': 'Patates', 'qty': 100, 'unit':"g" },
+            { 'name': 'Crème Fraiche', 'qty': 5, 'unit':"cL" },
+            { 'name': 'Reblochon', 'qty': 0.2, 'unit':"" },
+            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
+            { 'name': 'Sel', 'unit':"g" },
+            { 'name': 'Poivre', 'unit':"g" },
+            { 'name': 'Beurre', 'unit':"g" },
+        ]
+    },
+    {   name:'Omelette',
+        ingredients:  [
+            { 'name': 'Oeufs', 'qty': 2, 'unit':"" },
+            { 'name': 'Champignons', 'qty': 150, 'unit':"g" },
+            { 'name': 'Oignons', 'qty': 60, 'unit':"g" },
+            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
+            { 'name': 'Lardons', 'qty': 50, 'unit':"g" },
+            { 'name': 'Crème Fraiche', 'qty': 0.1, 'unit':"cL" },
+        ]
+    },
+    {   name:'Croziflette',
+        ingredients:  [
+            { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
+            { 'name': 'Oignons', 'qty': 100, 'unit':"g" },
+            { 'name': 'Crozets (moitié normaux moitié complets, pas de parfum à la con', 'qty': 100, 'unit':"g" },
+            { 'name': 'Crème Fraiche', 'qty': 100, 'unit':"g" },
+            { 'name': 'Reblochon', 'qty': 0.2, 'unit':"" },
+            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
+            { 'name': 'Sel', 'unit':"g" },
+            { 'name': 'Poivre', 'unit':"g" },
+            { 'name': 'Beurre', 'unit':"g" },
+        ]
+    },
+    {   name:'Chili',
+        ingredients:  [
+            { 'name': 'Oignons', 'qty': 20, 'unit':"g" },
+            { 'name': 'Ail', 'unit':"g" },
+            { 'name': 'Poivrons', 'qty': 1/8, 'unit':"" },
+            { 'name': 'Boîte de tomates pelées', 'qty': 60, 'unit':"g" },
+            { 'name': 'Haricots rouges (en boîte, poids égoutté)', 'qty': 100, 'unit':"g" },
+            { 'name': 'Boeuf haché', 'qty': 200, 'unit':"g" },
+            { 'name': 'Bouillon cube', 'unit':"g" },
+            { 'name': 'Huile d\'olive', 'unit':"g" },
+            { 'name': 'Origan', 'unit':"g" },
+            { 'name': 'Tabasco', 'unit':"g" },
+            { 'name': 'Piment', 'unit':"g" },
+            { 'name': 'Riz', 'qty': 150, 'unit':"g" },
         ]
     },
 ];
@@ -98,7 +133,13 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
         for (var i in j) {
             var item = j[i];
             console.log(item);
-            h += "<ul>"+item.name+": "+arrondi(item.qty, item.unit)+"</ul>\n" ;
+            var qty_txt = arrondi(item.qty, item.unit);
+            h += "<ul>"+item.name
+            if (qty_txt == "") {
+                h += "</ul>\n" ;
+            } else {
+                h += ": "+arrondi(item.qty, item.unit)+"</ul>\n" ;
+            }
         }
         h+="</ul>";
         $scope.liste_html=h;
@@ -126,6 +167,7 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
     }
 
     arrondi = function(nb, unit) {
+        if (unit == null){return '';}
         console.log(nb+" "+unit);
         var n = 0;
         switch(unit) {
@@ -152,7 +194,9 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
         for (i in liste) {
             var item = liste[i];
             if (item.name == ing.name) {
-                item.qty = item.qty + (ing.qty * nb);
+                if ('qty' in ing) {
+                    item.qty = item.qty + (ing.qty * nb);
+                }
                 found = true;
             }
         }
@@ -160,8 +204,10 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
             //need to dupe, wtf
             var item = {};
             item.name = ing.name;
-            item.qty = ing.qty * nb;
-            item.unit = ing.unit;
+            if ('qty' in ing) {
+                item.qty = ing.qty * nb;
+                item.unit = ing.unit;
+            }
             liste.push(item);
         }
         console.log(liste);
