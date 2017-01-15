@@ -26,11 +26,13 @@
         <option ng-selected="{{n == nb_jours}}" ng-repeat="n in jours_tab">{{n}}</option>
      </select>
     </p>
-    <div layout="row">
-        <md-card flex="30">
-            <md-card-title><span class="md-headline"> Liste</span></md-card-title>
-            <md-card-content >
-                <div ng-bind-html="liste_html" ></div>
+    <div layout="row" flex>
+        <md-card flex="30" layout-align="start start">
+            <md-card-header>
+                Liste
+            </md-card-header>
+            <md-card-content>
+                <div ng-bind-html="liste_html" flex ></div>
             </md-card-content>
         </md-card>
 
