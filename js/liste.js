@@ -115,24 +115,23 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
     $scope.updateListe = function() {
         liste_json=[];
         for (var i = 0; i < $scope.nb_jours; i++) {
+            recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
+            g = parseInt($scope.gens_par_dejeuner[i]);
+            if (recette_dejeuner != "") {
+                var ings = getIngredients(recette_dejeuner);
+                for (ing in ings) {
+                    ingredient = ings[ing];
+                    addToListe(liste_json, ingredient, g);
+                }
+            }
             recette_diner = $scope.recette_diner_par_jour[i];
             g = parseInt($scope.gens_par_diner[i]);
-            if (recette_diner == "") {
-                continue;
-            }
-            var ings = getIngredients(recette_diner);
-            for (ing in ings) {
-                ingredient = ings[ing]; 
-                addToListe(liste_json, ingredient, g);
-            }
-            recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
-            if (recette_dejeuner == "") {
-                continue;
-            }
-            var ings = getIngredients(recette_dejeuner);
-            for (ing in ings) {
-                ingredient = ings[ing]; 
-                addToListe(liste_json, ingredient, g);
+            if (recette_diner != "") {
+                var ings = getIngredients(recette_diner);
+                for (ing in ings) {
+                    ingredient = ings[ing];
+                    addToListe(liste_json, ingredient, g);
+                }
             }
         };
         changeListeText(liste_json);
@@ -142,7 +141,6 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
         h = "<ul>\n";
         for (var i in j) {
             var item = j[i];
-            console.log(item);
             var qty_txt = arrondi(item.qty, item.unit);
             h += "<ul>"+item.name
             if (qty_txt == "") {
@@ -179,7 +177,6 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
 
     arrondi = function(nb, unit) {
         if (unit == null){return '';}
-        console.log(nb+" "+unit);
         var n = 0;
         switch(unit) {
             case "g":
@@ -199,8 +196,6 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
     }
 
     addToListe = function(liste, ing, nb) {
-        console.log("pour "+nb);
-        console.log(ing);
         var found = false;
         for (i in liste) {
             var item = liste[i];
@@ -221,7 +216,6 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
             }
             liste.push(item);
         }
-        console.log(liste);
     }
 
 });
