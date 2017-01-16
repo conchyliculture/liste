@@ -66,8 +66,8 @@ var recettes = [
     },
     {   name:'Raclette',
         ingredients:  [
-            { 'name': 'Patates', 'qty': 3000/15, 'unit':"g" },
-            { 'name': 'Fromage à raclette', 'qty': 4000/15, 'unit':"g" },
+            { 'name': 'Patates', 'qty': 200, 'unit':"g" },
+            { 'name': 'Fromage à raclette', 'qty': 200, 'unit':"g" },
             { 'name': 'Cornichons', 'unit':"" },
             { 'name': 'Petits oignons', 'unit':"" },
             { 'name': 'Jambon blanc à la coupe', 'qty': 1, 'unit':"t" },
