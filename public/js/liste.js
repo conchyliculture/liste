@@ -1,4 +1,4 @@
-var listeApp = angular.module('listeApp', ['ngSanitize','ngMaterial']);
+var listeApp = angular.module('listeApp', ['ngRoute', 'ngSanitize','ngMaterial']);
 var recettes = [
     {   name:'Carbo',
         ingredients:  [
@@ -66,7 +66,7 @@ var recettes = [
     },
     {   name:'Raclette',
         ingredients:  [
-            { 'name': 'Patates', 'qty': 4000/15, 'unit':"g" },
+            { 'name': 'Patates', 'qty': 3000/15, 'unit':"g" },
             { 'name': 'Fromage à raclette', 'qty': 4000/15, 'unit':"g" },
             { 'name': 'Cornichons', 'unit':"" },
             { 'name': 'Petits oignons', 'unit':"" },
@@ -98,12 +98,12 @@ range = function(max) {
     return res;
 };
 
-listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
+listeApp.controller('ListeCtrl', function ListeCtrl($scope, $http, $mdDialog) {
     $scope.recettes = recettes;
     $scope.nb_jours = "5"; // srsly!
     $scope.nb_gens = "10"; // srsly!
-    $scope.jours_tab = range(20); 
-    $scope.gens_tab = range(25); 
+    $scope.jours_tab = range(20);
+    $scope.gens_tab = range(25);
 
     $scope.gens_par_diner = new Array( parseInt($scope.nb_jours)).fill($scope.nb_gens);
     $scope.recette_diner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
@@ -111,6 +111,22 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
     $scope.recette_dejeuner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
 
     var liste_json=[];
+
+    getAll = function() {
+        var recettes = [];
+        for (var i = 0; i < $scope.nb_jours; i++) {
+            var jour = {'diner': {'recette': null, 'gens': 0}, 'dejeuner': {'recette': null, 'gens': 0}};
+            recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
+            recette_diner = $scope.recette_diner_par_jour[i];
+            jour['dejeuner']['recette'] = recette_dejeuner;
+            jour['diner']['recette'] = recette_diner;
+            jour['dejeuner']['gens'] = parseInt($scope.gens_par_dejeuner[i]);
+            jour['diner']['gens'] = parseInt($scope.gens_par_diner[i]);
+
+            recettes.push(jour);
+        }
+        return recettes;
+    };
 
     $scope.updateListe = function() {
         liste_json=[];
@@ -218,6 +234,48 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope) {
         }
     }
 
+    save = function(name) {
+        var config = { headers : {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+            }
+        };
+
+        $http({
+            method: "POST",
+            url: "/save",
+            data:{'name' :name, "recettes": getAll()}
+        }).then(
+       function(response){
+           console.log('success');
+           return response.body;
+       },
+       function(response){
+           console.log('fail');
+       }
+    );
+    };
+	$scope.showPromptSave = function(ev) {
+    // Appending dialog to document.body to cover sidenav in docs app
+    var now = new Date();
+    var now_string = now.getFullYear()+""+(now.getMonth()+1)+""+(now.getDay()+1)+"-"+now.getHours()+""+now.getMinutes()+""+now.getSeconds();
+    var confirm = $mdDialog.prompt()
+      .title('Select a name for your liste')
+      .textContent('Bowser is a common name.')
+      .placeholder('Liste')
+      .ariaLabel('Liste')
+      .initialValue(now_string)
+      .targetEvent(ev)
+      .ok('Okay!')
+      .cancel('Cancel');
+
+    $mdDialog.show(confirm).then(function(result) {
+		// okay
+		var res = save(result);
+        console.log("saving");
+        $scope.status = res;
+    });
+
+    };
 });
 
 
