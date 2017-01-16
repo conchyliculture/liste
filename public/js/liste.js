@@ -239,7 +239,6 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope, $http, $mdDialog) {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
             }
         };
-
         $http({
             method: "POST",
             url: "/save",
@@ -269,13 +268,29 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope, $http, $mdDialog) {
       .cancel('Cancel');
 
     $mdDialog.show(confirm).then(function(result) {
-		// okay
-		var res = save(result);
+        // okay
+        var res = save(result);
         console.log("saving");
         $scope.status = res;
     });
 
     };
+	$scope.showPromptLoad = function(ev) {
+        var confirm = $mdDialog.show({
+            template: "<md-select>   <md-option ng-repeat=\"n in load_liste\" ng-value=\"n\" >{{n}}</md-option>      </md-select>",
+            controller: LoadCtrl,
+        });
+
+        $mdDialog.show(confirm).then(function(nom_recette) {
+            // okay
+            load(nom_recette);
+            console.log("loading");
+        });
+    };
+}).controller('LoadCtrl', function LoadCtrl($scope, $http){
+    $scope.load_liste = fetch_recettes();
+
 });
+;
 
 
