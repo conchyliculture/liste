@@ -13,18 +13,17 @@ before do
     end
 end
 
-
-get '/list' do
+get '/get-stored-listes' do
     content_type :json
     j = Dir.glob(File.join($recettes_dir,"*")).map{|x| File.basename(x)[0..-6]}
     return j.to_json
 end
 
-get '/get' do
+get '/get-stored-liste' do
     content_type :json
-    if params['date']
+    if params['name']
         # TODO verif
-        path = File.join($recettes_dir, params['date']+".json")
+        path = File.join($recettes_dir, params['name']+".json")
         if File.exist?(path)
             j = File.read(File.join($recettes_dir, params['date']+".json"))
             return j
@@ -51,7 +50,6 @@ end
 
 post '/save' do
      save(request.body.read)
-     pp "saving"
 end
 
 get '/' do

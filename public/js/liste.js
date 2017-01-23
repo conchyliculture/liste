@@ -114,7 +114,7 @@ function ListeCtrl ($scope, $http, $mdDialog) {
 
     var liste_json=[];
 
-    $scope.loadAll = function(l, name) {
+    $scope.loadStoredList = function(l, name) {
         for (var i = 0 ; i < l.length; i++) {
             $scope.recette_dejeuner_par_jour[i] = l[i]['dejeuner']['recette'];
             $scope.recette_diner_par_jour[i] = l[i]['diner']['recette'];
@@ -304,16 +304,16 @@ function LoadCtrl ($scope, $mdDialog, $http){
     $scope.loadhide = function() {$mdDialog.hide();};
     $scope.loadcancel = function() {$mdDialog.cancel();};
     $scope.loadanswer = function(answer) {
-        fetch_recette($scope.recette_select);
+        fetch_stored_liste($scope.recette_select);
         $mdDialog.hide(answer);
     };
-    function fetch_recette(r) {
+    function fetch_stored_liste(r) {
         $http({
             method: "GET",
-            url: "/get?date="+r,
+            url: "/get-stored-liste?name="+r,
         }).then(
         function(response){
-            $scope.loadAll(response.data, r);
+            $scope.loadStoredList(response.data, r);
         },
         function(response){
             console.log('liste load fail');
@@ -323,7 +323,7 @@ function LoadCtrl ($scope, $mdDialog, $http){
     function fetch_recettes() {
         $http({
             method: "GET",
-            url: "/list",
+            url: "/get-stored-listes",
         }).then(
         function(response){
             $scope.load_liste = response.data;
