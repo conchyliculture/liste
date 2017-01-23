@@ -1,98 +1,13 @@
-var recettes = [
-    {   name:'Carbo',
-        ingredients:  [
-            { 'name': 'Spaghettis (De Cecco ou Barilla)', 'qty': 2000/15, 'unit':"g" },
-            { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
-            { 'name': 'Oignons', 'qty': 50, 'unit':"g" },
-            { 'name': 'Vin blanc genre muscadet', 'qty': 75/15, 'unit':"cL" },
-            { 'name': 'Crème Fraiche', 'qty': 70/15, 'unit':"cL" },
-            { 'name': 'Parmesan', 'qty': 500/15, 'unit':"g" },
-            { 'name': 'Sel', 'unit':"g" },
-            { 'name': 'Poivre', 'unit':"g" },
-        ]
-    },
-    {   name:'Chili',
-        ingredients:  [
-            { 'name': 'Oignons', 'qty': 20, 'unit':"g" },
-            { 'name': 'Ail', 'unit':"g" },
-            { 'name': 'Poivrons', 'qty': 1/8, 'unit':"" },
-            { 'name': 'Boîte de tomates pelées', 'qty': 60, 'unit':"g" },
-            { 'name': 'Haricots rouges (en boîte, poids égoutté)', 'qty': 100, 'unit':"g" },
-            { 'name': 'Boeuf haché', 'qty': 200, 'unit':"g" },
-            { 'name': 'Bouillon cube', 'unit':"g" },
-            { 'name': 'Huile d\'olive', 'unit':"g" },
-            { 'name': 'Origan', 'unit':"g" },
-            { 'name': 'Tabasco', 'unit':"g" },
-            { 'name': 'Piment', 'unit':"g" },
-            { 'name': 'Riz', 'qty': 150, 'unit':"g" },
-        ]
-    },
-    {   name:'Croziflette',
-        ingredients:  [
-            { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
-            { 'name': 'Oignons', 'qty': 100, 'unit':"g" },
-            { 'name': 'Crozets (moitié normaux moitié complets, pas de parfum à la con', 'qty': 80, 'unit':"g" },
-            { 'name': 'Crème Fraiche', 'qty': 5, 'unit':"cL" },
-            { 'name': 'Reblochon (gros, fermier si possible)', 'qty': 0.2, 'unit':"" },
-            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
-            { 'name': 'Sel', 'unit':"g" },
-            { 'name': 'Poivre', 'unit':"g" },
-            { 'name': 'Beurre', 'unit':"g" },
-        ]
-    },
-    {   name:'Omelette',
-        ingredients:  [
-            { 'name': 'Oeufs', 'qty': 2, 'unit':"" },
-            { 'name': 'Champignons', 'qty': 150, 'unit':"g" },
-            { 'name': 'Oignons', 'qty': 60, 'unit':"g" },
-            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
-            { 'name': 'Lardons', 'qty': 50, 'unit':"g" },
-            { 'name': 'Crème Fraiche', 'qty': 0.1, 'unit':"cL" },
-        ]
-    },
-    {   name:'Poulet champi crème',
-        ingredients: [ { 'name': 'Riz', 'qty': 100, 'unit':"g" },
-            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
-            { 'name': 'Filet de poulet', 'qty': 1, 'unit':"" },
-            { 'name': 'Vin blanc de cuisine', 'qty': 75/10, 'unit':"cL" },
-            { 'name': 'Oignons', 'qty': 50, 'unit':"g" },
-            { 'name': 'Crème Fraiche', 'qty': 5, 'unit':"cL" },
-            { 'name': 'Champignons', 'qty': 150, 'unit':"g" },
-            { 'name': 'Sel', 'unit':"g" },
-            { 'name': 'Poivre', 'unit':"g" },
-            { 'name': 'Beurre', 'unit':"g" },
-        ]
-    },
-    {   name:'Raclette',
-        ingredients:  [
-            { 'name': 'Patates', 'qty': 200, 'unit':"g" },
-            { 'name': 'Fromage à raclette', 'qty': 200, 'unit':"g" },
-            { 'name': 'Cornichons', 'unit':"" },
-            { 'name': 'Petits oignons', 'unit':"" },
-            { 'name': 'Jambon blanc à la coupe', 'qty': 1, 'unit':"t" },
-            { 'name': 'Rosette à la coupe', 'qty': 1, 'unit':"t" },
-            { 'name': 'Coppa à la coupe', 'qty': 1, 'unit':"t" },
-            { 'name': 'Viande des grisons à la coupe', 'qty': 700/15, 'unit':"g" },
-            { 'name': 'Poivre', 'unit':"g" },
-        ]
-    },
-    {   name:'Tartiflette',
-        ingredients:  [
-            { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
-            { 'name': 'Oignons', 'qty': 50, 'unit':"g" },
-            { 'name': 'Patates', 'qty': 100, 'unit':"g" },
-            { 'name': 'Crème Fraiche', 'qty': 5, 'unit':"cL" },
-            { 'name': 'Reblochon', 'qty': 0.2, 'unit':"" },
-            { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
-            { 'name': 'Sel', 'unit':"g" },
-            { 'name': 'Poivre', 'unit':"g" },
-            { 'name': 'Beurre', 'unit':"g" },
-        ]
-    },
-];
 var listeApp = angular.module('listeApp', ['ngSanitize','ngMaterial'])
+                        .service('recettesService', function($http){
+                            this.getJsonData = function() {
+                                var res = {};
+                                return $http({method: "GET", url: "/recettes.json"});
+                            }
+                        })
                         .controller('ListeCtrl', ListeCtrl)
                         .controller('LoadCtrl', LoadCtrl);
+
 
 range = function(max) {
     var res = [];
@@ -100,8 +15,8 @@ range = function(max) {
     return res;
 };
 
-function ListeCtrl ($scope, $http, $mdDialog) {
-    $scope.recettes = recettes;
+function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
+    recettesService.getJsonData().then(function (r) { $scope.recettes = r.data['recettes']});
     $scope.nb_jours = "5"; // srsly!
     $scope.nb_gens = "10"; // srsly!
     $scope.jours_tab = range(20);
@@ -125,7 +40,7 @@ function ListeCtrl ($scope, $http, $mdDialog) {
     };
 
     getAll = function() {
-        var recettes = [];
+        var _recettes = [];
         for (var i = 0; i < $scope.nb_jours; i++) {
             var jour = {'diner': {'recette': null, 'gens': 0}, 'dejeuner': {'recette': null, 'gens': 0}};
             recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
@@ -135,9 +50,9 @@ function ListeCtrl ($scope, $http, $mdDialog) {
             jour['dejeuner']['gens'] = parseInt($scope.gens_par_dejeuner[i]);
             jour['diner']['gens'] = parseInt($scope.gens_par_diner[i]);
 
-            recettes.push(jour);
+            _recettes.push(jour);
         }
-        return recettes;
+        return _recettes;
     };
 
     $scope.updateListe = function() {
@@ -195,8 +110,8 @@ function ListeCtrl ($scope, $http, $mdDialog) {
 
 
     getIngredients = function(r) {
-        for (a in recettes) {
-            recette = recettes[a];
+        for (a in $scope.recettes) {
+            recette = $scope.recettes[a];
             if (recette.name == r) {
                 return recette.ingredients;
             }
