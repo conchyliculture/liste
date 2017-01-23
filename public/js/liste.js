@@ -1,4 +1,3 @@
-var listeApp = angular.module('listeApp', ['ngRoute', 'ngSanitize','ngMaterial']);
 var recettes = [
     {   name:'Carbo',
         ingredients:  [
@@ -32,8 +31,8 @@ var recettes = [
         ingredients:  [
             { 'name': 'Lardons', 'qty': 100, 'unit':"g" },
             { 'name': 'Oignons', 'qty': 100, 'unit':"g" },
-            { 'name': 'Crozets (moitié normaux moitié complets, pas de parfum à la con', 'qty': 100, 'unit':"g" },
-            { 'name': 'Crème Fraiche', 'qty': 100, 'unit':"g" },
+            { 'name': 'Crozets (moitié normaux moitié complets, pas de parfum à la con', 'qty': 80, 'unit':"g" },
+            { 'name': 'Crème Fraiche', 'qty': 5, 'unit':"cL" },
             { 'name': 'Reblochon (gros, fermier si possible)', 'qty': 0.2, 'unit':"" },
             { 'name': 'Râpé', 'qty': 50, 'unit':"g" },
             { 'name': 'Sel', 'unit':"g" },
@@ -91,6 +90,9 @@ var recettes = [
         ]
     },
 ];
+var listeApp = angular.module('listeApp', ['ngRoute', 'ngSanitize','ngMaterial'])
+                        .controller('ListeCtrl', ListeCtrl)
+                        .controller('LoadCtrl', LoadCtrl);
 
 range = function(max) {
     var res = [];
@@ -98,7 +100,7 @@ range = function(max) {
     return res;
 };
 
-listeApp.controller('ListeCtrl', function ListeCtrl($scope, $http, $mdDialog) {
+function ListeCtrl ($scope, $http, $mdDialog) {
     $scope.recettes = recettes;
     $scope.nb_jours = "5"; // srsly!
     $scope.nb_gens = "10"; // srsly!
@@ -111,6 +113,15 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope, $http, $mdDialog) {
     $scope.recette_dejeuner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
 
     var liste_json=[];
+
+    $scope.loadAll = function(l) {
+        for (var i = 0 ; i < l.length; i++) {
+            $scope.recette_dejeuner_par_jour[i] = l[i]['dejeuner']['recette'];
+            $scope.recette_diner_par_jour[i] = l[i]['diner']['recette'];
+            $scope.gens_par_dejeuner[i] = l[i]['dejeuner']['gens'];
+            $scope.gens_par_diner[i] = l[i]['diner']['gens'];
+        };
+    };
 
     getAll = function() {
         var recettes = [];
@@ -245,52 +256,82 @@ listeApp.controller('ListeCtrl', function ListeCtrl($scope, $http, $mdDialog) {
             data:{'name' :name, "recettes": getAll()}
         }).then(
        function(response){
-           console.log('success');
+          // console.log('success');
            return response.body;
        },
        function(response){
-           console.log('fail');
+           //console.log('fail');
        }
     );
     };
 	$scope.showPromptSave = function(ev) {
-    // Appending dialog to document.body to cover sidenav in docs app
-    var now = new Date();
-    var now_string = now.getFullYear()+""+(now.getMonth()+1)+""+(now.getDay()+1)+"-"+now.getHours()+""+now.getMinutes()+""+now.getSeconds();
-    var confirm = $mdDialog.prompt()
-      .title('Select a name for your liste')
-      .textContent('Bowser is a common name.')
-      .placeholder('Liste')
-      .ariaLabel('Liste')
-      .initialValue(now_string)
-      .targetEvent(ev)
-      .ok('Okay!')
-      .cancel('Cancel');
+        var now = new Date();
+        var now_string = now.getFullYear()+""+(now.getMonth()+1)+""+(now.getDay()+1)+"-"+now.getHours()+""+now.getMinutes()+""+now.getSeconds();
+        var confirm = $mdDialog.prompt()
+        .title('Select a name for your liste')
+        .textContent('Bowser is a common name.')
+        .placeholder('Liste')
+        .ariaLabel('Liste')
+        .initialValue(now_string)
+        .targetEvent(ev)
+        .ok('Okay!')
+        .cancel('Cancel');
 
-    $mdDialog.show(confirm).then(function(result) {
-        // okay
-        var res = save(result);
-        console.log("saving");
-        $scope.status = res;
-    });
-
-    };
-	$scope.showPromptLoad = function(ev) {
-        var confirm = $mdDialog.show({
-            template: "<md-select>   <md-option ng-repeat=\"n in load_liste\" ng-value=\"n\" >{{n}}</md-option>      </md-select>",
-            controller: LoadCtrl,
-        });
-
-        $mdDialog.show(confirm).then(function(nom_recette) {
+        $mdDialog.show(confirm).then(function(result) {
             // okay
-            load(nom_recette);
-            console.log("loading");
+            var res = save(result);
+            $scope.status = res;
         });
     };
-}).controller('LoadCtrl', function LoadCtrl($scope, $http){
-    $scope.load_liste = fetch_recettes();
 
-});
-;
+	$scope.showPromptLoad = function($event) {
+        var parentEl = angular.element(document.body);
+        var confirm = $mdDialog.show({
+            parent: parentEl,
+            targetEvent: $event,
+            controller: LoadCtrl,
+            scope: $scope,
+            templateUrl: 'loadtemplate.html',
+            locals: {load_liste: $scope.load_liste},
+            clickOutsideToClose: true
+        });
+    };
+};
+
+function LoadCtrl ($scope, $mdDialog, $http){
+    $scope.hide = function() {$mdDialog.hide();};
+    $scope.cancel = function() {$mdDialog.cancel();};
+    $scope.answer = function(answer) {
+        fetch_recette($scope.recette_select);
+        $mdDialog.hide(answer);
+    };
+    function fetch_recette(r) {
+        $http({
+            method: "GET",
+            url: "/get?date="+r,
+        }).then(
+        function(response){
+            $scope.loadAll(response.data);
+        },
+        function(response){
+            console.log('liste load fail');
+        }
+        );
+    };
+    function fetch_recettes() {
+        $http({
+            method: "GET",
+            url: "/list",
+        }).then(
+        function(response){
+            $scope.load_liste = response.data;
+        },
+        function(response){
+            console.log('liste load fail');
+        }
+        );
+    };
+    fetch_recettes();
+};
 
 

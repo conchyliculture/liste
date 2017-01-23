@@ -7,25 +7,32 @@ require "pp"
 
 $recettes_dir = File.join(File.dirname(__FILE__), "recettes")
 
-before do 
+before do
     if not File.exists?($recettes_dir)
         Dir.mkdir($recettes_dir)
     end
 end
 
-def liste_recettes()
-    Dir.glob(File.join($recettes_dir,"*")).map{|x| File.basename(x)[0..-6]}
+
+get '/list' do
+    content_type :json
+    j = Dir.glob(File.join($recettes_dir,"*")).map{|x| File.basename(x)[0..-6]}
+    return j.to_json
 end
 
-get '/list' do 
-    Dir.glob(File.join($recettes_dir,"*")).map{|x| File.basename(x)[0..-6]}
-end
-
-get '/load' do
+get '/get' do
+    content_type :json
     if params['date']
-    else
-        return liste_recettes().to_json
+        # TODO verif
+        path = File.join($recettes_dir, params['date']+".json")
+        if File.exist?(path)
+            j = File.read(File.join($recettes_dir, params['date']+".json"))
+            return j
+        else
+            status 404
+        end
     end
+    return nil
 end
 
 def save(data)
