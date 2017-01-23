@@ -1,0 +1,18 @@
+<md-dialog aria-label="Selection">
+    <md-dialog-content>
+        <div class="md-dialog-content">
+            <h2>Select a recette</h2>
+            <md-select ng-model="recette_select">
+                <md-option ng-repeat="n in load_liste" ng-value="n" >{{n}}</md-option>
+            </md-select>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <md-button md-autofocus ng-click="loadcancel()">
+            Cancel
+        </md-button>
+        <md-button md-autofocus ng-click="loadanswer()">
+            Load
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>

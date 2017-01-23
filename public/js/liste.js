@@ -90,7 +90,7 @@ var recettes = [
         ]
     },
 ];
-var listeApp = angular.module('listeApp', ['ngRoute', 'ngSanitize','ngMaterial'])
+var listeApp = angular.module('listeApp', ['ngSanitize','ngMaterial'])
                         .controller('ListeCtrl', ListeCtrl)
                         .controller('LoadCtrl', LoadCtrl);
 
@@ -114,13 +114,14 @@ function ListeCtrl ($scope, $http, $mdDialog) {
 
     var liste_json=[];
 
-    $scope.loadAll = function(l) {
+    $scope.loadAll = function(l, name) {
         for (var i = 0 ; i < l.length; i++) {
             $scope.recette_dejeuner_par_jour[i] = l[i]['dejeuner']['recette'];
             $scope.recette_diner_par_jour[i] = l[i]['diner']['recette'];
             $scope.gens_par_dejeuner[i] = l[i]['dejeuner']['gens'];
             $scope.gens_par_diner[i] = l[i]['diner']['gens'];
         };
+        $scope.updateListe();
     };
 
     getAll = function() {
@@ -292,6 +293,7 @@ function ListeCtrl ($scope, $http, $mdDialog) {
             controller: LoadCtrl,
             scope: $scope,
             templateUrl: 'loadtemplate.html',
+            preserveScope: true,
             locals: {load_liste: $scope.load_liste},
             clickOutsideToClose: true
         });
@@ -299,9 +301,9 @@ function ListeCtrl ($scope, $http, $mdDialog) {
 };
 
 function LoadCtrl ($scope, $mdDialog, $http){
-    $scope.hide = function() {$mdDialog.hide();};
-    $scope.cancel = function() {$mdDialog.cancel();};
-    $scope.answer = function(answer) {
+    $scope.loadhide = function() {$mdDialog.hide();};
+    $scope.loadcancel = function() {$mdDialog.cancel();};
+    $scope.loadanswer = function(answer) {
         fetch_recette($scope.recette_select);
         $mdDialog.hide(answer);
     };
@@ -311,7 +313,7 @@ function LoadCtrl ($scope, $mdDialog, $http){
             url: "/get?date="+r,
         }).then(
         function(response){
-            $scope.loadAll(response.data);
+            $scope.loadAll(response.data, r);
         },
         function(response){
             console.log('liste load fail');
