@@ -1,8 +1,8 @@
 <md-dialog aria-label="Selection">
     <md-dialog-content>
         <div class="md-dialog-content">
-            <h2>Select a recette</h2>
-            <md-select ng-model="recette_select">
+            <h2>Selectionner une liste de courses</h2>
+            <md-select ng-model="liste_select">
                 <md-option ng-repeat="n in load_liste" ng-value="n" >{{n}}</md-option>
             </md-select>
         </div>
@@ -12,7 +12,7 @@
             Cancel
         </md-button>
         <md-button md-autofocus ng-click="loadanswer()">
-            Load
+            Charger la liste
         </md-button>
     </md-dialog-actions>
 </md-dialog>

@@ -15,37 +15,50 @@ end
 
 get '/get-stored-listes' do
     content_type :json
-    j = Dir.glob(File.join($recettes_dir,"*")).map{|x| File.basename(x)[0..-6]}
-    return j.to_json
+    liste = []
+    Dir.glob(File.join($recettes_dir,"*.json")).each do |j|
+        jj = JSON.parse(File.read(j))
+        liste << {'name' => jj["name"], 'date' => jj["date"]}
+    end
+    return liste.to_json
 end
 
 get '/get-stored-liste' do
     content_type :json
     if params['name']
+        n,d = params['name'].split(" - ")
         # TODO verif
-        path = File.join($recettes_dir, params['name']+".json")
+        path = File.join($recettes_dir, File.basename("#{d}-#{n}.json"))
         if File.exist?(path)
-            j = File.read(File.join($recettes_dir, params['date']+".json"))
+            j = File.read(path)
             return j
         else
-            status 404
+            $stderr.puts "Can't find liste '#{path}'"
         end
     end
+    status 404
     return nil
 end
 
 def save(data)
     json = JSON.parse(data)
     nom = json["name"]
-    recettes = json["recettes"]
-    path = File.join($recettes_dir, nom+".json")
-    if File.exist?(path)
-        return "File exists"
+    if nom =~ /[a-z0-9 ]+/i
+        recettes = json["recettes"]
+        date = Time.now().strftime("%Y-%m-%dT%H-%M-%S")
+        json["date"] = date
+        path = File.join($recettes_dir,"#{date}-#{nom}.json")
+        if File.exist?(path)
+            status 500
+            return "File exists"
+        end
+        File.open(path, "w") do |f|
+            f.write json.to_json 
+        end
+        return "done"
+    else
+        status 500
     end
-    File.open(path, "w") do |f|
-        f.write recettes.to_json
-    end
-    nil
 end
 
 post '/save' do

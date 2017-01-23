@@ -30,11 +30,12 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
     var liste_json=[];
 
     $scope.loadStoredList = function(l, name) {
-        for (var i = 0 ; i < l.length; i++) {
-            $scope.recette_dejeuner_par_jour[i] = l[i]['dejeuner']['recette'];
-            $scope.recette_diner_par_jour[i] = l[i]['diner']['recette'];
-            $scope.gens_par_dejeuner[i] = l[i]['dejeuner']['gens'];
-            $scope.gens_par_diner[i] = l[i]['diner']['gens'];
+        var rr = l['recettes'];
+        for (var i = 0 ; i < rr.length; i++) {
+            $scope.recette_dejeuner_par_jour[i] = rr[i]['dejeuner']['recette'];
+            $scope.recette_diner_par_jour[i] = rr[i]['diner']['recette'];
+            $scope.gens_par_dejeuner[i] = rr[i]['dejeuner']['gens'];
+            $scope.gens_par_diner[i] = rr[i]['diner']['gens'];
         };
         $scope.updateListe();
     };
@@ -181,23 +182,18 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
     );
     };
 	$scope.showPromptSave = function(ev) {
-        var now = new Date();
-        var now_string = now.getFullYear()+""+(now.getMonth()+1)+""+(now.getDay()+1)+"-"+now.getHours()+""+now.getMinutes()+""+now.getSeconds();
         var confirm = $mdDialog.prompt()
-        .title('Select a name for your liste')
-        .textContent('Bowser is a common name.')
+        .title('Renseigner un nom pour la liste')
+        .textContent('(ie: \'Kinzout 2019\')')
         .placeholder('Liste')
         .ariaLabel('Liste')
-        .initialValue(now_string)
         .targetEvent(ev)
-        .ok('Okay!')
+        .ok('Done!')
         .cancel('Cancel');
 
         $mdDialog.show(confirm).then(function(result) {
-            // okay
-            var res = save(result);
-            $scope.status = res;
-        });
+           save(result);
+        }, function() {console.log("Echec de save la liste")});
     };
 
 	$scope.showPromptLoad = function($event) {
@@ -219,7 +215,9 @@ function LoadCtrl ($scope, $mdDialog, $http){
     $scope.loadhide = function() {$mdDialog.hide();};
     $scope.loadcancel = function() {$mdDialog.cancel();};
     $scope.loadanswer = function(answer) {
-        fetch_stored_liste($scope.recette_select);
+        var liste_name = "";
+        liste_name = $scope.liste_select;
+        fetch_stored_liste(liste_name);
         $mdDialog.hide(answer);
     };
     function fetch_stored_liste(r) {
@@ -241,7 +239,12 @@ function LoadCtrl ($scope, $mdDialog, $http){
             url: "/get-stored-listes",
         }).then(
         function(response){
-            $scope.load_liste = response.data;
+            var data = response.data;
+            $scope.load_liste=[];
+            for (var i =0; i< data.length; i++) {
+                $scope.load_liste.push(data[i]['name']+" - "+data[i]['date']);
+            };
+            $scope.liste_select = $scope.load_liste[0];
         },
         function(response){
             console.log('liste load fail');
