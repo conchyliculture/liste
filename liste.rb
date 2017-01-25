@@ -5,7 +5,7 @@ require "json"
 require 'sinatra'
 require "pp"
 
-$recettes_dir = File.join(File.dirname(__FILE__), "recettes")
+$recettes_dir = File.join(File.dirname(__FILE__), "stored_recettes")
 
 before do
     if not File.exists?($recettes_dir)
@@ -66,7 +66,7 @@ post '/save' do
 end
 
 get '/' do
-    File.read("public/index.html")
+    File.read(File.join(File.dirname(__FILE__),"public/index.html"))
 end
 
 
