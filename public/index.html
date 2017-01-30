@@ -47,6 +47,19 @@
                     <md-card-title><span class="md-headline"> Jour {{$index+1}} </span></md-card-title>
                     <md-card-content>
                         <div layout="column" >
+                            <span class="md-subhead">Matin</span>
+                            <div layout="row" >
+                                <md-select ng-model="gens_par_matin[$index]" ng-change="updateListe()" placeholder="Nb gens">
+                                    <md-option ng-repeat="nn in gens_tab" ng-value="nn">{{nn}}</md-option>
+                                </md-select>
+                                <md-input-container>
+                                <md-select ng-model="recette_matin_par_jour[$index]" ng-change="updateListe()" placeholder="Recette matin">
+                                    <md-option ng-value="{{null}}">---</md-option>
+                                    <md-option ng-repeat="recette in recettes_matin" ng-value="recette.name">{{recette.name}}</md-option>
+                                </md-select>
+                                </md-input-container>
+                                <md-input-container>
+                            </div>
                             <span class="md-subhead">Dejeuner</span>
                             <div layout="row" >
                                 <md-select ng-model="gens_par_dejeuner[$index]" ng-change="updateListe()" placeholder="Nb gens">

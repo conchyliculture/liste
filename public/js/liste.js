@@ -1,8 +1,12 @@
 var listeApp = angular.module('listeApp', ['ngSanitize','ngMaterial'])
                         .service('recettesService', function($http){
-                            this.getJsonData = function() {
+                            this.getRecettesJsonData = function() {
                                 var res = {};
                                 return $http({method: "GET", url: "/recettes.json"});
+                            };
+                            this.getRecettesMatinJsonData = function() {
+                                var res = {};
+                                return $http({method: "GET", url: "/matin.json"});
                             }
                         })
                         .controller('ListeCtrl', ListeCtrl)
@@ -16,12 +20,15 @@ range = function(max) {
 };
 
 function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
-    recettesService.getJsonData().then(function (r) { $scope.recettes = r.data['recettes']});
+    recettesService.getRecettesJsonData().then(function (r) { $scope.recettes = r.data['recettes']});
+    recettesService.getRecettesMatinJsonData().then(function (r) { $scope.recettes_matin = r.data['recettes']});
     $scope.nb_jours = "5"; // srsly!
     $scope.nb_gens = "10"; // srsly!
     $scope.jours_tab = range(20);
     $scope.gens_tab = range(25);
 
+    $scope.gens_par_matin = new Array( parseInt($scope.nb_jours)).fill($scope.nb_gens);
+    $scope.recette_matin_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
     $scope.gens_par_diner = new Array( parseInt($scope.nb_jours)).fill($scope.nb_gens);
     $scope.recette_diner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
     $scope.gens_par_dejeuner = new Array( parseInt($scope.nb_jours)).fill($scope.nb_gens);
@@ -32,9 +39,11 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
     $scope.loadStoredList = function(l, name) {
         var rr = l['recettes'];
         for (var i = 0 ; i < rr.length; i++) {
+            $scope.recette_matin_par_jour[i] = rr[i]['matin']['recette'];
+            $scope.gens_par_matin[i] = rr[i]['matin']['gens'];
             $scope.recette_dejeuner_par_jour[i] = rr[i]['dejeuner']['recette'];
-            $scope.recette_diner_par_jour[i] = rr[i]['diner']['recette'];
             $scope.gens_par_dejeuner[i] = rr[i]['dejeuner']['gens'];
+            $scope.recette_diner_par_jour[i] = rr[i]['diner']['recette'];
             $scope.gens_par_diner[i] = rr[i]['diner']['gens'];
         };
         $scope.updateListe();
@@ -43,12 +52,15 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
     getAll = function() {
         var _recettes = [];
         for (var i = 0; i < $scope.nb_jours; i++) {
-            var jour = {'diner': {'recette': null, 'gens': 0}, 'dejeuner': {'recette': null, 'gens': 0}};
+            var jour = {'matin': {'recette':null, 'gens':0 }, 'diner': {'recette': null, 'gens': 0}, 'dejeuner': {'recette': null, 'gens': 0}};
+            recette_matin = $scope.recette_matin_par_jour[i];
             recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
             recette_diner = $scope.recette_diner_par_jour[i];
+            jour['matin']['recette'] = recette_matin;
+            jour['matin']['gens'] = parseInt($scope.gens_par_matin[i]);
             jour['dejeuner']['recette'] = recette_dejeuner;
-            jour['diner']['recette'] = recette_diner;
             jour['dejeuner']['gens'] = parseInt($scope.gens_par_dejeuner[i]);
+            jour['diner']['recette'] = recette_diner;
             jour['diner']['gens'] = parseInt($scope.gens_par_diner[i]);
 
             _recettes.push(jour);
@@ -59,6 +71,16 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
     $scope.updateListe = function() {
         liste_json=[];
         for (var i = 0; i < $scope.nb_jours; i++) {
+            recette_matin = $scope.recette_matin_par_jour[i];
+            g = parseInt($scope.gens_par_matin[i]);
+            if (recette_matin != "") {
+                var ings = getIngredientsMatin(recette_matin);
+                for (ing in ings) {
+                    ingredient = ings[ing];
+                    addToListe(liste_json, ingredient, g);
+                }
+            }
+
             recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
             g = parseInt($scope.gens_par_dejeuner[i]);
             if (recette_dejeuner != "") {
@@ -68,6 +90,7 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
                     addToListe(liste_json, ingredient, g);
                 }
             }
+
             recette_diner = $scope.recette_diner_par_jour[i];
             g = parseInt($scope.gens_par_diner[i]);
             if (recette_diner != "") {
@@ -101,14 +124,26 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
         $scope.jours = new Array(+$scope.nb_jours);
         var n = $scope.nb_gens_defaut;
         if (typeof n === "string") {
-            $scope.gens_par_diner = new Array(parseInt($scope.nb_jours)).fill(n);
-            $scope.recette_diner_par_jour = new Array( $scope.nb_jours);
+            var nb = parseInt($scope.nb_jours);
+            $scope.gens_par_matin = new Array(nb).fill(n);
+            $scope.gens_par_dejeuner = new Array(nb).fill(n);
+            $scope.gens_par_diner = new Array(nb).fill(n);
+            $scope.recette_matin_par_jour = new Array($scope.nb_jours);
+            $scope.recette_diner_par_jour = new Array($scope.nb_jours);
             $scope.recette_dejeuner_par_jour = new Array( $scope.nb_jours);
         }
 
     }
     $scope.joursChanged();
 
+    getIngredientsMatin = function(r) {
+        for (a in $scope.recettes_matin) {
+            recette = $scope.recettes_matin[a];
+            if (recette.name == r) {
+                return recette.ingredients;
+            }
+        }
+    }
 
     getIngredients = function(r) {
         for (a in $scope.recettes) {
