@@ -1,0 +1,22 @@
+{"recettes": [
+    {"name":"Matin Ski",
+       "ingredients": [
+            { "name": "Confitures", "qty":15, "unit":"g" },
+            { "name": "Lait", "qty":0.1, "unit":"L", "_comment": "pas bcp de gens en prennent" },
+            { "name": "Nutella", "qty":15, "unit":"g" },
+            { "name": "Jus de fruit", "qty": 0.2, "unit":"L" },
+            { "name": "Café moulu (1 à 1.5 paquet par jour)", "unit":"L" }
+        ]
+    },
+    {"name":"Matin Kinzout",
+       "ingredients": [
+            { "name": "Nutella", "qty":15, "unit":"g" },
+            { "name": "Quatre Quart / Barre bretonne: ~1 barre par jour", "unit":"L" },
+            { "name": "Jus de fruit", "qty": 0.2, "unit":"L" },
+            { "name": "Coca Zéro (1 canette par pouik par matin)", "unit":"canettes" },
+            { "name": "Café moulu (1 à 1.5 paquet par jour)", "unit":"L" }
+        ]
+    }
+]
+}
+
