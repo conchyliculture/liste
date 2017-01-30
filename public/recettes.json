@@ -1,4 +1,20 @@
 {"recettes": [
+    {"name":"Blanquette de veau",
+        "ingredients":  [
+            { "name": "Veau", "qty": 120, "unit":"g" },
+            { "name": "Oignons", "qty": 40, "unit":"g" },
+            { "name": "Vin blanc genre muscadet", "qty": 5, "unit":"cL" },
+            { "name": "Carottes", "qty": 30, "unit":"g" },
+            { "name": "Blanc de poireau", "qty": 0.5, "unit":"" },
+            { "name": "Bouquet Garni", "unit":"g" },
+            { "name": "Champignons", "qty": 120, "unit":"g" },
+            { "name": "Riz", "qty": 100, "unit":"g" },
+            { "name": "Beurre", "qty": 30, "unit":"g" },
+            { "name": "Farine", "qty": 15, "unit":"g" },
+            { "name": "Sel", "unit":"g" },
+            { "name": "Poivre", "unit":"g" }
+        ]
+    },
     {"name":"Carbo",
         "ingredients":  [
             { "name": "Spaghettis (De Cecco ou Barilla)", "qty": 120, "unit":"g" },
@@ -53,11 +69,12 @@
         ]
     },
     {   "name":"Poulet champi crème",
-        "ingredients": [ { "name": "Riz", "qty": 100, "unit":"g" },
+        "ingredients": [
+            { "name": "Riz", "qty": 100, "unit":"g" },
             { "name": "Râpé", "qty": 50, "unit":"g" },
             { "name": "Filet de poulet", "qty": 1, "unit":"" },
             { "name": "Vin blanc de cuisine", "qty": 5, "unit":"cL" },
-            { "name": "Oignons", "qty": 50, "unit":"g" },
+            { "name": "Oignons", "qty": 50, "unit":"g" , "_comment":"VERIFY"},
             { "name": "Crème Fraiche", "qty": 5, "unit":"cL" },
             { "name": "Champignons", "qty": 150, "unit":"g" },
             { "name": "Sel", "unit":"g" },
@@ -76,6 +93,15 @@
             { "name": "Coppa à la coupe", "qty": 1, "unit":"t" },
             { "name": "Viande des grisons à la coupe", "qty": 50, "unit":"g" },
             { "name": "Poivre", "unit":"g" }
+        ]
+    },
+    {   "name":"Réveillon",
+        "ingredients": [
+            { "name": "Toasts / Pain de mie", "qty": 5, "unit":"tranches" },
+            { "name": "Saumon fumé (CHER)", "qty": 60, "unit":"g", "_comment":"tranches?" },
+            { "name": "Oeufs de poison", "qty": 20, "unit":"g" },
+            { "name": "Tapenade / Hummus", "qty": 20, "unit":"g" },
+            { "name": "Foie Gras entier", "qty": 100, "unit":"g" }
         ]
     },
     {   "name":"Tartiflette",
