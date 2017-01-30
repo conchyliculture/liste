@@ -183,7 +183,11 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
                 }
                 break;
         }
-        return Math.round(nb)+""+unit;
+        if (nb > 10) {
+            return Math.round(nb)+""+unit;
+       } else {
+           return nb+unit;
+       }
     }
 
     addToListe = function(liste, ing, nb) {
