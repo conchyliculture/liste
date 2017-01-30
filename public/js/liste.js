@@ -20,8 +20,24 @@ range = function(max) {
 };
 
 function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
-    recettesService.getRecettesJsonData().then(function (r) { $scope.recettes = r.data['recettes'].sort(function(a,b){return ((a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0))})});
-    recettesService.getRecettesMatinJsonData().then(function (r) { $scope.recettes_matin = r.data['recettes'].sort(function(a,b){return ((a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0))})});
+    recettesService.getRecettesJsonData().then(
+        function (r) {
+            $scope.recettes = r.data['recettes'].sort(
+                function(a,b){
+                    return ((a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0));
+                }
+            )
+        }
+    );
+    recettesService.getRecettesMatinJsonData().then(
+        function (r) {
+            $scope.recettes_matin = r.data['recettes'].sort(
+                function(a,b){
+                    return ((a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0))
+                }
+            )
+        }
+    );
     $scope.nb_jours = "5"; // srsly!
     $scope.nb_gens = "10"; // srsly!
     $scope.jours_tab = range(20);
