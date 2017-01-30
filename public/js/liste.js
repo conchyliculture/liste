@@ -101,6 +101,17 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
                 }
             }
         };
+
+        for (var i in $scope.extras) {
+            var liste_extras_json = [];
+            var e = $scope.extras[i];
+            if (e.enabled) {
+                if (typeof e.calc_qty !== "undefined") {
+                    e.qty = e.calc_qty();
+                }
+                addToListe(liste_json, e, 1);
+            }
+        };
         changeListeText(liste_json);
     };
 
@@ -155,6 +166,7 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
     }
 
     arrondi = function(nb, unit) {
+        if (nb == null){return unit;}
         if (unit == null){return '';}
         var n = 0;
         switch(unit) {
@@ -186,7 +198,6 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
             }
         }
         if (!found) {
-            //need to dupe, wtf
             var item = {};
             item.name = ing.name;
             if ('qty' in ing) {
@@ -244,6 +255,46 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
             clickOutsideToClose: true
         });
     };
+    $scope.extras = [
+        {"name": "PQ", enabled:false,
+            calc_qty:function() {return parseInt($scope.nb_jours) * 6 },
+            unit:" rouleau (6*nb jours)"},
+        {"name": "Saucisson", enabled:false,
+            calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
+            unit:" saucissons (3*nb jours)"},
+        {"name": "Gateau apéro", enabled:false,
+            calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
+            unit:" saucissons (3*nb jours)"},
+        {"name": "Gateau apéro", enabled:false,
+            calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
+            unit:" Paquets divers (chips, bretzels, etc) (3*nb jours)"},
+        {"name": "Sacs poubelle", enabled:false,
+            calc_qty:function() {return Math.round(parseInt($scope.nb_jours) * 0.3) },
+            unit:" rouleaux (3 sacs * nb jours)"},
+        {"name": "Torchons", enabled:false,
+            calc_qty:function() {return 2 },
+            unit:" "},
+        {"name": "Produit vaisselle", enabled:false,
+            calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) / 5) },
+            unit:" bidon (1 pour 5 jours)"},
+        {"name": "Pastille lave-vaisselle", enabled:false,
+            calc_qty:function() {return parseInt($scope.nb_jours) * 2 },
+            unit:" (2*nb jours)"},
+        {"name": "Fruits divers", enabled:false,
+            calc_qty:function() {return parseInt($scope.nb_jours) / 2 },
+            unit:" kg (0.5*nb jours)"},
+        {"name": "Yaourts", enabled:false,
+    // TODO avoir une moyenne de gens par jour
+            calc_qty:function() {return parseInt($scope.nb_jours)  },
+            unit:" * nb_gens == nb pots"},
+        {"name": "Crème de marron", enabled:false,
+        // TODO avoir une moyenne de gens par jour
+            calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
+            unit:" Plein (1 plein par jour)"},
+        {"name": "Capitaaaaaine", enabled: false,
+            calc_qty:function() {return parseInt($scope.nb_jours) / 2  },
+            unit:" bouteilles (1 pour 2 jours)"},
+    ];
 };
 
 function LoadCtrl ($scope, $mdDialog, $http){

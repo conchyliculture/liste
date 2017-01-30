@@ -101,6 +101,14 @@
             </div>
         </md-list>
     </div>
+    <md-card flex layout-align="start start">
+    <md-card-header layout-align=""><span class="md-headline">Extras</span></md-card-header>
+    <md-card-content>
+        <md-list layout="column">
+            <md-checkbox ng-repeat="e in extras" ng-model="e.enabled" ng-change="updateListe()">{{e.name}}</md-checkbox>
+        </md-list>
+    </md-card-content>
+    </md-card>
 </div>
 
 </body>
