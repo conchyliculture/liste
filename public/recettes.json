@@ -117,6 +117,25 @@
             { "name": "Poivre", "unit":"g" },
             { "name": "Beurre", "unit":"g" }
         ]
+    },
+    {   "name":"Lasagnes",
+        "ingredients":  [
+            { "name": "Lasagnes", "qty": 50, "unit":"g" },
+            { "name": "Tomates concassées", "qty": 400, "unit":"g" },
+            { "name": "Oignons", "qty": 0.3, "unit":"oignons" },
+            { "name": "Carotte", "qty": 0.3, "unit":"carotte" },
+            { "name": "Pancetta/Jambon cru", "qty": 20, "unit":"g" },
+            { "name": "Boeuf haché", "qty": 40, "unit":"g" },
+            { "name": "Porc haché", "qty": 40, "unit":"g" },
+            { "name": "Huile d'olive", "qty": 2, "unit":"cL" },
+            { "name": "Vin blanc de cuisine", "qty": 3, "unit":"cL" },
+            { "name": "Parmesan", "qty": 20, "unit":"g" },
+            { "name": "Bouillon", "unit":"g" },
+            { "name": "Sel", "unit":"g" },
+            { "name": "Poivre", "unit":"g" },
+            { "name": "Thym", "unit":"g" },
+            { "name": "Romarin", "unit":"g" }
+        ]
     }
 ]
 }
