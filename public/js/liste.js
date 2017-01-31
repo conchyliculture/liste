@@ -68,6 +68,18 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             $scope.recette_diner_par_jour[i] = jour['diner']['recette'];
             $scope.gens_par_diner[i] = jour['diner']['gens'];
         };
+        var _extras = json_from_http['liste']['extras'];
+        var setExtraState = function(extra_name, state) {
+            for (var i=0; i < $scope.extras.length; i++) {
+                var e = $scope.extras[i];
+                if (e.name == extra_name) {e.enabled = state}
+            }
+        };
+        for (var i = 0; i < _extras.length; i++) {
+            var extra = _extras[i];
+            console.log(extra);
+            setExtraState(extra.name, extra.enabled);
+        };
         $scope.updateListe();
     };
 
@@ -86,6 +98,10 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             jour['diner']['gens'] = parseInt($scope.gens_par_diner[i]);
 
             json_result['jours'].push(jour);
+        }
+        for (var i in $scope.extras) {
+            var extra = $scope.extras[i];
+            json_result['extras'].push(extra);
         }
         return json_result;
     };
