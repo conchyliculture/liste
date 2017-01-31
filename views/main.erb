@@ -20,18 +20,26 @@
     <h1><span style="margin-left:2%">El toolos de la faisaciòn dela listà dell courses</span></h1>
 </md-toolbar>
 
+<% if not @errormsg.empty? %>
+    <md-toolbar class="md-accent">
+        <%= @errormsg %>
+    </md-toolbar>
+<% end %>
+
 <div layout="row" flex>
     <md-card flex="30" layout-align="start start">
         <md-card-header style="width: 95%">
             <div layout="row" style="width: 100%">
                 <h2 flex="50">Liste</h2>
                 <div layout="row" flex="50" layout-align="end">
+                    <% if @errormsg.empty? %>
                     <md-button class="md-primary md-raised" ng-click="showPromptSave($event)" >
                             Save Liste
                     </md-button>
                     <md-button class="md-primary md-raised" ng-click="showPromptLoad($event)" >
                             Load Liste
                     </md-button>
+                    <% end %>
                 </div>
             </div>
         </md-card-header>

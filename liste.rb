@@ -1,16 +1,14 @@
 #!/usr/bin/ruby
 # encoding: utf-8
 
+require "erb"
 require "json"
-require 'sinatra'
-require "pp"
+require "sinatra"
 
-$recettes_dir = File.join(File.dirname(__FILE__), "stored_recettes")
+$recettes_dir = File.absolute_path(File.join(File.dirname(__FILE__), "stored_recettes"))
 
 before do
-    if not File.exists?($recettes_dir)
-        Dir.mkdir($recettes_dir)
-    end
+    @errormsg = ""
 end
 
 get '/get-stored-listes' do
@@ -66,7 +64,12 @@ post '/save' do
 end
 
 get '/' do
-    File.read(File.join(File.dirname(__FILE__),"public/index.html"))
+    if not File.exists?($recettes_dir)
+        begin
+            Dir.mkdir($recettes_dir)
+        rescue Errno::EACCES
+            @errormsg = "<h2 class=\"md-toolbar-tools\"><span>Can't create #{$recettes_dir} directory because of permissions issues (access denied), you won't be able to save listes.</span></h2>"
+        end
+    end
+    erb :main
 end
-
-
