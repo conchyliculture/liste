@@ -90,7 +90,7 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
             recette_matin = $scope.recette_matin_par_jour[i];
             g = parseInt($scope.gens_par_matin[i]);
             if (recette_matin != "") {
-                var ings = getIngredientsMatin(recette_matin);
+                var ings = getIngredients(recette_matin, $scope.recettes_matin);
                 for (ing in ings) {
                     ingredient = ings[ing];
                     addToListe(liste_json, ingredient, g);
@@ -100,7 +100,7 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
             recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
             g = parseInt($scope.gens_par_dejeuner[i]);
             if (recette_dejeuner != "") {
-                var ings = getIngredients(recette_dejeuner);
+                var ings = getIngredients(recette_dejeuner, $scope.recettes);
                 for (ing in ings) {
                     ingredient = ings[ing];
                     addToListe(liste_json, ingredient, g);
@@ -110,7 +110,7 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
             recette_diner = $scope.recette_diner_par_jour[i];
             g = parseInt($scope.gens_par_diner[i]);
             if (recette_diner != "") {
-                var ings = getIngredients(recette_diner);
+                var ings = getIngredients(recette_diner, $scope.recettes);
                 for (ing in ings) {
                     ingredient = ings[ing];
                     addToListe(liste_json, ingredient, g);
@@ -159,31 +159,28 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
             $scope.recette_diner_par_jour = new Array($scope.nb_jours);
             $scope.recette_dejeuner_par_jour = new Array( $scope.nb_jours);
         }
-
     }
     $scope.joursChanged();
 
-    getIngredientsMatin = function(r) {
-        for (a in $scope.recettes_matin) {
-            recette = $scope.recettes_matin[a];
-            if (recette.name == r) {
-                return recette.ingredients;
-            }
+    getIngredients = function(recette_name, liste_recettes) {
+        for (a in liste_recettes) {
+            var r = liste_recettes[a];
+            if (r.name == recette_name) { return r.ingredients; }
         }
-    }
-
-    getIngredients = function(r) {
-        for (a in $scope.recettes) {
-            recette = $scope.recettes[a];
-            if (recette.name == r) {
-                return recette.ingredients;
-            }
-        }
-    }
+    };
 
     arrondi = function(nb, unit) {
-        if (nb == null){return unit;}
-        if (unit == null){return '';}
+        if ((typeof nb === "undefined") || (nb == null)){
+            if ((typeof unit === "undefined") || (unit == null)) {
+                return "";
+            } else {
+                return unit;
+            }
+        } else {
+            if ((typeof unit === "undefined") || (unit == null)) {
+                return nb
+            }
+        }
         var n = 0;
         switch(unit) {
             case "g":
