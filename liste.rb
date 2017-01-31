@@ -53,7 +53,7 @@ def save(data)
             return "File exists"
         end
         File.open(path, "w") do |f|
-            f.write json.to_json 
+            f.write JSON.pretty_generate(json)
         end
         return "done"
     else
