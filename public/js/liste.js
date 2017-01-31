@@ -42,11 +42,13 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
 
     // Let's initialize some default values
     var nb_gens_default = "10"; // srsly, we need a string!
+    var liste_courses_json = []; // List of ingredients
 
     $scope.nb_jours = "5"; // srsly, we need a string!
-    $scope.jours_tab = range(20);
-    $scope.gens_tab = range(25);
+    $scope.range_jours_default = range(20);
+    $scope.range_gens_default = range(25);
 
+    // These arrays will hold the nb person per day per meal recipes
     $scope.gens_par_matin = new Array(parseInt($scope.nb_jours)).fill(nb_gens_default);
     $scope.recette_matin_par_jour = new Array(parseInt($scope.nb_jours)).fill("");
     $scope.gens_par_diner = new Array( parseInt($scope.nb_jours)).fill(nb_gens_default);
