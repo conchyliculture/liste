@@ -101,7 +101,8 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         }
         for (var i in $scope.extras) {
             var extra = $scope.extras[i];
-            json_result['extras'].push(extra);
+            var item = {'name': extra.name; 'enabled':extra.enabled};
+            json_result['extras'].push(item);
         }
         return json_result;
     };
