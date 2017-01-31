@@ -56,23 +56,23 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     $scope.gens_par_dejeuner = new Array( parseInt($scope.nb_jours)).fill(nb_gens_default);
     $scope.recette_dejeuner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
 
-    var liste_json=[];
 
-    $scope.loadStoredList = function(l, name) {
-        var rr = l['recettes'];
-        for (var i = 0 ; i < rr.length; i++) {
-            $scope.recette_matin_par_jour[i] = rr[i]['matin']['recette'];
-            $scope.gens_par_matin[i] = rr[i]['matin']['gens'];
-            $scope.recette_dejeuner_par_jour[i] = rr[i]['dejeuner']['recette'];
-            $scope.gens_par_dejeuner[i] = rr[i]['dejeuner']['gens'];
-            $scope.recette_diner_par_jour[i] = rr[i]['diner']['recette'];
-            $scope.gens_par_diner[i] = rr[i]['diner']['gens'];
+    $scope.loadStoredList = function(json_from_http, name) {
+        var jours = json_from_http['liste']['jours'];
+        for (var i = 0 ; i < jours.length; i++) {
+            var jour = jours[i]
+            $scope.recette_matin_par_jour[i] = jour['matin']['recette'];
+            $scope.gens_par_matin[i] = jour['matin']['gens'];
+            $scope.recette_dejeuner_par_jour[i] = jour['dejeuner']['recette'];
+            $scope.gens_par_dejeuner[i] = jour['dejeuner']['gens'];
+            $scope.recette_diner_par_jour[i] = jour['diner']['recette'];
+            $scope.gens_par_diner[i] = jour['diner']['gens'];
         };
         $scope.updateListe();
     };
 
-    getAll = function() {
-        var _recettes = [];
+    generate_saved_liste = function() {
+        var json_result = {'jours':[], 'extras':[]};
         for (var i = 0; i < $scope.nb_jours; i++) {
             var jour = {'matin': {'recette':null, 'gens':0 }, 'diner': {'recette': null, 'gens': 0}, 'dejeuner': {'recette': null, 'gens': 0}};
             recette_matin = $scope.recette_matin_par_jour[i];
@@ -85,21 +85,21 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             jour['diner']['recette'] = recette_diner;
             jour['diner']['gens'] = parseInt($scope.gens_par_diner[i]);
 
-            _recettes.push(jour);
+            json_result['jours'].push(jour);
         }
-        return _recettes;
+        return json_result;
     };
 
     $scope.updateListe = function() {
-        liste_json=[];
+        liste_courses_json = [];
         for (var i = 0; i < $scope.nb_jours; i++) {
-            recette_matin = $scope.recette_matin_par_jour[i];
+            var recette_matin = $scope.recette_matin_par_jour[i];
             g = parseInt($scope.gens_par_matin[i]);
             if (recette_matin != "") {
                 var ings = getIngredients(recette_matin, $scope.recettes_matin);
                 for (ing in ings) {
                     ingredient = ings[ing];
-                    addToListe(liste_json, ingredient, g);
+                    addToListe(liste_courses_json, ingredient, g);
                 }
             }
 
@@ -109,7 +109,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
                 var ings = getIngredients(recette_dejeuner, $scope.recettes);
                 for (ing in ings) {
                     ingredient = ings[ing];
-                    addToListe(liste_json, ingredient, g);
+                    addToListe(liste_courses_json, ingredient, g);
                 }
             }
 
@@ -119,7 +119,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
                 var ings = getIngredients(recette_diner, $scope.recettes);
                 for (ing in ings) {
                     ingredient = ings[ing];
-                    addToListe(liste_json, ingredient, g);
+                    addToListe(liste_courses_json, ingredient, g);
                 }
             }
         };
@@ -131,13 +131,13 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
                 if (typeof e.calc_qty !== "undefined") {
                     e.qty = e.calc_qty();
                 }
-                addToListe(liste_json, e, 1);
+                addToListe(liste_courses_json, e, 1);
             }
         };
-        changeListeText(liste_json);
+        updateHTMLListe(liste_courses_json);
     };
 
-    changeListeText = function(j){
+    updateHTMLListe = function(j){
         h = "<ul>\n";
         for (var i in j) {
             var item = j[i];
@@ -239,7 +239,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         $http({
             method: "POST",
             url: "/save",
-            data:{'name' :name, "recettes": getAll()}
+            data:{'name' :name, "liste": generate_saved_liste()}
         }).then(
        function(response){
           // console.log('success');

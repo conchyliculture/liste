@@ -44,7 +44,7 @@ def save(data)
     json = JSON.parse(data)
     nom = json["name"]
     if nom =~ /[a-z0-9 ]+/i
-        recettes = json["recettes"]
+        liste = json["liste"]
         date = Time.now().strftime("%Y-%m-%dT%H-%M-%S")
         json["date"] = date
         path = File.join($recettes_dir,"#{date}-#{nom}.json")
