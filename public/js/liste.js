@@ -1,26 +1,26 @@
-var listeApp = angular.module('listeApp', ['ngSanitize','ngMaterial'])
-                        .service('recettesService', function($http){
-                            this.getRecettesJsonData = function() {
-                                var res = {};
-                                return $http({method: "GET", url: "/recettes.json"});
-                            };
-                            this.getRecettesMatinJsonData = function() {
-                                var res = {};
-                                return $http({method: "GET", url: "/matin.json"});
-                            }
-                        })
-                        .controller('ListeCtrl', ListeCtrl)
-                        .controller('LoadCtrl', LoadCtrl);
-
+var listeApp = angular.module('listeApp', ['ngSanitize','ngMaterial']);
+listeApp.service('recettesService',
+    function($http){
+        this.getRecettesJsonData = function() {
+            return $http({method: "GET", url: "/recettes.json"});
+        };
+        this.getRecettesMatinJsonData = function() {
+            return $http({method: "GET", url: "/matin.json"});
+        };
+});
+listeApp.controller('ListeCtrl', ListeCtrl);
+listeApp.controller('LoadCtrl', LoadCtrl);
 
 range = function(max) {
+    // No, JS has no such function. Thanks Obama.
     var res = [];
     for (var i=1; i<=max; i++) {res.push(i)};
     return res;
 };
 
-function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
+function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     recettesService.getRecettesJsonData().then(
+        // Calls the service to populate $scope.recettes
         function (r) {
             $scope.recettes = r.data['recettes'].sort(
                 function(a,b){
@@ -30,6 +30,7 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
         }
     );
     recettesService.getRecettesMatinJsonData().then(
+        // Calls the service to populate $scope.recettes_matin
         function (r) {
             $scope.recettes_matin = r.data['recettes'].sort(
                 function(a,b){
@@ -38,16 +39,19 @@ function ListeCtrl ($scope, $http, $mdDialog, recettesService) {
             )
         }
     );
-    $scope.nb_jours = "5"; // srsly!
-    $scope.nb_gens = "10"; // srsly!
+
+    // Let's initialize some default values
+    var nb_gens_default = "10"; // srsly, we need a string!
+
+    $scope.nb_jours = "5"; // srsly, we need a string!
     $scope.jours_tab = range(20);
     $scope.gens_tab = range(25);
 
-    $scope.gens_par_matin = new Array( parseInt($scope.nb_jours)).fill($scope.nb_gens);
-    $scope.recette_matin_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
-    $scope.gens_par_diner = new Array( parseInt($scope.nb_jours)).fill($scope.nb_gens);
+    $scope.gens_par_matin = new Array(parseInt($scope.nb_jours)).fill(nb_gens_default);
+    $scope.recette_matin_par_jour = new Array(parseInt($scope.nb_jours)).fill("");
+    $scope.gens_par_diner = new Array( parseInt($scope.nb_jours)).fill(nb_gens_default);
     $scope.recette_diner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
-    $scope.gens_par_dejeuner = new Array( parseInt($scope.nb_jours)).fill($scope.nb_gens);
+    $scope.gens_par_dejeuner = new Array( parseInt($scope.nb_jours)).fill(nb_gens_default);
     $scope.recette_dejeuner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
 
     var liste_json=[];
@@ -356,5 +360,3 @@ function LoadCtrl ($scope, $mdDialog, $http){
     };
     fetch_recettes();
 };
-
-
