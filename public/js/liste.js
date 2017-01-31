@@ -146,7 +146,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             if (qty_txt == "") {
                 h += "</ul>\n" ;
             } else {
-                h += ": "+arrondi(item.qty, item.unit)+"</ul>\n" ;
+                h += ": "+qty_txt+"</ul>\n" ;
             }
         }
         h+="</ul>";
