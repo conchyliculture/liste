@@ -216,7 +216,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     $scope.updateListe = function() {
         // Re-builds the internal liste de course
         liste_courses_json = [];
-        for (var i in $scope.nb_jours) {
+        for (var i=0; i< $scope.nb_jours; i++) {
             var recette_matin = $scope.recette_matin_par_jour[i];
             var gens_matin = parseInt($scope.gens_par_matin[i]);
             if (recette_matin != "") {
@@ -338,7 +338,6 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             clickOutsideToClose: true
         });
     };
-    $scope.updateListe();
 
 };
 
