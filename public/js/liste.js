@@ -89,7 +89,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     ];
 
     // These arrays will hold the nb person per day per meal recipes
-    $scope.gens_par_matin = new Array(parseInt($scope.nb_jours)).fill(nb_gens_default);
+    $scope.gens_par_matin = new Array(parseInt($scope.nb_jours)).fill(parseInt(nb_gens_default));
     $scope.recette_matin_par_jour = new Array(parseInt($scope.nb_jours)).fill("");
     $scope.gens_par_diner = new Array( parseInt($scope.nb_jours)).fill(nb_gens_default);
     $scope.recette_diner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
@@ -183,7 +183,6 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         };
         for (var i = 0; i < _extras.length; i++) {
             var extra = _extras[i];
-            console.log(extra);
             setExtraState(extra.name, extra.enabled);
         };
         $scope.updateListe();
@@ -280,15 +279,15 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
 
     $scope.joursChanged = function() {
         // Update number of days
-        $scope.jours = new Array(+$scope.nb_jours);
+        $scope.range_jours = new Array(+$scope.nb_jours);
         var n = $scope.nb_gens_defaut;
         var nb = parseInt($scope.nb_jours);
-        $scope.gens_par_matin = new Array(nb).fill(n);
-        $scope.gens_par_dejeuner = new Array(nb).fill(n);
-        $scope.gens_par_diner = new Array(nb).fill(n);
-        $scope.recette_matin_par_jour = new Array($scope.nb_jours);
-        $scope.recette_diner_par_jour = new Array($scope.nb_jours);
-        $scope.recette_dejeuner_par_jour = new Array( $scope.nb_jours);
+//        $scope.gens_par_matin = new Array(nb).fill(n);
+//        $scope.gens_par_dejeuner = new Array(nb).fill(n);
+//        $scope.gens_par_diner = new Array(nb).fill(n);
+//        $scope.recette_matin_par_jour = new Array($scope.nb_jours);
+//        $scope.recette_diner_par_jour = new Array($scope.nb_jours);
+//        $scope.recette_dejeuner_par_jour = new Array( $scope.nb_jours);
     }
 
     // Needed, or we don't have the initial default number of days displayed
@@ -339,6 +338,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             clickOutsideToClose: true
         });
     };
+    $scope.updateListe();
 
 };
 
