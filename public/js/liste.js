@@ -233,7 +233,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
                 var ings = getIngredients(recette_dejeuner, $scope.recettes);
                 for (ing in ings) {
                     ingredient = ings[ing];
-                    addToListe(liste_courses_json, ingredient, g);
+                    addToListe(liste_courses_json, ingredient, gens_dejeuner);
                 }
             };
 
