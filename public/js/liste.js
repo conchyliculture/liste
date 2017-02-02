@@ -46,7 +46,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     var liste_courses_json = []; // List of ingredients
 
     $scope.nb_jours = 5;
-    $scope.range_jours = new Array(+$scope.nb_jours);
+    $scope.range_jours = new Array($scope.nb_jours);
     $scope.range_jours_default = range(20);
     $scope.range_gens_default = range(25);
 
@@ -279,19 +279,8 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
 
     $scope.joursChanged = function() {
         // Update number of days
-        $scope.range_jours = new Array(+$scope.nb_jours);
-        var n = $scope.nb_gens_defaut;
-        var nb = parseInt($scope.nb_jours);
-//        $scope.gens_par_matin = new Array(nb).fill(n);
-//        $scope.gens_par_dejeuner = new Array(nb).fill(n);
-//        $scope.gens_par_diner = new Array(nb).fill(n);
-//        $scope.recette_matin_par_jour = new Array($scope.nb_jours);
-//        $scope.recette_diner_par_jour = new Array($scope.nb_jours);
-//        $scope.recette_dejeuner_par_jour = new Array( $scope.nb_jours);
+        $scope.range_jours = new Array($scope.nb_jours);
     }
-
-    // Needed, or we don't have the initial default number of days displayed
-    $scope.joursChanged();
 
     save = function(name) {
         $http({
