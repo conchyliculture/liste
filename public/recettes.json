@@ -122,8 +122,8 @@
         "ingredients":  [
             { "name": "Lasagnes", "qty": 50, "unit":"g" },
             { "name": "Tomates concassées", "qty": 400, "unit":"g" },
-            { "name": "Oignons", "qty": 0.3, "unit":"oignons" },
-            { "name": "Carotte", "qty": 0.3, "unit":"carotte" },
+            { "name": "Oignons", "qty": 20, "unit":"g" },
+            { "name": "Carotte", "qty": 20, "unit":"g" },
             { "name": "Pancetta/Jambon cru", "qty": 20, "unit":"g" },
             { "name": "Boeuf haché", "qty": 40, "unit":"g" },
             { "name": "Porc haché", "qty": 40, "unit":"g" },
