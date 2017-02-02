@@ -40,6 +40,16 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         }
     );
 
+    // Let's initialize some default values
+    // TODO Make that an int
+    var nb_gens_default = "10"; // srsly, we need a string!
+    var liste_courses_json = []; // List of ingredients
+
+    $scope.nb_jours = 5;
+    $scope.range_jours = new Array(+$scope.nb_jours);
+    $scope.range_jours_default = range(20);
+    $scope.range_gens_default = range(25);
+
     $scope.extras = [
         {"name": "Capitaaaaaine", enabled: false,
             calc_qty:function() {return parseInt($scope.nb_jours) / 2  },
@@ -77,14 +87,6 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             calc_qty:function() {return parseInt($scope.nb_jours)  },
             unit:" * nb_gens == nb pots"},
     ];
-
-    // Let's initialize some default values
-    var nb_gens_default = "10"; // srsly, we need a string!
-    var liste_courses_json = []; // List of ingredients
-
-    $scope.nb_jours = "5"; // srsly, we need a string!
-    $scope.range_jours_default = range(20);
-    $scope.range_gens_default = range(25);
 
     // These arrays will hold the nb person per day per meal recipes
     $scope.gens_par_matin = new Array(parseInt($scope.nb_jours)).fill(nb_gens_default);

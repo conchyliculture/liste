@@ -60,7 +60,7 @@
             </md-card-content>
         </md-card>
         <md-list style="padding:0px">
-            <div ng-repeat="jour in jours track by $index" md-ink-ripple="false" md-ni-ink="true">
+            <div ng-repeat="jour in range_jours track by $index" md-ink-ripple="false" md-ni-ink="true">
                 <md-card>
                     <md-card-title><span class="md-headline"> Jour {{$index+1}} </span></md-card-title>
                     <md-card-content>
