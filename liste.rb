@@ -7,8 +7,33 @@ require "sinatra"
 
 $recettes_dir = File.absolute_path(File.join(File.dirname(__FILE__), "stored_recettes"))
 
+def add_error(msg)
+    @error_list.push(msg)
+    @errormsg = "<h2 class=\"md-toolbar-tools\">"
+    @error_list.each do |m|
+        @errormsg << "<span>#{m}</span>"
+    end
+    @errormsg << "</h2>"
+end
+
 before do
+    @error_list = []
     @errormsg = ""
+    recettes_json = [
+        File.absolute_path(File.join(File.dirname(__FILE__),"public","recettes.json")),
+        File.absolute_path(File.join(File.dirname(__FILE__),"public","matin.json"))
+    ]
+    recettes_json.each do |path|
+        begin
+            validate_recette_json(path)
+        rescue JSON::ParserError => e
+            add_error("Error parsing JSON file #{path}")
+        end
+    end
+end
+
+def validate_recette_json(path)
+    j = JSON.parse(File.read(path))
 end
 
 get '/get-stored-listes' do
@@ -68,7 +93,7 @@ get '/' do
         begin
             Dir.mkdir($recettes_dir)
         rescue Errno::EACCES
-            @errormsg = "<h2 class=\"md-toolbar-tools\"><span>Can't create #{$recettes_dir} directory because of permissions issues (access denied), you won't be able to save listes.</span></h2>"
+            add_error("Can't create #{$recettes_dir} directory because of permissions issues (access denied), you won't be able to save listes.")
         end
     end
     erb :main
