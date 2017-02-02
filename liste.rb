@@ -28,12 +28,35 @@ before do
             validate_recette_json(path)
         rescue JSON::ParserError => e
             add_error("Error parsing JSON file #{path}")
+        rescue RuntimeError =>e
+            add_error("Error parsing JSON file #{path}: #{e.message}")
         end
     end
 end
 
 def validate_recette_json(path)
     j = JSON.parse(File.read(path))
+    unless j.has_key?("recettes")
+        raise "missing top key 'recettes'"
+    end
+    raise "No recette" if j['recettes'].size == 0
+    j['recettes'].each do |r|
+        raise "missing key 'name' for a recette" unless r['name']
+        raise "recette name empty" if r["name"].empty?
+        raise "missing key 'ingredients' for a recette" unless r['ingredients']
+        raise "recette ingredients empty" if r["ingredients"].empty?
+        r["ingredients"].each do |ing|
+            raise "missing key 'name' for ingredient in recette #{r['name']}" unless ing['name']
+            raise "ingredient name empty in recette #{r['name']}" if ing["name"].empty?
+            if ing.has_key?('qty')
+                raise "ingredient #{ing['name']} in recette #{r['name']} is not a number but #{ing['qty'].class}" unless (ing['qty'].class == Float or ing['qty'].class == Fixnum)
+            end
+            if ing.has_key?('unit')
+                raise "bad unit '#{ing["unit"]}' for ingredient #{ing['name']} in recette #{r['name']}" unless ["g", "cL", "L", " tranche(s)"].include?(ing["unit"])
+            end
+        end
+
+    end
 end
 
 get '/get-stored-listes' do
