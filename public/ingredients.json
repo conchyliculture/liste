@@ -32,8 +32,8 @@
     "unit": ""
   },
   "Café moulu": {
-      "rayon": "Matin",
-      "unit":"(1 à 1.5 paquet par jour)"
+    "rayon": "Matin",
+    "unit":"(1 à 1.5 paquet par jour)"
   },
   "Carottes": {
     "rayon": "FLEG",
@@ -44,7 +44,7 @@
     "unit": ""
   },
   "Coca Zéro": {
-    "rayon": "Matin",
+    "rayon": "Jus",
     "unit": "1 canette par matin et par pouik"
   },
   "Confitures": {
