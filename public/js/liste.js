@@ -7,6 +7,9 @@ listeApp.service('recettesService',
         this.getRecettesMatinJsonData = function() {
             return $http({method: "GET", url: "/matin.json"});
         };
+        this.getIngredientsJsonData = function() {
+            return $http({method: "GET", url: "/ingredients"});
+        };
 });
 listeApp.controller('ListeCtrl', ListeCtrl);
 listeApp.controller('LoadCtrl', LoadCtrl);
@@ -37,6 +40,13 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
                     return ((a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0))
                 }
             )
+        }
+    );
+    recettesService.getIngredientsJsonData().then(
+        // Calls the service to populate $scope.liste_ingredients
+        function (r) {
+            $scope.liste_ingredients = r.data;
+            console.log(r.data);
         }
     );
 
@@ -97,11 +107,29 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     $scope.recette_dejeuner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
 
     // Helper functions
+    getRayon = function(ingredient_name) {
+        return $scope.liste_ingredients[ingredient_name]['rayon'];
+    }
+    getUnit = function(ingredient_name) {
+        return $scope.liste_ingredients[ingredient_name]['unit'];
+    }
     getIngredients = function(recette_name, liste_recettes) {
+        var ingredients = [];
         for (a in liste_recettes) {
             var r = liste_recettes[a];
-            if (r.name == recette_name) { return r.ingredients; }
+            if (r.name == recette_name) {
+                for (i in r.ingredients) {
+                    var ing = r.ingredients[i];
+                    ing['rayon'] = getRayon( ing['name']);
+                    var u = getUnit(ing['name']);
+                    if ((typeof u !== "undefined") & (u != "")) {
+                        ing['unit'] = u;
+                    }
+                    ingredients.push(ing);
+                }
+            }
         }
+        return ingredients;
     };
 
     arrondi = function(nb, unit) {
@@ -150,8 +178,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             };
         };
         if (!found) {
-            var item = {};
-            item.name = ingredient.name;
+            var item = JSON.parse(JSON.stringify(ingredient)); // JS's way of cloning objects!
             if ('qty' in ingredient) {
                 item.qty = ingredient.qty * nb_gens;
                 item.unit = ingredient.unit;
@@ -263,6 +290,12 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
 
     updateHTMLListe = function(liste_json){
         var html_result = "<ul>\n";
+        liste_json = liste_json.sort(
+            function(a,b) {
+                return ((a['rayon'] < b['rayon']) ? -1 : ((a['rayon'] > b['rayon']) ? 1 : 0));
+
+            }
+        );
         for (var i in liste_json) {
             var item = liste_json[i];
             var qty_txt = arrondi(item.qty, item.unit);

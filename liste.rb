@@ -7,6 +7,21 @@ require "sinatra"
 
 $recettes_dir = File.absolute_path(File.join(File.dirname(__FILE__), "stored_recettes"))
 
+# Ordre dans lequel trier les rayons (dans l'ordre d'arrivée au supermarché)
+$enum_rayon = [
+    "FLEG", # Fruits et legumes
+    "Poissonnerie",
+    "Boucherie",
+    "Volaille",
+    "Charcuterie",
+    "Frais",
+    "Fromagerie",
+    "Matin",
+    "Épicerie",
+    "Jus",
+    "Alcool",
+]
+
 def add_error(msg)
     @error_list.push(msg)
     @errormsg = "<h2 class=\"md-toolbar-tools\">"
@@ -36,6 +51,15 @@ end
 
 def validate_recette_json(path)
     j = JSON.parse(File.read(path))
+    ings_path = File.absolute_path(File.join(File.dirname(__FILE__),"public","ingredients.json"))
+    begin
+        liste_ingredients = JSON.parse(File.read(ings_path))
+    rescue JSON::ParserError => e
+        $stderr.puts e
+        add_error("Error parsing JSON file #{ings_path}")
+        raise e
+    end
+    raise "No ingredients" if liste_ingredients.size == 0
     unless j.has_key?("recettes")
         raise "missing top key 'recettes'"
     end
@@ -53,6 +77,9 @@ def validate_recette_json(path)
             end
             if ing.has_key?('unit')
                 raise "bad unit '#{ing["unit"]}' for ingredient #{ing['name']} in recette #{r['name']}" unless ["g", "cL", "L", " tranche(s)"].include?(ing["unit"])
+            end
+            if not liste_ingredients.has_key?(ing['name'])
+                raise "ingredient #{ing['name']} in recette #{r['name']} is not in \"ingredients\" list"
             end
         end
 
@@ -109,6 +136,13 @@ end
 
 post '/save' do
      save(request.body.read)
+end
+
+get '/ingredients' do
+    ings_path = File.absolute_path(File.join(File.dirname(__FILE__),"public","ingredients.json"))
+    j = JSON.parse(File.read(ings_path))
+    j.each{|k,v| v["rayon"] = $enum_rayon.index(v["rayon"])}
+    JSON.generate(j)
 end
 
 get '/' do

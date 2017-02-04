@@ -1,0 +1,234 @@
+{
+  "Ail": {
+    "rayon": "FLEG",
+    "unit": ""
+  },
+  "Barre bretonne / Quatre Quart": {
+      "rayon": "Matin",
+      "unit": "~1 barre par jour"
+  },
+  "Beurre": {
+    "rayon": "Frais",
+    "unit": ""
+  },
+  "Blanc de poireau": {
+    "rayon": "FLEG",
+    "unit": ""
+  },
+  "Boeuf haché": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Boîte de tomates pelées": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Bouillon cube": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Bouquet Garni": {
+    "rayon": "FLEG",
+    "unit": ""
+  },
+  "Café moulu": {
+      "rayon": "Matin",
+      "unit":"(1 à 1.5 paquet par jour)"
+  },
+  "Carottes": {
+    "rayon": "FLEG",
+    "unit": ""
+  },
+  "Champignons": {
+    "rayon": "FLEG",
+    "unit": ""
+  },
+  "Coca Zéro": {
+    "rayon": "Matin",
+    "unit": "1 canette par matin et par pouik"
+  },
+  "Confitures": {
+    "rayon": "Matin",
+    "unit":""
+    },
+  "Coppa à la coupe": {
+    "rayon": "Charcuterie",
+    "unit": ""
+  },
+  "Cornichons": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Crème Fraiche": {
+    "rayon": "Frais",
+    "unit": ""
+  },
+  "Crozets (moitié normaux moitié complets, pas de parfum à la con)": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Farine": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Filet de poulet": {
+    "rayon": "Volaille",
+    "unit": ""
+  },
+  "Foie Gras entier": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Fromage à raclette": {
+    "rayon": "Fromagerie",
+    "unit": ""
+  },
+  "Haricots rouges (en boîte, poids égoutté)": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Huile d'olive": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Jambon blanc à la coupe": {
+    "rayon": "Charcuterie",
+    "unit": ""
+  },
+  "Jus de fruits": {
+    "rayon": "Jus",
+    "unit": ""
+  },
+  "Lait": {
+    "rayon": "Frais",
+    "unit": ""
+  },
+  "Lardons": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Lasagnes": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Nutella": {
+    "rayon": "Matin",
+    "unit":""
+    },
+  "Oeufs de poison": {
+    "rayon": "Frais",
+    "unit": ""
+  },
+  "Oeufs": {
+    "rayon": "Frais",
+    "unit": ""
+  },
+  "Oignons": {
+    "rayon": "FLEG",
+    "unit": ""
+  },
+  "Origan": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Pancetta/Jambon cru": {
+    "rayon": "Charcuterie",
+    "unit": ""
+  },
+  "Parmesan": {
+    "rayon": "Frais",
+    "unit": ""
+  },
+  "Patates": {
+    "rayon": "FLEG",
+    "unit": ""
+  },
+  "Petits oignons": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Piment": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Poivre": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Poivrons": {
+    "rayon": "FLEG",
+    "unit": ""
+  },
+  "Porc haché": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Râpé": {
+    "rayon": "Frais",
+    "unit": ""
+  },
+  "Reblochon (gros, fermier si possible)": {
+    "rayon": "Fromagerie",
+    "unit": ""
+  },
+  "Riz": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Romarin": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Rosette à la coupe": {
+    "rayon": "Charcuterie",
+    "unit": ""
+  },
+  "Saumon fumé (CHER)": {
+    "rayon": "Poissonnerie",
+    "unit": ""
+  },
+  "Sel": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Spaghettis (De Cecco ou Barilla)": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Tabasco": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Tapenade / Hummus": {
+    "rayon": "Frais",
+    "unit": ""
+  },
+  "Thym": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Toasts / Pain de mie": {
+    "rayon": "Matin",
+    "unit": ""
+  },
+  "Tomates concassées": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
+  "Veau": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Viande des grisons à la coupe": {
+    "rayon": "Charcuterie",
+    "unit": ""
+  },
+  "Vin blanc de cuisine": {
+    "rayon": "Alcool",
+    "unit": ""
+  },
+  "Vin blanc genre muscadet": {
+    "rayon": "Alcool",
+    "unit": ""
+  }
+}
