@@ -135,7 +135,12 @@ def save(data)
 end
 
 post '/save' do
-     save(request.body.read)
+    begin
+        save(request.body.read)
+    rescue Exception =>e 
+        status 500
+        "Couldn't save recette #{e.message}"
+    end
 end
 
 get '/ingredients' do
