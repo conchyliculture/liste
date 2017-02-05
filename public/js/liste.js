@@ -46,7 +46,6 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         // Calls the service to populate $scope.liste_ingredients
         function (r) {
             $scope.liste_ingredients = r.data;
-            console.log(r.data);
         }
     );
 
@@ -81,8 +80,10 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) / 5) },
             unit:" bidon (1 pour 5 jours)"},
         {"name": "PQ", enabled:false,
-            calc_qty:function() {return parseInt($scope.nb_jours) * 6 },
-            unit:" rouleau (6*nb jours)"},
+            // 1/4 rouleau par jour par personne
+            calc_qty:function() {
+                return Math.ceil((getNbGensTotal() * $scope.nb_jours) / 4)},
+            unit:" rouleau(x)"},
         {"name": "Sacs poubelle", enabled:false,
             calc_qty:function() {return Math.round(parseInt($scope.nb_jours) * 0.3) },
             unit:" rouleaux (3 sacs * nb jours)"},
@@ -112,6 +113,18 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     }
     getUnit = function(ingredient_name) {
         return $scope.liste_ingredients[ingredient_name]['unit'];
+    }
+    getNbGensTotal = function() {
+        var total = 0;
+        for (var j = 0; j < $scope.nb_jours; j++) {
+            var gens_today = 0;
+            gens_today += parseInt($scope.gens_par_matin[j]);
+            gens_today += parseInt($scope.gens_par_dejeuner[j]);
+            gens_today += parseInt($scope.gens_par_diner[j]);
+            total += gens_today / 3
+        }
+        console.log(total);
+        return Math.ceil(total / $scope.nb_jours);
     }
     getIngredients = function(recette_name, liste_recettes) {
         var ingredients = [];
@@ -313,6 +326,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     $scope.joursChanged = function() {
         // Update number of days
         $scope.range_jours = new Array($scope.nb_jours);
+        $scope.updateListe();
     }
 
     save = function(name) {
