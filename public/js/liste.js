@@ -124,9 +124,9 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         var total = 0;
         for (var j = 0; j < $scope.nb_jours; j++) {
             var gens_today = 0;
-            gens_today += parseInt($scope.gens_par_matin[j]);
-            gens_today += parseInt($scope.gens_par_dejeuner[j]);
-            gens_today += parseInt($scope.gens_par_diner[j]);
+            gens_today += $scope.gens_par_matin[j];
+            gens_today += $scope.gens_par_dejeuner[j];
+            gens_today += $scope.gens_par_diner[j];
             total += gens_today / 3
         };
         console.log(total);
@@ -156,6 +156,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     };
 
     arrondi = function(nb, unit) {
+        // TODO: if unit is "", round to int
         // Rounds qty, depending on the unit given.
         // Ex: 1020g => 1Kg
         if ((typeof nb === "undefined") || (nb == null)){
@@ -256,11 +257,11 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
             recette_diner = $scope.recette_diner_par_jour[i];
             jour['matin']['recette'] = recette_matin;
-            jour['matin']['gens'] = parseInt($scope.gens_par_matin[i]);
+            jour['matin']['gens'] = $scope.gens_par_matin[i];
             jour['dejeuner']['recette'] = recette_dejeuner;
-            jour['dejeuner']['gens'] = parseInt($scope.gens_par_dejeuner[i]);
+            jour['dejeuner']['gens'] = $scope.gens_par_dejeuner[i];
             jour['diner']['recette'] = recette_diner;
-            jour['diner']['gens'] = parseInt($scope.gens_par_diner[i]);
+            jour['diner']['gens'] = $scope.gens_par_diner[i];
 
             json_result['jours'].push(jour);
         };
@@ -278,7 +279,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         for (var i=0; i < $scope.nb_jours; i++) {
             // First, this day's breakfast
             var recette_matin = $scope.recette_matin_par_jour[i];
-            var gens_matin = parseInt($scope.gens_par_matin[i]);
+            var gens_matin = $scope.gens_par_matin[i];
             if (recette_matin != "") {
                 var ings = getIngredients(recette_matin, $scope.recettes_matin);
                 for (ing in ings) {
@@ -289,7 +290,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
 
             // Then, this day's lunch
             var recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
-            var gens_dejeuner = parseInt($scope.gens_par_dejeuner[i]);
+            var gens_dejeuner = $scope.gens_par_dejeuner[i];
             if (recette_dejeuner != "") {
                 var ings = getIngredients(recette_dejeuner, $scope.recettes);
                 for (ing in ings) {
@@ -300,7 +301,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
 
             // Then, this day's diner
             var recette_diner = $scope.recette_diner_par_jour[i];
-            var gens_diner = parseInt($scope.gens_par_diner[i]);
+            var gens_diner = $scope.gens_par_diner[i];
             if (recette_diner != "") {
                 var ings = getIngredients(recette_diner, $scope.recettes);
                 for (ing in ings) {
