@@ -8,6 +8,7 @@ listeApp.service('recettesService',
             return $http({method: "GET", url: "/matin.json"});
         };
         this.getIngredientsJsonData = function() {
+            // No .json here. Some stuff is being handled by the backend.
             return $http({method: "GET", url: "/ingredients"});
         };
 });
@@ -64,39 +65,40 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             calc_qty:function() {return parseInt($scope.nb_jours) / 2  },
             unit:" bouteilles (1 pour 2 jours)"},
         {"name": "Crème de marron", enabled:false,
-        // TODO avoir une moyenne de gens par jour
+            // TODO 1/3 de pot par jour
             calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
-            unit:" Plein (1 plein par jour)"},
+            unit:" Gros pot"},
         {"name": "Fruits divers", enabled:false,
+            // 0.5kg par jour
             calc_qty:function() {return parseInt($scope.nb_jours) / 2 },
             unit:" kg (0.5*nb jours)"},
         {"name": "Gateau apéro", enabled:false,
+            // 3 trucs par jour
             calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
-            unit:" Paquets divers (chips, bretzels, etc) (3*nb jours)"},
+            unit:" Paquets divers (chips, bretzels, etc)"},
         {"name": "Pastille lave-vaisselle", enabled:false,
             calc_qty:function() {return parseInt($scope.nb_jours) * 2 },
-            unit:" (2*nb jours)"},
+            unit:" tablettes"},
         {"name": "Produit vaisselle", enabled:false,
+            // 1 pour 5 jours
             calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) / 5) },
-            unit:" bidon (1 pour 5 jours)"},
+            unit:" bidon"},
         {"name": "PQ", enabled:false,
             // 1/4 rouleau par jour par personne
-            calc_qty:function() {
-                return Math.ceil((getNbGensTotal() * $scope.nb_jours) / 4)},
+            calc_qty:function() {return Math.ceil((getNbGensTotal() * $scope.nb_jours) / 4)},
             unit:" rouleau(x)"},
         {"name": "Sacs poubelle", enabled:false,
-            calc_qty:function() {return Math.round(parseInt($scope.nb_jours) * 0.3) },
-            unit:" rouleaux (3 sacs * nb jours)"},
+            calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) * 0.3) },
+            unit:" rouleaux de 10"},
         {"name": "Saucisson", enabled:false,
             calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
-            unit:" saucissons (3*nb jours)"},
+            unit:" saucissons"},
         {"name": "Torchons", enabled:false,
             calc_qty:function() {return 2 },
             unit:" "},
         {"name": "Yaourts", enabled:false,
-        // TODO avoir une moyenne de gens par jour
-            calc_qty:function() {return parseInt($scope.nb_jours)  },
-            unit:" * nb_gens == nb pots"},
+            calc_qty:function() {return getNbGensTotal() * parseInt($scope.nb_jours)},
+            unit:" pots"},
     ];
 
     // These arrays will hold the nb person per day per meal recipes
@@ -109,12 +111,17 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
 
     // Helper functions
     getRayon = function(ingredient_name) {
+        // Returns 'rayon' of ingredient (from ingredients.json file)
         return $scope.liste_ingredients[ingredient_name]['rayon'];
-    }
+    };
+
     getUnit = function(ingredient_name) {
+        // Returns 'unit' of ingredient (from ingredients.json file)
         return $scope.liste_ingredients[ingredient_name]['unit'];
-    }
+    };
+
     getNbGensTotal = function() {
+        // Returns nb of gens total (makes a per day average, then averages that sum)
         var total = 0;
         for (var j = 0; j < $scope.nb_jours; j++) {
             var gens_today = 0;
@@ -122,18 +129,22 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             gens_today += parseInt($scope.gens_par_dejeuner[j]);
             gens_today += parseInt($scope.gens_par_diner[j]);
             total += gens_today / 3
-        }
+        };
         console.log(total);
         return Math.ceil(total / $scope.nb_jours);
-    }
+    };
+
     getIngredients = function(recette_name, liste_recettes) {
+        // Given the name of a recette, returns a list of ingredients objects.
+        // This looks into the list of recipes in liste_recettes.
+        // (Remember that mornings and other meals have different recettes.
         var ingredients = [];
         for (a in liste_recettes) {
             var r = liste_recettes[a];
             if (r.name == recette_name) {
                 for (i in r.ingredients) {
                     var ing = r.ingredients[i];
-                    ing['rayon'] = getRayon( ing['name']);
+                    ing['rayon'] = getRayon(ing['name']);
                     var u = getUnit(ing['name']);
                     if ((typeof u !== "undefined") & (u != "")) {
                         ing['unit'] = u;
@@ -146,6 +157,8 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     };
 
     arrondi = function(nb, unit) {
+        // Rounds qty, depending on the unit given.
+        // Ex: 1020g => 1Kg
         if ((typeof nb === "undefined") || (nb == null)){
             if ((typeof unit === "undefined") || (unit == null)) {
                 return "";
@@ -180,8 +193,12 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     }
 
     addToListe = function(liste_json, ingredient, nb_gens) {
+        // Given a liste de courses, an ingredient object and the nb_gens for this meal,
+        // adds the correct amount of this ingredient object to liste_json, which is the
+        // internal object for the liste de courses, used by updateListe().
         var found = false;
         for (i in liste_json) {
+            // First we check if we already have this ingredient in the liste de courses.
             var item = liste_json[i];
             if (item.name == ingredient.name) {
                 if ('qty' in ingredient) {
@@ -201,7 +218,8 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     };
 
     $scope.loadStoredList = function(json_from_http, name) {
-        // takes the result from the HTTP json, and populates the local $scope var
+        // takes the result from the Json representation of the liste de courses,
+        // and populates the $scope var
         var jours = json_from_http['liste']['jours'];
         for (var i in jours) {
             // first, every day's meals
@@ -215,6 +233,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         };
         // then, 'extras'
         var _extras = json_from_http['liste']['extras'];
+        // TODO, move this function in the loop below
         var setExtraState = function(extra_name, state) {
             for (var i=0; i < $scope.extras.length; i++) {
                 var e = $scope.extras[i];
@@ -229,7 +248,8 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     };
 
     generate_saved_liste = function() {
-        // Generates the JSON object used for storage of the list
+        // Generates the JSON object which will be sent to the backend, to
+        // store the liste de courses.
         var json_result = {'jours':[], 'extras':[]};
         for (var i = 0; i < $scope.nb_jours; i++) {
             var jour = {'matin': {'recette':null, 'gens':0 }, 'diner': {'recette': null, 'gens': 0}, 'dejeuner': {'recette': null, 'gens': 0}};
@@ -254,9 +274,10 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     };
 
     $scope.updateListe = function() {
-        // Re-builds the internal liste de course
+        // Updates the internal liste de course object
         liste_courses_json = [];
-        for (var i=0; i< $scope.nb_jours; i++) {
+        for (var i=0; i < $scope.nb_jours; i++) {
+            // First, this day's breakfast
             var recette_matin = $scope.recette_matin_par_jour[i];
             var gens_matin = parseInt($scope.gens_par_matin[i]);
             if (recette_matin != "") {
@@ -288,6 +309,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             };
         };
 
+        // Also all the extras
         for (var i in $scope.extras) {
             var liste_extras_json = [];
             var e = $scope.extras[i];
@@ -302,6 +324,8 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     };
 
     updateHTMLListe = function(liste_json){
+        // Generates the HTML code for the liste de course.
+        // TODO: use a textarea that's editable
         var html_result = "<ul>\n";
         liste_json = liste_json.sort(
             function(a,b) {
@@ -324,7 +348,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     };
 
     $scope.joursChanged = function() {
-        // Update number of days
+        // Number of days have been changed.
         $scope.range_jours = new Array($scope.nb_jours);
         $scope.updateListe();
     }
@@ -374,7 +398,6 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             clickOutsideToClose: true
         });
     };
-
 };
 
 function LoadCtrl ($scope, $mdDialog, $http){
