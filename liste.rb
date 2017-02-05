@@ -138,6 +138,7 @@ post '/save' do
     begin
         save(request.body.read)
     rescue Exception =>e
+    rescue Exception =>e 
         status 500
         "Couldn't save recette #{e.message}"
     end
