@@ -51,7 +51,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     );
 
     // Let's initialize some default values
-    // TODO Make that an int
+    // TODO Make that an int, and have $scope.nb_jours be a int everywhere
     var nb_gens_default = "10"; // srsly, we need a string!
     var liste_courses_json = []; // List of ingredients
 
@@ -288,6 +288,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
                 }
             }
 
+            // Then, this day's lunch
             var recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
             var gens_dejeuner = parseInt($scope.gens_par_dejeuner[i]);
             if (recette_dejeuner != "") {
@@ -298,6 +299,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
                 }
             };
 
+            // Then, this day's diner
             var recette_diner = $scope.recette_diner_par_jour[i];
             var gens_diner = parseInt($scope.gens_par_diner[i]);
             if (recette_diner != "") {
