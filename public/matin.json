@@ -1,18 +1,18 @@
 {"recettes": [
     {"name":"Matin Ski",
        "ingredients": [
-            { "name": "Confitures", "qty":15, "unit":"g" },
-            { "name": "Lait", "qty":0.1, "unit":"L", "_comment": "pas bcp de gens en prennent" },
-            { "name": "Nutella", "qty":15, "unit":"g" },
-            { "name": "Jus de fruits", "qty": 0.2, "unit":"L" },
-            { "name": "Café moulu" }
+            { "name": "Confitures", "qty":15},
+            { "name": "Lait", "qty":0.1, "_comment": "pas bcp de gens en prennent"},
+            { "name": "Nutella", "qty":15},
+            { "name": "Jus de fruits", "qty": 0.2},
+            { "name": "Café moulu"}
         ]
     },
     {"name":"Matin Kinzout",
        "ingredients": [
-            { "name": "Nutella", "qty":15, "unit":"g" },
+            { "name": "Nutella", "qty":15},
             { "name": "Barre bretonne / Quatre Quart"},
-            { "name": "Jus de fruits", "qty": 0.2, "unit":"L" },
+            { "name": "Jus de fruits", "qty": 0.2},
             { "name": "Coca Zéro"},
             { "name": "Café moulu"}
         ]

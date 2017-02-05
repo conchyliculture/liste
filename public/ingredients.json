@@ -9,7 +9,7 @@
   },
   "Beurre": {
     "rayon": "Frais",
-    "unit": ""
+    "unit": "g"
   },
   "Blanc de poireau": {
     "rayon": "FLEG",
@@ -17,19 +17,17 @@
   },
   "Boeuf haché": {
     "rayon": "Boucherie",
-    "unit": ""
+    "unit": "g"
   },
   "Boîte de tomates pelées": {
     "rayon": "Épicerie",
-    "unit": ""
+    "unit": "g"
   },
   "Bouillon cube": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Bouquet Garni": {
-    "rayon": "FLEG",
-    "unit": ""
+    "rayon": "FLEG"
   },
   "Café moulu": {
     "rayon": "Matin",
@@ -37,198 +35,182 @@
   },
   "Carottes": {
     "rayon": "FLEG",
-    "unit": ""
+    "unit": "g"
   },
   "Champignons": {
     "rayon": "FLEG",
-    "unit": ""
+    "unit": "g"
   },
   "Coca Zéro": {
     "rayon": "Jus",
     "unit": "1 canette par matin et par pouik"
   },
   "Confitures": {
-    "rayon": "Matin",
-    "unit":""
+    "rayon": "Matin"
     },
   "Coppa à la coupe": {
     "rayon": "Charcuterie",
-    "unit": ""
+    "unit": "tranches"
   },
   "Cornichons": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Crème Fraiche": {
     "rayon": "Frais",
-    "unit": ""
+    "unit": "cL"
   },
   "Crozets (moitié normaux moitié complets, pas de parfum à la con)": {
     "rayon": "Épicerie",
-    "unit": ""
+    "unit": "g"
   },
   "Farine": {
     "rayon": "Épicerie",
-    "unit": ""
+    "unit": "g"
   },
   "Filet de poulet": {
-    "rayon": "Volaille",
-    "unit": ""
+    "rayon": "Volaille"
   },
   "Foie Gras entier": {
-    "rayon": "Boucherie",
-    "unit": ""
+    "rayon": "Charcuterie",
+    "unit": "g"
   },
   "Fromage à raclette": {
     "rayon": "Fromagerie",
-    "unit": ""
+    "unit": "g"
   },
   "Haricots rouges (en boîte, poids égoutté)": {
     "rayon": "Épicerie",
-    "unit": ""
+    "unit": "g"
   },
   "Huile d'olive": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Jambon blanc à la coupe": {
     "rayon": "Charcuterie",
-    "unit": ""
+    "unit": "tranches"
   },
   "Jus de fruits": {
     "rayon": "Jus",
-    "unit": ""
+    "unit": "L"
   },
   "Lait": {
     "rayon": "Frais",
-    "unit": ""
+    "unit": "cL"
   },
   "Lardons": {
     "rayon": "Boucherie",
-    "unit": ""
+    "unit": "g"
   },
   "Lasagnes": {
     "rayon": "Épicerie",
-    "unit": ""
+    "unit": "g"
   },
   "Nutella": {
     "rayon": "Matin",
-    "unit":""
+    "unit":"g"
     },
   "Oeufs de poison": {
     "rayon": "Frais",
-    "unit": ""
+    "unit": "g"
   },
   "Oeufs": {
-    "rayon": "Frais",
-    "unit": ""
+    "rayon": "Frais"
   },
   "Oignons": {
     "rayon": "FLEG",
-    "unit": ""
+    "unit": "g"
   },
   "Origan": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Pancetta/Jambon cru": {
     "rayon": "Charcuterie",
-    "unit": ""
+    "unit": "tranches"
   },
   "Parmesan": {
     "rayon": "Frais",
-    "unit": ""
+    "unit": "g"
   },
   "Patates": {
     "rayon": "FLEG",
-    "unit": ""
+    "unit": "g"
   },
   "Petits oignons": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Piment": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Poivre": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Poivrons": {
-    "rayon": "FLEG",
-    "unit": ""
+    "rayon": "FLEG"
   },
   "Porc haché": {
     "rayon": "Boucherie",
-    "unit": ""
+    "unit": "g"
   },
   "Râpé": {
     "rayon": "Frais",
-    "unit": ""
+    "unit": "g"
   },
   "Reblochon (gros, fermier si possible)": {
-    "rayon": "Fromagerie",
-    "unit": ""
+    "rayon": "Fromagerie"
   },
   "Riz": {
     "rayon": "Épicerie",
-    "unit": ""
+    "unit": "g"
   },
   "Romarin": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Rosette à la coupe": {
     "rayon": "Charcuterie",
-    "unit": ""
+    "unit": "tranches"
   },
   "Saumon fumé (CHER)": {
     "rayon": "Poissonnerie",
-    "unit": ""
+    "unit": "g"
   },
   "Sel": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Spaghettis (De Cecco ou Barilla)": {
     "rayon": "Épicerie",
-    "unit": ""
+    "unit": "g"
   },
   "Tabasco": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Tapenade / Hummus": {
-    "rayon": "Frais",
-    "unit": ""
+    "rayon": "Frais"
   },
   "Thym": {
-    "rayon": "Épicerie",
-    "unit": ""
+    "rayon": "Épicerie"
   },
   "Toasts / Pain de mie": {
     "rayon": "Matin",
-    "unit": ""
+    "unit": "tranches"
   },
   "Tomates concassées": {
     "rayon": "Épicerie",
-    "unit": ""
+    "unit": "g"
   },
   "Veau": {
     "rayon": "Boucherie",
-    "unit": ""
+    "unit": "g"
   },
   "Viande des grisons à la coupe": {
     "rayon": "Charcuterie",
-    "unit": ""
+    "unit": "tranches"
   },
   "Vin blanc de cuisine": {
     "rayon": "Alcool",
-    "unit": ""
+    "unit": "cL"
   },
   "Vin blanc genre muscadet": {
     "rayon": "Alcool",
-    "unit": ""
+    "unit": "cL"
   }
 }
