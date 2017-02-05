@@ -51,8 +51,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     );
 
     // Let's initialize some default values
-    // TODO Make that an int, and have $scope.nb_jours be a int everywhere
-    var nb_gens_default = "10"; // srsly, we need a string!
+    var nb_gens_default = 10;
     var liste_courses_json = []; // List of ingredients
 
     $scope.nb_jours = 5;
@@ -62,52 +61,52 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
 
     $scope.extras = [
         {"name": "Capitaaaaaine", enabled: false,
-            calc_qty:function() {return parseInt($scope.nb_jours) / 2  },
+            calc_qty:function() {return $scope.nb_jours / 2  },
             unit:" bouteilles (1 pour 2 jours)"},
         {"name": "Crème de marron", enabled:false,
             // TODO 1/3 de pot par jour
-            calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
+            calc_qty:function() {return $scope.nb_jours * 3 },
             unit:" Gros pot"},
         {"name": "Fruits divers", enabled:false,
             // 0.5kg par jour
-            calc_qty:function() {return parseInt($scope.nb_jours) / 2 },
+            calc_qty:function() {return $scope.nb_jours / 2 },
             unit:" kg (0.5*nb jours)"},
         {"name": "Gateau apéro", enabled:false,
             // 3 trucs par jour
-            calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
+            calc_qty:function() {return $scope.nb_jours * 3 },
             unit:" Paquets divers (chips, bretzels, etc)"},
         {"name": "Pastille lave-vaisselle", enabled:false,
-            calc_qty:function() {return parseInt($scope.nb_jours) * 2 },
+            calc_qty:function() {return $scope.nb_jours * 2 },
             unit:" tablettes"},
         {"name": "Produit vaisselle", enabled:false,
             // 1 pour 5 jours
-            calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) / 5) },
+            calc_qty:function() {return Math.ceil($scope.nb_jours / 5) },
             unit:" bidon"},
         {"name": "PQ", enabled:false,
             // 1/4 rouleau par jour par personne
             calc_qty:function() {return Math.ceil((getNbGensTotal() * $scope.nb_jours) / 4)},
             unit:" rouleau(x)"},
         {"name": "Sacs poubelle", enabled:false,
-            calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) * 0.3) },
+            calc_qty:function() {return Math.ceil($scope.nb_jours * 0.3) },
             unit:" rouleaux de 10"},
         {"name": "Saucisson", enabled:false,
-            calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
+            calc_qty:function() {return $scope.nb_jours * 3 },
             unit:" saucissons"},
         {"name": "Torchons", enabled:false,
             calc_qty:function() {return 2 },
             unit:" "},
         {"name": "Yaourts", enabled:false,
-            calc_qty:function() {return getNbGensTotal() * parseInt($scope.nb_jours)},
+            calc_qty:function() {return getNbGensTotal() * $scope.nb_jours},
             unit:" pots"},
     ];
 
     // These arrays will hold the nb person per day per meal recipes
-    $scope.gens_par_matin = new Array(parseInt($scope.nb_jours)).fill(parseInt(nb_gens_default));
-    $scope.recette_matin_par_jour = new Array(parseInt($scope.nb_jours)).fill("");
-    $scope.gens_par_diner = new Array( parseInt($scope.nb_jours)).fill(nb_gens_default);
-    $scope.recette_diner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
-    $scope.gens_par_dejeuner = new Array( parseInt($scope.nb_jours)).fill(nb_gens_default);
-    $scope.recette_dejeuner_par_jour = new Array( parseInt($scope.nb_jours)).fill("");
+    $scope.gens_par_matin = new Array($scope.nb_jours).fill(nb_gens_default);
+    $scope.recette_matin_par_jour = new Array($scope.nb_jours).fill("");
+    $scope.gens_par_diner = new Array($scope.nb_jours).fill(nb_gens_default);
+    $scope.recette_diner_par_jour = new Array($scope.nb_jours).fill("");
+    $scope.gens_par_dejeuner = new Array($scope.nb_jours).fill(nb_gens_default);
+    $scope.recette_dejeuner_par_jour = new Array($scope.nb_jours).fill("");
 
     // Helper functions
     getRayon = function(ingredient_name) {
