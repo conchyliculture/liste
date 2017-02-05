@@ -27,11 +27,10 @@
 <% end %>
 
 <div layout="row" flex>
-    <md-card flex="30" layout-align="start start">
-        <md-card-header style="width: 95%">
-            <div layout="row" style="width: 100%">
-                <h2 flex="50">Liste</h2>
-                <div layout="row" flex="50" layout-align="end">
+    <md-card flex="30">
+        <md-card-header style="width: 95%" layout="column">
+            <div layout="row" layout-sm="column" layout-align="end" style="width: 100%">
+                <div layout="row">
                     <% if @errormsg.empty? %>
                     <md-button class="md-primary md-raised" ng-click="showPromptSave($event)" >
                             Save Liste
@@ -42,6 +41,7 @@
                     <% end %>
                 </div>
             </div>
+            <h2>Liste</h2>
         </md-card-header>
         <md-card-content>
             <div ng-bind-html="liste_html" flex ></div>
