@@ -232,18 +232,14 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             $scope.gens_par_diner[i] = jour['diner']['gens'];
         };
         // then, 'extras'
-        var _extras = json_from_http['liste']['extras'];
         $scope.extras_txt = json_from_http['liste']['extras_txt'];
-        // TODO, move this function in the loop below
-        var setExtraState = function(extra_name, state) {
-            for (var i=0; i < $scope.extras.length; i++) {
-                var e = $scope.extras[i];
-                if (e.name == extra_name) {e.enabled = state}
-            }
-        };
-        for (var i = 0; i < _extras.length; i++) {
+        var _extras = json_from_http['liste']['extras'];
+        for (var i in _extras) {
             var extra = _extras[i];
-            setExtraState(extra.name, extra.enabled);
+            for (var j in $scope.extras) {
+                var e = $scope.extras[j];
+                if (e.name == extra.name) {e.enabled = extra.enabled}
+            };
         };
         $scope.updateListe();
     };
