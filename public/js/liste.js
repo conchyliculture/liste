@@ -233,6 +233,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         };
         // then, 'extras'
         var _extras = json_from_http['liste']['extras'];
+        $scope.extras_txt = json_from_http['liste']['extras_txt'];
         // TODO, move this function in the loop below
         var setExtraState = function(extra_name, state) {
             for (var i=0; i < $scope.extras.length; i++) {
@@ -250,7 +251,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     generate_saved_liste = function() {
         // Generates the JSON object which will be sent to the backend, to
         // store the liste de courses.
-        var json_result = {'jours':[], 'extras':[]};
+        var json_result = {'jours':[], 'extras':[], 'extras_txt':""};
         for (var i = 0; i < $scope.nb_jours; i++) {
             var jour = {'matin': {'recette':null, 'gens':0 }, 'diner': {'recette': null, 'gens': 0}, 'dejeuner': {'recette': null, 'gens': 0}};
             recette_matin = $scope.recette_matin_par_jour[i];
@@ -270,6 +271,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             var item = {'name': extra.name, 'enabled':extra.enabled};
             json_result['extras'].push(item);
         }
+        json_result['extras_txt'] = $scope.extras_txt;
         return json_result;
     };
 
@@ -327,12 +329,10 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
 
     updateHTMLListe = function(liste_json){
         // Generates the HTML code for the liste de course.
-        // TODO: use a textarea that's editable
         var html_result = "<ul>\n";
         liste_json = liste_json.sort(
             function(a,b) {
                 return ((a['rayon'] < b['rayon']) ? -1 : ((a['rayon'] > b['rayon']) ? 1 : 0));
-
             }
         );
         for (var i in liste_json) {
