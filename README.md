@@ -15,10 +15,10 @@ Ouvrir [http://localhost:4567](http://localhost:4567)
 2) Add your recette as a JSON object:
 
 ```json
-{   "name": "Sandwich au caca";
+{   "name": "Sandwich au caca",
     "ingredients": [
-        {"name":"Pain", qty: 1},
-        {"name":"Caca", qty: 80}
+        {"name":"Pain", "qty": 1},
+        {"name":"Caca", "qty": 80}
     ]
 }
 ```
