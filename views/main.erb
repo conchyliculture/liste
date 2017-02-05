@@ -41,10 +41,16 @@
                     <% end %>
                 </div>
             </div>
-            <h2>Liste</h2>
         </md-card-header>
         <md-card-content>
-            <div ng-bind-html="liste_html" flex ></div>
+            <md-input-container class="md-block">
+                <label><h2>Liste</h2></label>
+                <div ng-bind-html="liste_html" flex ></div>
+            </md-input-container>
+            <md-input-container class="md-block">
+            <label>Texte libre</label>
+            <textarea ng-model="liste_html_extra" md-select-on-focus></textarea>
+            </md-input-container>
         </md-card-content>
     </md-card>
 
