@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Jasmine References -->
+    <link rel="stylesheet" type="text/css" href="jasmine-2.5.2/jasmine.css">
+    <script src="jasmine-2.5.2/jasmine.js"></script>
+    <script type="text/javascript" src="jasmine-2.5.2/jasmine-html.js"></script>
+    <script type="text/javascript" src="jasmine-2.5.2/boot.js"></script>
+    
+    <!-- Angular and Angular Mock references -->
+    <script type="text/javascript" src="/js/angular.min.js"></script>
+    <script type="text/javascript" src="/js/angular-sanitize.js"></script>
+    <script type="text/javascript" src="/js/angular-animate.min.js"></script>
+    <script type="text/javascript" src="/js/angular-aria.min.js"></script>
+    <script type="text/javascript" src="/js/angular-messages.min.js"></script>
+    <script type="text/javascript" src="/js/angular-material.min.js"></script>
+    <script type="text/javascript" src="/js/angular-mocks.js"></script>
+
+    <script type="text/javascript" src="/js/liste.js"></script>
+
+    <script type="text/javascript">
+
+        describe('poil', function() {
+            it('should make range', function() {
+                expect(range(5)).toEqual([1,2,3,4,5]);
+            });
+        });
+
+        describe('listeCtrlTests', function() {
+            var scope, http, service, mdDialog;
+
+            beforeEach(angular.mock.module('ngAnimateMock'));
+            beforeEach(angular.mock.module('listeApp'));
+            beforeEach(angular.mock.inject(function($rootScope, $http, $mdDialog, recettesService, $controller){
+                scope = $rootScope.$new();
+                http = $http;
+                service = recettesService;
+                mdDialog = $mdDialog;
+                $controller('ListeCtrl', {$scope: scope, $http: http, $mdDialog:mdDialog, recettesService: service});
+            }));
+            it('initValues', function() {
+                var nb_jour_def = 5;
+                expect(scope.nb_jours).toBe(nb_jour_def);
+                expect(scope.range_jours).toEqual(new Array(nb_jour_def));
+                expect(scope.range_jours_default).toEqual([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]);
+                expect(scope.range_gens_default).toEqual([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]);
+                expect(scope.extras.length).toBe(11);
+                expect(scope.gens_par_matin.length).toBe(nb_jour_def);
+                expect(scope.gens_par_dejeuner.length).toBe(nb_jour_def);
+                expect(scope.gens_par_diner.length).toBe(nb_jour_def);
+                expect(scope.recette_matin_par_jour.length).toBe(nb_jour_def);
+                expect(scope.recette_dejeuner_par_jour.length).toBe(nb_jour_def);
+                expect(scope.recette_diner_par_jour.length).toBe(nb_jour_def);
+            });
+            it('should return rayon', function() {
+            });
+        });
+
+    </script>
+</head>  
+

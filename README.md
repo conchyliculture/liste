@@ -42,21 +42,22 @@ Done!
 
 ```
 # apt-get install ruby-rack-test
-$ cd tests; bash run.sh
+$ bash tests/run.sh
 ```
 
-No AngularJS test, because I didn't find a way to do that without having to use
-npm to install shitloads of crap. Not gonna do that, no.
+Then point your browser to [http://localhost:4567/jasmine_tests.html](http://localhost:4567/jasmine_tests.html).
 
 ## Dev
 
 WARNING all the crap is mostly in
-`public/js/liste.js` and is disgusting AngluarJS
-shit copy pasted from StackOverflow and inserted into the code with a sledgehammer.
+`public/js/liste.js` and is disgusting AngluarJS shit copy pasted from StackOverflow and inserted into the code with a sledgehammer.
 
 The backend is
 `liste.rb`, it mostly handles save and loading of the listes de courses.
 It also converts "rayon" into integers, used for sorting the courses.
+
+The backend serves the main html page through templating the
+`views/main.erb` file.
 
 `liste.js` has 1 main Angular controller `ListeCtrl` for the main page, and a tiny controller
 `LoadCtrl` for the load liste popup.
