@@ -5,6 +5,8 @@ require "erb"
 require "json"
 require "sinatra"
 
+set :bind, "0.0.0.0"
+
 $recettes_dir = File.absolute_path(File.join(File.dirname(__FILE__), "stored_recettes"))
 
 # Ordre dans lequel trier les rayons (dans l'ordre d'arrivée au supermarché)
