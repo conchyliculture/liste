@@ -1,12 +1,24 @@
 # Liste
-Faisage de liste de courses
+
+## Start the thing
+
+### If you're a man
 
 ```
 # apt-get install ruby-sinatra
 $ ruby liste.rb
 ```
 
-Ouvrir [http://localhost:4567](http://localhost:4567)
+Point your browser to [http://localhost:4567](http://localhost:4567)
+
+### If you're a Docker lover
+
+```
+docker build -f Dockerfile .
+docker run -p 4567:4567 <image>
+```
+
+Point your browser to [http://localhost:4567](http://localhost:4567)
 
 ## Update recettes
 
