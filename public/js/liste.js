@@ -60,13 +60,13 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     $scope.range_gens_default = range(25);
 
     $scope.extras = [
-        {"name": "Capitaaaaaine", enabled: false,
-            calc_qty:function() {return $scope.nb_jours / 2  },
-            unit:" bouteilles (1 pour 2 jours)"},
-        {"name": "Crème de marron", enabled:false,
-            // TODO 1/3 de pot par jour
-            calc_qty:function() {return $scope.nb_jours * 3 },
-            unit:" Gros pot"},
+        {"name": "Capitain Morgan Spiced Rum", enabled: false,
+            calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) / 2) },
+            unit:" bouteilles (75cl)"},
+        {"name": "Crème de marron (Clément Faugier)", enabled:false,
+        // TODO avoir une moyenne de gens par jour
+            calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
+            unit:" Pots (500g)"},
         {"name": "Fruits divers", enabled:false,
             // 0.5kg par jour
             calc_qty:function() {return $scope.nb_jours / 2 },
@@ -83,9 +83,10 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             calc_qty:function() {return Math.ceil($scope.nb_jours / 5) },
             unit:" bidon"},
         {"name": "PQ", enabled:false,
-            // 1/4 rouleau par jour par personne
-            calc_qty:function() {return Math.ceil((getNbGensTotal() * $scope.nb_jours) / 4)},
-            unit:" rouleau(x)"},
+            // 1/4 rouleau par jour par personne arrondi au multiple de 6 supérieur
+            calc_qty:function() {
+                return Math.ceil(getNbGensTotal() * $scope.nb_jours / 24)*6},
+            unit:" rouleaux"},
         {"name": "Sacs poubelle", enabled:false,
             calc_qty:function() {return Math.ceil($scope.nb_jours * 0.3) },
             unit:" rouleaux de 10"},
@@ -96,8 +97,10 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             calc_qty:function() {return 2 },
             unit:" "},
         {"name": "Yaourts", enabled:false,
-            calc_qty:function() {return getNbGensTotal() * $scope.nb_jours},
-            unit:" pots"},
+        // 1 Yaourts par personne et par jour arrondi au multipe de 6 supérieur 
+            calc_qty:function() {
+                return Math.ceil(getNbGensTotal() * $scope.nb_jours / 6)*6},
+            unit:" pots de yaourts"},
     ];
 
     // These arrays will hold the nb person per day per meal recipes
@@ -191,6 +194,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
            return nb+unit;
        }
     }
+
 
     addToListe = function(liste_json, ingredient, nb_gens) {
         // Given a liste de courses, an ingredient object and the nb_gens for this meal,
