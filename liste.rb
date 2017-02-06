@@ -6,6 +6,8 @@ require "json"
 require "sinatra"
 
 set :bind, "0.0.0.0"
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
 
 $recettes_dir = File.absolute_path(File.join(File.dirname(__FILE__), "stored_recettes"))
 
