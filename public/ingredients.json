@@ -53,7 +53,8 @@
   },
   "Confitures": {
     "rayon": "Épicerie",
-    "sousrayon": "Sucrée"
+    "sousrayon": "Sucrée",
+    "unit": "g"
     },
   "Coppa à la coupe": {
     "rayon": "Charcuterie",
@@ -61,7 +62,8 @@
   },
   "Cornichons": {
     "rayon": "Épicerie",
-    "sousrayon": "Salée"
+    "sousrayon": "Salée",
+    "unit": "pot"
   },
   "Crème Fraiche": {
     "rayon": "Frais",
@@ -96,7 +98,8 @@
   },
   "Huile d'olive": {
     "rayon": "Épicerie",
-    "sousrayon": "Salée"
+    "sousrayon": "Salée",
+    "unit": "L"
   },
   "Jambon blanc à la coupe": {
     "rayon": "Charcuterie",
@@ -127,14 +130,15 @@
     "sousrayon": "Sucrée",
     "unit":"g"
     },
-  "Oeufs de poison": {
+  "Œufs de poison": {
     "rayon": "Frais",
     "sousrayon": "Non laitier",
     "unit": "g"
   },
-  "Oeufs": {
+  "Œufs": {
     "rayon": "Frais",
-    "sousrayon": "Non laitier"
+    "sousrayon": "Non laitier",
+    "unit": "œufs"
   },
   "Oignons": {
     "rayon": "FLEG",
@@ -159,18 +163,22 @@
   },
   "Petits oignons": {
     "rayon": "Épicerie",
-    "sousrayon": "Salée"
+    "sousrayon": "Salée",
+    "unit": "pot"
   },
   "Piment": {
     "rayon": "Épicerie",
-    "sousrayon": "Salée"
+    "sousrayon": "Salée",
+    "unit": "pot"
   },
   "Poivre": {
     "rayon": "Épicerie",
-    "sousrayon": "Salée"
+    "sousrayon": "Salée",
+    "unit": "pot"
   },
   "Poivrons": {
-    "rayon": "FLEG"
+    "rayon": "FLEG",
+    "unit": "piéce"
   },
   "Porc haché": {
     "rayon": "Boucherie",
@@ -182,7 +190,8 @@
     "unit": "g"
   },
   "Reblochon (gros, fermier si possible)": {
-    "rayon": "Fromagerie"
+    "rayon": "Fromagerie",
+    "unit": "piéce"
   },
   "Riz": {
     "rayon": "Épicerie",
@@ -191,7 +200,8 @@
   },
   "Romarin": {
     "rayon": "Épicerie",
-    "sousrayon": "Salée"
+    "sousrayon": "Salée",
+    "unit": "pot"
   },
   "Rosette à la coupe": {
     "rayon": "Charcuterie",
@@ -203,7 +213,8 @@
   },
   "Sel": {
     "rayon": "Épicerie",
-    "sousrayon": "Salée"
+    "sousrayon": "Salée",
+    "unit": "pot"
   },
   "Spaghettis (De Cecco ou Barilla)": {
     "rayon": "Épicerie",
@@ -212,11 +223,13 @@
   },
   "Tabasco": {
     "rayon": "Épicerie",
-    "sousrayon": "Salée"
+    "sousrayon": "Salée",
+    "unit": "pot"
   },
   "Tapenade / Hummus": {
     "rayon": "Frais",
-    "sousrayon": "Non laitier"
+    "sousrayon": "Non laitier",
+    "unit": "g"
   },
   "Thym": {
     "rayon": "Épicerie",
