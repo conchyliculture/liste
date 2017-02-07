@@ -4,11 +4,13 @@
     "unit": ""
   },
   "Barre bretonne / Quatre Quart": {
-      "rayon": "Matin",
+      "rayon": "Épicerie",
+      "sousrayon": "sucrée",
       "unit": "~1 barre par jour"
   },
   "Beurre": {
     "rayon": "Frais",
+    "sousrayon": "Crémerie",
     "unit": "g"
   },
   "Blanc de poireau": {
@@ -21,16 +23,19 @@
   },
   "Boîte de tomates pelées": {
     "rayon": "Épicerie",
+    "sousrayon": "Salée",
     "unit": "g"
   },
   "Bouillon cube": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Bouquet Garni": {
     "rayon": "FLEG"
   },
   "Café moulu": {
-    "rayon": "Matin",
+    "rayon": "Épicerie",
+    "sousrayon": "Sucrée",
     "unit":"(1 à 1.5 paquet par jour)"
   },
   "Carottes": {
@@ -42,29 +47,35 @@
     "unit": "g"
   },
   "Coca Zéro": {
-    "rayon": "Jus",
+    "rayon": "Boisson",
+    "sousrayon": "Sans alcools",
     "unit": "1 canette par matin et par pouik"
   },
   "Confitures": {
-    "rayon": "Matin"
+    "rayon": "Épicerie",
+    "sousrayon": "Sucrée"
     },
   "Coppa à la coupe": {
     "rayon": "Charcuterie",
     "unit": "tranches"
   },
   "Cornichons": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Crème Fraiche": {
     "rayon": "Frais",
+    "sousrayon": "Crémerie",
     "unit": "cL"
   },
   "Crozets (moitié normaux moitié complets, pas de parfum à la con)": {
     "rayon": "Épicerie",
+    "sousrayon": "Salée",
     "unit": "g"
   },
   "Farine": {
     "rayon": "Épicerie",
+    "sousrayon": "Salée",
     "unit": "g"
   },
   "Filet de poulet": {
@@ -80,48 +91,58 @@
   },
   "Haricots rouges (en boîte, poids égoutté)": {
     "rayon": "Épicerie",
+    "sousrayon": "Salée",
     "unit": "g"
   },
   "Huile d'olive": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Jambon blanc à la coupe": {
     "rayon": "Charcuterie",
     "unit": "tranches"
   },
   "Jus de fruits": {
-    "rayon": "Jus",
+    "rayon": "Boisson",
+    "sousrayon": "Sans alcool",
     "unit": "L"
   },
   "Lait": {
-    "rayon": "Frais",
+    "rayon": "Épicerie",
+    "sousrayon": "Crémerie",
     "unit": "cL"
   },
   "Lardons": {
-    "rayon": "Boucherie",
+    "rayon": "Frais",
+    "sousrayon": "Non laitier",
     "unit": "g"
   },
   "Lasagnes": {
     "rayon": "Épicerie",
+    "sousrayon": "Salée",
     "unit": "g"
   },
   "Nutella": {
-    "rayon": "Matin",
+    "rayon": "Épicerie",
+    "sousrayon": "Sucrée",
     "unit":"g"
     },
   "Oeufs de poison": {
     "rayon": "Frais",
+    "sousrayon": "Non laitier",
     "unit": "g"
   },
   "Oeufs": {
-    "rayon": "Frais"
+    "rayon": "Frais",
+    ""sousrayon": "Non laitier"
   },
   "Oignons": {
     "rayon": "FLEG",
     "unit": "g"
   },
   "Origan": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Pancetta/Jambon cru": {
     "rayon": "Charcuterie",
@@ -129,6 +150,7 @@
   },
   "Parmesan": {
     "rayon": "Frais",
+    "sousrayon": "Crémerie",
     "unit": "g"
   },
   "Patates": {
@@ -136,13 +158,16 @@
     "unit": "g"
   },
   "Petits oignons": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Piment": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Poivre": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Poivrons": {
     "rayon": "FLEG"
@@ -153,6 +178,7 @@
   },
   "Râpé": {
     "rayon": "Frais",
+    "sousrayon": "Crémerie",
     "unit": "g"
   },
   "Reblochon (gros, fermier si possible)": {
@@ -160,10 +186,12 @@
   },
   "Riz": {
     "rayon": "Épicerie",
+    "sousrayon":"Salée",
     "unit": "g"
   },
   "Romarin": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Rosette à la coupe": {
     "rayon": "Charcuterie",
@@ -174,27 +202,34 @@
     "unit": "g"
   },
   "Sel": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Spaghettis (De Cecco ou Barilla)": {
     "rayon": "Épicerie",
+    "sousrayon": "Salée",
     "unit": "g"
   },
   "Tabasco": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Tapenade / Hummus": {
-    "rayon": "Frais"
+    "rayon": "Frais",
+    "sousrayon": "Non laitier"
   },
   "Thym": {
-    "rayon": "Épicerie"
+    "rayon": "Épicerie",
+    "sousrayon": "Salée"
   },
   "Toasts / Pain de mie": {
-    "rayon": "Matin",
+    "rayon": "Épicerie",
+    "sousrayon": "Sucrée",
     "unit": "tranches"
   },
   "Tomates concassées": {
     "rayon": "Épicerie",
+    "sousrayon": "Salée",
     "unit": "g"
   },
   "Veau": {
@@ -206,11 +241,13 @@
     "unit": "tranches"
   },
   "Vin blanc de cuisine": {
-    "rayon": "Alcool",
+    "rayon": "Boisson",
+    "sousrayon": "Alcool",
     "unit": "cL"
   },
   "Vin blanc genre muscadet": {
-    "rayon": "Alcool",
+    "rayon": "Boisson",
+    "sousrayon": "Alcool",
     "unit": "cL"
   }
 }
