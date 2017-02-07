@@ -1,0 +1,24 @@
+{"recettes": [
+    {"name":"Cheese cake",
+       "ingredients": [
+            { "name": "Speculoos", "qty":250},
+            { "name": "Philadelphia nature", "qty":450},
+            { "name": "Beurre", "qty":100},
+            { "name": "Créme fraîche 30% Mgr", "qty": 50},
+            { "name": "Oeuf", "gty": 4},
+            { "name": "Sucre", "gty": 50},
+            { "name": "Miel liquide", "gty": 10, "comment": "optionel"}
+        ]
+    },
+    {"name":"Galette des rois",
+       "ingredients": [
+            { "name": "Pâtes feuilletée", "qty":2},
+            { "name": "Poudre d'amandes", "qty":100},
+            { "name": "Sucre semoule", "qty":75},
+            { "name": "Oeuf", "qty": 2},
+            { "name": "Beurre", "qty":50}
+        ]
+    }
+]
+}
+
