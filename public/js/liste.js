@@ -67,6 +67,18 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         // Un pot de 500gr pour 3 jours
             calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) / 3) },
             unit:" Pots (500g)"},
+	{"name": "Café ski", enabled: false,
+	    calc_qty:function() {return Math.ceil(getNbGensTotal() * $scope.nb_jours / 6)},
+            unit:" Paquets (225g)"},
+	{"name": "Café Kinzout", enabled: false,
+	    calc_qty:function() {return Math.ceil(getNbGensTotal() * $scope.nb_jours / 12)},
+            unit:" Paquets (225g)"},
+	{"name": "Thé ski", enabled: false,
+	    calc_qty:function() {return Math.ceil(getNbGensTotal() * $scope.nb_jours / 12)},
+            unit:" Boites (25 sachets)"},
+	{"name": "Thé Kinzout", enabled: false,
+	    calc_qty:function() {return Math.ceil(getNbGensTotal() * $scope.nb_jours / 24)},
+            unit:" Boites (25 sachets)"},
         {"name": "Fruits divers", enabled:false,
             // 0.5kg par jour
             calc_qty:function() {return $scope.nb_jours / 2 },
