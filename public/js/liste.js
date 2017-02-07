@@ -62,7 +62,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     $scope.extras = [
         {"name": "Capitain Morgan Spiced Rum", enabled: false,
             calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) / 2) },
-            unit:" bouteille (75cl)"},
+            unit:" bouteilles (75cl)"},
         {"name": "Crème de marron (Clément Faugier)", enabled:false,
         // TODO avoir une moyenne de gens par jour
             calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
