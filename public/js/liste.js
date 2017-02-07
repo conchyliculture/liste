@@ -64,8 +64,8 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) / 2) },
             unit:" bouteilles (75cl)"},
         {"name": "Crème de marron (Clément Faugier)", enabled:false,
-        // TODO avoir une moyenne de gens par jour
-            calc_qty:function() {return parseInt($scope.nb_jours) * 3 },
+        // Un pot de 500gr pour 3 jours
+            calc_qty:function() {return Math.ceil(parseInt($scope.nb_jours) / 3) },
             unit:" Pots (500g)"},
         {"name": "Fruits divers", enabled:false,
             // 0.5kg par jour
