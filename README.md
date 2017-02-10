@@ -14,8 +14,8 @@ Point your browser to [http://localhost:4567](http://localhost:4567)
 ### If you're a Docker lover
 
 ```
-docker build -f Dockerfile .
-docker run -p 4567:4567 <image>
+docker build -t liste .
+docker run -d --name liste -p 4567:4567 liste
 ```
 
 Point your browser to [http://localhost:4567](http://localhost:4567)
