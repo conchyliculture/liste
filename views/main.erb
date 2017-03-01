@@ -72,41 +72,40 @@
                     <md-card-content>
                         <div layout="column" >
                             <span class="md-subhead">Matin</span>
-                            <div layout="row" >
-                                <md-select ng-model="gens_par_matin[$index]" ng-change="updateListe()" placeholder="Nb gens">
-                                    <md-option ng-repeat="nn in range_gens_default" ng-value="nn">{{nn}}</md-option>
-                                </md-select>
-                                <md-input-container>
-                                <md-select ng-model="recette_matin_par_jour[$index]" ng-change="updateListe()" placeholder="Recette matin">
-                                    <md-option ng-value="{{null}}">---</md-option>
-                                    <md-option ng-repeat="recette in recettes_matin" ng-value="recette.name">{{recette.name}}</md-option>
-                                </md-select>
+                            <div layout="row" flex>
+                                <md-input-container flex="15">
+                                    <input type="number" max="100" ng-model="gens_par_matin[$index]" ng-change="updateListe()">
                                 </md-input-container>
                                 <md-input-container>
+                                    <md-select ng-model="recette_matin_par_jour[$index]" ng-change="updateListe()" placeholder="Recette matin">
+                                        <md-option ng-value="{{null}}">---</md-option>
+                                        <md-option ng-repeat="recette in recettes_matin" ng-value="recette.name">{{recette.name}}</md-option>
+                                    </md-select>
+                                </md-input-container>
                             </div>
                             <span class="md-subhead">Dejeuner</span>
-                            <div layout="row" >
-                                <md-select ng-model="gens_par_dejeuner[$index]" ng-change="updateListe()" placeholder="Nb gens">
-                                    <md-option ng-repeat="nn in range_gens_default" ng-value="nn">{{nn}}</md-option>
-                                </md-select>
-                                <md-input-container>
-                                <md-select ng-model="recette_dejeuner_par_jour[$index]" ng-change="updateListe()" placeholder="Recette Dejeuner">
-                                    <md-option ng-value="{{null}}">---</md-option>
-                                    <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
-                                </md-select>
+                            <div layout="row" flex >
+                                <md-input-container flex="15">
+                                    <input type="number" max="100" ng-model="gens_par_dejeuner[$index]" ng-change="updateListe()">
                                 </md-input-container>
                                 <md-input-container>
+                                    <md-select ng-model="recette_dejeuner_par_jour[$index]" ng-change="updateListe()" placeholder="Recette Dejeuner">
+                                        <md-option ng-value="{{null}}">---</md-option>
+                                        <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
+                                    </md-select>
+                                </md-input-container>
                             </div>
 
                             <span class="md-subhead">Diner</span>
-                            <div layout="row">
-                                <md-select ng-model="gens_par_diner[$index]" ng-change="updateListe()" placeholder="Nb gens">
-                                    <md-option ng-repeat="nn in range_gens_default" ng-value="nn">{{nn}}</md-option>
-                                </md-select>
-                                <md-select ng-model="recette_diner_par_jour[$index]" ng-change="updateListe()" placeholder="Recette Diner">
-                                    <md-option ng-value="{{null}}">---</md-option>
-                                    <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
-                                </md-select>
+                            <div layout="row" flex>
+                                <md-input-container flex="15">
+                                    <input type="number" max="100" ng-model="gens_par_diner[$index]" ng-change="updateListe()">
+                                </md-input-container>
+                                <md-input-container>
+                                    <md-select ng-model="recette_diner_par_jour[$index]" ng-change="updateListe()" placeholder="Recette Diner">
+                                        <md-option ng-value="{{null}}">---</md-option>
+                                        <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
+                                    </md-select>
                                 </md-input-container>
                             </div>
                         </div>
