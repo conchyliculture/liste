@@ -97,7 +97,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             calc_qty:function() {return 2 },
             unit:" "},
         {"name": "Yaourts", enabled:false,
-        // 1 Yaourts par personne et par jour arrondi au multipe de 6 supérieur 
+        // 1 Yaourts par personne et par jour arrondi au multipe de 6 supérieur
             calc_qty:function() {
                 return Math.ceil(getNbGensTotal() * $scope.nb_jours / 6)*6},
             unit:" pots de yaourts"},
@@ -132,7 +132,6 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             gens_today += $scope.gens_par_diner[j];
             total += gens_today / 3
         };
-        console.log(total);
         return Math.ceil(total / $scope.nb_jours);
     };
 
@@ -163,7 +162,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         // Rounds qty, depending on the unit given.
         // Ex: 1020g => 1Kg
         if ((typeof nb === "undefined") || (nb == null)){
-            if ((typeof unit === "undefined") || (unit == null)) {
+            if (unit == null) {
                 return "";
             } else {
                 return unit;
@@ -186,6 +185,9 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
                     n = Math.round(nb / 10) / 10;
                     return n+"L";
                 }
+                break;
+            case "L":
+                return Math.round(nb);
                 break;
         }
         if (nb > 10) {
