@@ -104,8 +104,8 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
     ];
 
     // These arrays will hold the nb person per day per meal recipes
+    $scope.recette_matin = "";
     $scope.gens_par_matin = new Array($scope.nb_jours).fill(nb_gens_default);
-    $scope.recette_matin_par_jour = new Array($scope.nb_jours).fill("");
     $scope.gens_par_diner = new Array($scope.nb_jours).fill(nb_gens_default);
     $scope.recette_diner_par_jour = new Array($scope.nb_jours).fill("");
     $scope.gens_par_dejeuner = new Array($scope.nb_jours).fill(nb_gens_default);
@@ -228,7 +228,6 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         for (var i in jours) {
             // first, every day's meals
             var jour = jours[i]
-            $scope.recette_matin_par_jour[i] = jour['matin']['recette'];
             $scope.gens_par_matin[i] = jour['matin']['gens'];
             $scope.recette_dejeuner_par_jour[i] = jour['dejeuner']['recette'];
             $scope.gens_par_dejeuner[i] = jour['dejeuner']['gens'];
@@ -254,10 +253,9 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         var json_result = {'jours':[], 'extras':[], 'extras_txt':""};
         for (var i = 0; i < $scope.nb_jours; i++) {
             var jour = {'matin': {'recette':null, 'gens':0 }, 'diner': {'recette': null, 'gens': 0}, 'dejeuner': {'recette': null, 'gens': 0}};
-            recette_matin = $scope.recette_matin_par_jour[i];
             recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
             recette_diner = $scope.recette_diner_par_jour[i];
-            jour['matin']['recette'] = recette_matin;
+            jour['matin']['recette'] = $scope.recette_matin;
             jour['matin']['gens'] = $scope.gens_par_matin[i];
             jour['dejeuner']['recette'] = recette_dejeuner;
             jour['dejeuner']['gens'] = $scope.gens_par_dejeuner[i];
@@ -280,10 +278,9 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         liste_courses_json = [];
         for (var i=0; i < $scope.nb_jours; i++) {
             // First, this day's breakfast
-            var recette_matin = $scope.recette_matin_par_jour[i];
             var gens_matin = $scope.gens_par_matin[i];
-            if (recette_matin != "") {
-                var ings = getIngredients(recette_matin, $scope.recettes_matin);
+            if ($scope.recette_matin != "") {
+                var ings = getIngredients($scope.recette_matin, $scope.recettes_matin);
                 for (ing in ings) {
                     ingredient = ings[ing];
                     addToListe(liste_courses_json, ingredient, gens_matin);
