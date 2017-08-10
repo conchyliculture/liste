@@ -3,7 +3,7 @@
         <div class="md-dialog-content">
             <h2>Selectionner une liste de courses</h2>
             <md-select ng-model="liste_select">
-                <md-option ng-repeat="n in load_liste" ng-value="n" >{{n}}</md-option>
+                <md-option ng-repeat="n in load_liste" ng-value="n" >{{n.name}} - {{n.date}}</md-option>
             </md-select>
         </div>
     </md-dialog-content>

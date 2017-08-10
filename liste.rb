@@ -10,6 +10,7 @@ Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
 $recettes_dir = File.absolute_path(File.join(File.dirname(__FILE__), "stored_recettes"))
+$jsonsep = "___"
 
 # Ordre dans lequel trier les rayons (dans l'ordre d'arrivée au supermarché)
 $enum_rayon = [
@@ -95,26 +96,9 @@ get '/get-stored-listes' do
     liste = []
     Dir.glob(File.join($recettes_dir,"*.json")).each do |j|
         jj = JSON.parse(File.read(j))
-        liste << {'name' => jj["name"], 'date' => jj["date"]}
+        liste << jj
     end
     return liste.to_json
-end
-
-get '/get-stored-liste' do
-    content_type :json
-    if params['name']
-        n,d = params['name'].split(" - ")
-        # TODO verif
-        path = File.join($recettes_dir, File.basename("#{d}-#{n}.json"))
-        if File.exist?(path)
-            j = File.read(path)
-            return j
-        else
-            $stderr.puts "Can't find liste '#{path}'"
-        end
-    end
-    status 404
-    return nil
 end
 
 def save(data)

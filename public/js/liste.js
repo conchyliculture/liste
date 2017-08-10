@@ -1,3 +1,14 @@
+Array.prototype.sortDesc = function(key){
+    this.sort(function(a, b) {
+        if (a[key] > b[key]) {
+            return -1;
+        } else if (a[key] < b[key]){
+            return 1;
+        }
+        return 0;
+    });
+}
+
 var listeApp = angular.module('listeApp', ['ngSanitize','ngMaterial']);
 listeApp.service('recettesService',
     function($http){
@@ -223,7 +234,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         };
     };
 
-    $scope.loadStoredList = function(json_from_http, name) {
+    $scope.loadStoredList = function(json_from_http) {
         // takes the result from the Json representation of the liste de courses,
         // and populates the $scope var
         var jours = json_from_http['liste']['jours'];
@@ -406,26 +417,13 @@ function LoadCtrl ($scope, $mdDialog, $http){
     $scope.loadhide = function() {$mdDialog.hide();};
     $scope.loadcancel = function() {$mdDialog.cancel();};
     $scope.loadanswer = function(answer) {
-        var liste_name = "";
-        liste_name = $scope.liste_select;
-        fetch_stored_liste(liste_name);
+        var liste_data = "";
+        liste_data = $scope.liste_select;
+        $scope.loadStoredList(liste_data);
         $mdDialog.hide(answer);
     };
-    function fetch_stored_liste(list_name) {
-        $http({
-            method: "GET",
-            url: "/get-stored-liste?name="+list_name,
-        }).then(
-            function(response){
-                $scope.loadStoredList(response.data, list_name);
-            },
-            function(response){
-                console.log('liste load fail');
-            }
-        );
-    };
 
-    function fetch_recettes() {
+    function fetch_stored_listes() {
         $http({
             method: "GET",
             url: "/get-stored-listes",
@@ -433,13 +431,14 @@ function LoadCtrl ($scope, $mdDialog, $http){
             function(response){
                 var data = response.data;
                 $scope.load_liste=[];
-                for (var i =0; i< data.length; i++) {
-                    $scope.load_liste.push(data[i]['name']+" - "+data[i]['date']);
+                for (var i =0; i < data.length; i++) {
+                    $scope.load_liste.push(data[i]);
                 };
+				$scope.load_liste.sortDesc('date');
                 $scope.liste_select = $scope.load_liste[0];
             },
-            function(response){ console.log('liste load fail'); }
+            function(response){ console.log('listes load fail'); }
         );
     };
-    fetch_recettes();
+    fetch_stored_listes();
 };
