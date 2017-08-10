@@ -41,7 +41,7 @@
             { "name": "Origan"},
             { "name": "Tabasco"},
             { "name": "Piment"},
-            { "name": "Riz", "qty": 150}
+            { "name": "Riz", "qty": 80}
         ]
     },
     {   "name":"Croziflette",
@@ -71,7 +71,7 @@
     },
     {   "name":"Poulet champi crème",
         "ingredients": [
-            { "name": "Riz", "qty": 100},
+            { "name": "Riz", "qty": 80},
             { "name": "Râpé", "qty": 50},
             { "name": "Filet de poulet", "qty": 1},
             { "name": "Vin blanc de cuisine", "qty": 3},
