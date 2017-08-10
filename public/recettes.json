@@ -119,6 +119,16 @@
             { "name": "Sel"}
         ]
     },
+    {   "name":"BBQ",
+        "ingredients":  [
+            { "name": "Merguez", "qty": 0.91},
+            { "name": "Chipos", "qty": 0.91},
+            { "name": "Brochette boeuf", "qty": 0.91},
+            { "name": "Brochette agneau", "qty": 0.91},
+            { "name": "Andouillette", "qty": 0.66},
+            { "name": "Moutarde"}
+        ]
+    },
     {   "name":"Tartiflette",
         "ingredients":  [
             { "name": "Lardons", "qty": 100},
