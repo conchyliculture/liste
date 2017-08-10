@@ -163,6 +163,24 @@
             { "name": "Sel"},
             { "name": "Poivre"},
             { "name": "Thym"},
+            { "name": "Romarin"},
+    {   "name":"Pâtes Bolo",
+        "ingredients":  [
+            { "name": "Spaghetti", "qty": 120},
+            { "name": "Tomates concassées", "qty": 400},
+            { "name": "Oignons", "qty": 20},
+            { "name": "Carottes", "qty": 20},
+            { "name": "Pancetta/Jambon cru", "qty": 20},
+            { "name": "Boeuf haché", "qty": 40},
+            { "name": "Porc haché", "qty": 40},
+            { "name": "Huile d'olive", "qty": 2},
+            { "name": "Vin blanc de cuisine", "qty": 3},
+            { "name": "Parmesan", "qty": 20},
+            { "name": "Râpé", "qty": 20},
+            { "name": "Bouillon cube"},
+            { "name": "Sel"},
+            { "name": "Poivre"},
+            { "name": "Thym"},
             { "name": "Romarin"}
         ]
     }
