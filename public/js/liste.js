@@ -239,6 +239,10 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         // and populates the $scope var
         var jours = json_from_http['liste']['jours'];
         for (var i in jours) {
+            if (i === 'sortDesc') {
+                // remove the prototype function
+                break;
+            }
             // first, every day's meals
             var jour = jours[i]
             $scope.gens_par_matin[i] = jour['matin']['gens'];
