@@ -105,6 +105,20 @@
             { "name": "Foie Gras entier", "qty": 100}
         ]
     },
+    {   "name":"Sauté de veau chorizo olives",
+        "ingredients": [
+            { "name": "Veau", "qty": 170},
+            { "name": "Chorizo", "qty": 0.2},
+            { "name": "Tomates concassées", "qty": 150},
+            { "name": "Olives vertes dénoyautées", "qty": 30},
+            { "name": "Oignons", "qty": 40},
+            { "name": "Basilic"},
+            { "name": "Ail"},
+            { "name": "Huile d'olive"},
+            { "name": "Poivre"},
+            { "name": "Sel"}
+        ]
+    },
     {   "name":"Tartiflette",
         "ingredients":  [
             { "name": "Lardons", "qty": 100},

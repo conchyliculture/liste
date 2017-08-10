@@ -7,6 +7,9 @@
       "rayon": "Matin",
       "unit": "~1 barre par jour"
   },
+  "Basilic": {
+    "rayon": "Épicerie"
+  },
   "Beurre": {
     "rayon": "Frais",
     "unit": "g"
@@ -40,6 +43,10 @@
   "Champignons": {
     "rayon": "FLEG",
     "unit": "g"
+  },
+  "Chorizo": {
+    "rayon": "Charcuterie",
+    "unit": ""
   },
   "Coca Zéro": {
     "rayon": "Jus",
@@ -118,6 +125,10 @@
   },
   "Oignons": {
     "rayon": "FLEG",
+    "unit": "g"
+  },
+  "Olives vertes dénoyautées": {
+    "rayon": "Épicerie",
     "unit": "g"
   },
   "Origan": {
