@@ -163,7 +163,9 @@
             { "name": "Sel"},
             { "name": "Poivre"},
             { "name": "Thym"},
-            { "name": "Romarin"},
+            { "name": "Romarin"}
+        ]
+    },
     {   "name":"Pâtes Bolo",
         "ingredients":  [
             { "name": "Spaghetti", "qty": 120},
