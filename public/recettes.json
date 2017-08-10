@@ -168,7 +168,7 @@
     },
     {   "name":"Pâtes Bolo",
         "ingredients":  [
-            { "name": "Spaghetti", "qty": 120},
+            { "name": "Spaghettis (De Cecco ou Barilla)", "qty": 120},
             { "name": "Tomates concassées", "qty": 400},
             { "name": "Oignons", "qty": 20},
             { "name": "Carottes", "qty": 20},

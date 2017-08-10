@@ -26,6 +26,9 @@
     "rayon": "Épicerie",
     "unit": "g"
   },
+  "Moutarde": {
+    "rayon": "Épicerie"
+  },
   "Bouillon cube": {
     "rayon": "Épicerie"
   },
@@ -207,6 +210,26 @@
   "Tomates concassées": {
     "rayon": "Épicerie",
     "unit": "g"
+  },
+  "Merguez": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Andouillette": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Brochettes agneau": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Brochettes boeuf": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Chipos": {
+    "rayon": "Boucherie",
+    "unit": ""
   },
   "Veau": {
     "rayon": "Boucherie",
