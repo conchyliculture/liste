@@ -35,22 +35,17 @@ def add_error(msg)
     end
     @errormsg << "</h2>"
 end
-
-before do
-    @error_list = []
-    @errormsg = ""
-    recettes_json = [
-        File.absolute_path(File.join(File.dirname(__FILE__),"public","recettes.json")),
-        File.absolute_path(File.join(File.dirname(__FILE__),"public","matin.json"))
-    ]
-    recettes_json.each do |path|
-        begin
-            validate_recette_json(path)
-        rescue JSON::ParserError => e
-            add_error("Error parsing JSON file #{path}")
-        rescue RuntimeError =>e
-            add_error("Error parsing JSON file #{path}: #{e.message}")
-        end
+recettes_json = [
+    File.absolute_path(File.join(File.dirname(__FILE__),"public","recettes.json")),
+    File.absolute_path(File.join(File.dirname(__FILE__),"public","matin.json"))
+]
+recettes_json.each do |path|
+    begin
+        validate_recette_json(path)
+    rescue JSON::ParserError => e
+        add_error("Error parsing JSON file #{path}")
+    rescue RuntimeError =>e
+        add_error("Error parsing JSON file #{path}: #{e.message}")
     end
 end
 
@@ -90,6 +85,12 @@ def validate_recette_json(path)
 
     end
 end
+
+before do
+    @error_list = []
+    @errormsg = ""
+end
+
 
 get '/get-stored-listes' do
     content_type :json
