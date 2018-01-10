@@ -37,7 +37,7 @@
   },
   "Café moulu": {
     "rayon": "Matin",
-    "unit":"(1 à 1.5 paquet par jour)"
+    "unit":"(1.5 paquet par jour)"
   },
   "Carottes": {
     "rayon": "FLEG",
@@ -185,7 +185,7 @@
   },
   "Saumon fumé (CHER)": {
     "rayon": "Poissonnerie",
-    "unit": "g"
+    "unit": "tranches"
   },
   "Sel": {
     "rayon": "Épicerie"

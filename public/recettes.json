@@ -21,8 +21,9 @@
             { "name": "Spaghettis (De Cecco ou Barilla)", "qty": 120},
             { "name": "Lardons", "qty": 100},
             { "name": "Oignons", "qty": 50},
+            { "name": "Oeufs", "qty": 0.3},
             { "name": "Vin blanc genre muscadet", "qty": 5},
-            { "name": "Crème Fraiche", "qty": 5},
+            { "name": "Crème Fraiche", "qty": 6},
             { "name": "Parmesan", "qty": 50},
             { "name": "Sel"},
             { "name": "Poivre"}
@@ -63,7 +64,7 @@
             { "name": "Oeufs", "qty": 2.5},
             { "name": "Champignons", "qty": 150},
             { "name": "Oignons", "qty": 60},
-            { "name": "Râpé", "qty": 50},
+            { "name": "Râpé", "qty": 30},
             { "name": "Lardons", "qty": 50},
             { "name": "Vin blanc de cuisine", "qty": 5},
             { "name": "Crème Fraiche", "qty": 0.1}
@@ -72,7 +73,7 @@
     {   "name":"Poulet champi crème",
         "ingredients": [
             { "name": "Riz", "qty": 80},
-            { "name": "Râpé", "qty": 50},
+            { "name": "Râpé", "qty": 40},
             { "name": "Filet de poulet", "qty": 1},
             { "name": "Vin blanc de cuisine", "qty": 3},
             { "name": "Oignons", "qty": 50 , "_comment":"VERIFY"},
@@ -99,9 +100,8 @@
     {   "name":"Réveillon",
         "ingredients": [
             { "name": "Toasts / Pain de mie", "qty": 5},
-            { "name": "Saumon fumé (CHER)", "qty": 60, "_comment":"tranches?"},
-            { "name": "Oeufs de poison", "qty": 20},
-            { "name": "Tapenade / Hummus", "qty": 20},
+            { "name": "Saumon fumé (CHER)", "qty": 3, "_comment":"tranches"},
+            { "name": "Oeufs de truite/lump", "qty": 20},
             { "name": "Foie Gras entier", "qty": 100}
         ]
     },
@@ -134,10 +134,10 @@
             { "name": "Lardons", "qty": 100},
             { "name": "Oignons", "qty": 50},
             { "name": "Patates", "qty": 100},
-            { "name": "Crème Fraiche", "qty": 7},
+            { "name": "Crème Fraiche", "qty": 8},
             { "name": "Reblochon (gros, fermier si possible)", "qty": 0.2},
             { "name": "Vin blanc de cuisine", "qty": 5},
-            { "name": "Râpé", "qty": 50},
+            { "name": "Râpé", "qty": 40},
             { "name": "Sel"},
             { "name": "Poivre"},
             { "name": "Beurre"}
