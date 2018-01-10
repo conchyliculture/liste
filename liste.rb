@@ -28,7 +28,7 @@ $enum_rayon = [
 ]
 
 def add_error(msg)
-    @error_list.push(msg)
+    (@error_list ||= []) << msg
     @errormsg = "<h2 class=\"md-toolbar-tools\">"
     @error_list.each do |m|
         @errormsg << "<span>#{m}</span>"
