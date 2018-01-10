@@ -41,7 +41,7 @@
             { "name": "Origan"},
             { "name": "Tabasco"},
             { "name": "Piment"},
-            { "name": "Riz", "qty": 150}
+            { "name": "Riz", "qty": 80}
         ]
     },
     {   "name":"Croziflette",
@@ -71,7 +71,7 @@
     },
     {   "name":"Poulet champi crème",
         "ingredients": [
-            { "name": "Riz", "qty": 100},
+            { "name": "Riz", "qty": 80},
             { "name": "Râpé", "qty": 50},
             { "name": "Filet de poulet", "qty": 1},
             { "name": "Vin blanc de cuisine", "qty": 3},
@@ -119,12 +119,22 @@
             { "name": "Sel"}
         ]
     },
+    {   "name":"BBQ",
+        "ingredients":  [
+            { "name": "Merguez", "qty": 0.91},
+            { "name": "Chipos", "qty": 0.91},
+            { "name": "Brochette boeuf", "qty": 0.91},
+            { "name": "Brochette agneau", "qty": 0.91},
+            { "name": "Andouillette", "qty": 0.66},
+            { "name": "Moutarde"}
+        ]
+    },
     {   "name":"Tartiflette",
         "ingredients":  [
             { "name": "Lardons", "qty": 100},
             { "name": "Oignons", "qty": 50},
             { "name": "Patates", "qty": 100},
-            { "name": "Crème Fraiche", "qty": 5},
+            { "name": "Crème Fraiche", "qty": 7},
             { "name": "Reblochon (gros, fermier si possible)", "qty": 0.2},
             { "name": "Vin blanc de cuisine", "qty": 5},
             { "name": "Râpé", "qty": 50},
@@ -148,6 +158,26 @@
             { "name": "Beurre", "qty": 10},
             { "name": "Farine", "qty": 10},
             { "name": "Lait", "qty": 10},
+            { "name": "Râpé", "qty": 20},
+            { "name": "Bouillon cube"},
+            { "name": "Sel"},
+            { "name": "Poivre"},
+            { "name": "Thym"},
+            { "name": "Romarin"}
+        ]
+    },
+    {   "name":"Pâtes Bolo",
+        "ingredients":  [
+            { "name": "Spaghettis (De Cecco ou Barilla)", "qty": 120},
+            { "name": "Tomates concassées", "qty": 400},
+            { "name": "Oignons", "qty": 20},
+            { "name": "Carottes", "qty": 20},
+            { "name": "Pancetta/Jambon cru", "qty": 20},
+            { "name": "Boeuf haché", "qty": 40},
+            { "name": "Porc haché", "qty": 40},
+            { "name": "Huile d'olive", "qty": 2},
+            { "name": "Vin blanc de cuisine", "qty": 3},
+            { "name": "Parmesan", "qty": 20},
             { "name": "Râpé", "qty": 20},
             { "name": "Bouillon cube"},
             { "name": "Sel"},
