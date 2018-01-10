@@ -23,7 +23,7 @@
             { "name": "Oignons", "qty": 50},
             { "name": "Oeufs", "qty": 0.3},
             { "name": "Vin blanc genre muscadet", "qty": 5},
-            { "name": "Crème Fraiche", "qty": 5},
+            { "name": "Crème Fraiche", "qty": 6},
             { "name": "Parmesan", "qty": 50},
             { "name": "Sel"},
             { "name": "Poivre"}
@@ -134,7 +134,7 @@
             { "name": "Lardons", "qty": 100},
             { "name": "Oignons", "qty": 50},
             { "name": "Patates", "qty": 100},
-            { "name": "Crème Fraiche", "qty": 10},
+            { "name": "Crème Fraiche", "qty": 8},
             { "name": "Reblochon (gros, fermier si possible)", "qty": 0.2},
             { "name": "Vin blanc de cuisine", "qty": 5},
             { "name": "Râpé", "qty": 40},
