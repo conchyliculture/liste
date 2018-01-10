@@ -12,7 +12,7 @@
        "ingredients": [
             { "name": "Nutella", "qty":15},
             { "name": "Barre bretonne / Quatre Quart"},
-            { "name": "Jus de fruits", "qty": 0.2},
+            { "name": "Jus de fruits", "qty": 0.1},
             { "name": "Coca Zéro"},
             { "name": "Café moulu"}
         ]
