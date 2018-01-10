@@ -50,21 +50,7 @@ class TestListe < Test::Unit::TestCase
         end
         get '/get-stored-listes'
         assert last_response.ok?
-        assert {last_response.body, "[{\"name\":\"lolilol\",\"date\":\"2017-01-25T16-26-38\"}]"}
-    end
-
-    def test_it_gives_stored_list
-        get '/get-stored-liste', params={}
-        assert {!last_response.ok?}
-
-        File.open(File.join($recettes_dir,"#{$test_liste[:date]}-#{$test_liste[:name]}.json"),'w+') do |f|
-            f.write($test_liste.to_json)
-        end
-
-        get '/get-stored-liste', params={'name'=> $test_liste[:name]+" - "+$test_liste[:date]}
-        assert last_response.ok?
-        b = last_response.body
-        assert {b == $test_liste.to_json}
+        assert {last_response.body == [$test_liste].to_json }
     end
 
     def test_it_saves_list
