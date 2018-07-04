@@ -244,6 +244,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         // takes the result from the Json representation of the liste de courses,
         // and populates the $scope var
         var jours = json_from_http['liste']['jours'];
+        $scope.nb_jours = jours.length;
         for (var i in jours) {
             if (i === 'sortDesc') {
                 // remove the prototype function
