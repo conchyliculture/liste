@@ -62,7 +62,7 @@ def validate_recette_json(path)
             raise "missing key 'name' for ingredient in recette #{r['name']}" unless ing['name']
             raise "ingredient name empty in recette #{r['name']}" if ing["name"].empty?
             if ing.has_key?('qty')
-                raise "ingredient #{ing['name']} in recette #{r['name']} is not a number but #{ing['qty'].class}" unless (ing['qty'].class == Float or ing['qty'].class == Fixnum)
+                raise "ingredient #{ing['name']} in recette #{r['name']} is not a number but #{ing['qty'].class}" unless (ing['qty'].class == Float or ing['qty'].class == Integer)
             end
             if ing.has_key?('unit')
                 raise "bad unit '#{ing["unit"]}' for ingredient #{ing['name']} in recette #{r['name']}" unless ["g", "cL", "L", " tranche(s)"].include?(ing["unit"])
