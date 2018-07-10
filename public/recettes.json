@@ -81,7 +81,7 @@
             { "name": "Champignons", "qty": 150},
             { "name": "Sel"},
             { "name": "Poivre"},
-            { "name": "Beurre"}
+            { "name": "Beurre", "qty": 2}
         ]
     },
     {   "name":"Raclette",
