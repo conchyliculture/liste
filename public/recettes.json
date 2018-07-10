@@ -56,7 +56,7 @@
             { "name": "Râpé", "qty": 50},
             { "name": "Sel"},
             { "name": "Poivre"},
-            { "name": "Beurre"}
+            { "name": "Beurre", "qty": 1}
         ]
     },
     {   "name":"Omelette",
@@ -140,7 +140,7 @@
             { "name": "Râpé", "qty": 40},
             { "name": "Sel"},
             { "name": "Poivre"},
-            { "name": "Beurre"}
+            { "name": "Beurre", "qty": 1"}
         ]
     },
     {   "name":"Lasagnes",
