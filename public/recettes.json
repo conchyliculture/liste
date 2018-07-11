@@ -45,6 +45,15 @@
             { "name": "Riz", "qty": 80}
         ]
     },
+    {   "name":"Quiche",
+        "ingredients":  [
+            { "name": "Pâte brisée", "qty": 0.33},
+            { "name": "Lardons", "qty": 0.66},
+            { "name": "Oignons", "qty": 30},
+            { "name": "Crème Fraiche", "qty": 10},
+            { "name": "Vin blanc genre muscadet", "qty": 10}
+        ]
+    },
     {   "name":"Croziflette",
         "ingredients":  [
             { "name": "Lardons", "qty": 100},
