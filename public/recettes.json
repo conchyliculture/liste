@@ -51,6 +51,7 @@
             { "name": "Lardons", "qty": 0.66},
             { "name": "Oignons", "qty": 30},
             { "name": "Crème Fraiche", "qty": 10},
+            { "name": "Oeufs", "qty": 1},
             { "name": "Vin blanc genre muscadet", "qty": 10}
         ]
     },
