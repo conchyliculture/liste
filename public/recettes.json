@@ -138,6 +138,20 @@
             { "name": "Moutarde"}
         ]
     },
+    {   "name":"Salades de pâtes",
+        "ingredients":  [
+            { "name": "Fusili", "qty": 85},
+            { "name": "Tomates", "qty": 0.5},
+            { "name": "Oeufs", "qty": 0.8},
+            { "name": "Comté", "qty": 66},
+            { "name": "Thon", "qty": 35},
+            { "name": "Échalottes", "qty": 0.3},
+            { "name": "Sel"},
+            { "name": "Poivre"},
+            { "name": "Moutarde"},
+            { "name": "Huile d'olive", "qty": 4}
+        ]
+    },
     {   "name":"Tartiflette",
         "ingredients":  [
             { "name": "Lardons", "qty": 100},

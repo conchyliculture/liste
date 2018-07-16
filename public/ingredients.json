@@ -39,6 +39,9 @@
     "rayon": "Matin",
     "unit":"(1.5 paquet par jour)"
   },
+  "Tomates": {
+    "rayon": "FLEG"
+  },
   "Carottes": {
     "rayon": "FLEG",
     "unit": "g"
@@ -54,6 +57,10 @@
   "Coca Zéro": {
     "rayon": "Jus",
     "unit": "1 canette par matin et par pouik"
+  },
+  "Comté": {
+    "rayon": "Frais",
+    "unit": "g"
   },
   "Confitures": {
     "rayon": "Matin"
@@ -72,6 +79,9 @@
   "Crozets (moitié normaux moitié complets, pas de parfum à la con)": {
     "rayon": "Épicerie",
     "unit": "g"
+  },
+  "Échalottes": {
+    "rayon": "FLEG"
   },
   "Farine": {
     "rayon": "Épicerie",
@@ -193,6 +203,10 @@
   "Sel": {
     "rayon": "Épicerie"
   },
+  "Fusili (De Cecco ou Barilla)": {
+    "rayon": "Épicerie",
+    "unit": "g"
+  },
   "Spaghettis (De Cecco ou Barilla)": {
     "rayon": "Épicerie",
     "unit": "g"
@@ -202,6 +216,10 @@
   },
   "Tapenade / Hummus": {
     "rayon": "Frais"
+  },
+  "Thon": {
+    "rayon": "Épicerie",
+    "unit": "g"
   },
   "Thym": {
     "rayon": "Épicerie"
