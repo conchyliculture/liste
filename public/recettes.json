@@ -45,7 +45,7 @@
             { "name": "Riz", "qty": 80}
         ]
     },
-    {   "name":"Quiche",
+    {   "name":"Quiche Lorraine",
         "ingredients":  [
             { "name": "Pâte brisée", "qty": 0.33},
             { "name": "Lardons", "qty": 0.66},
