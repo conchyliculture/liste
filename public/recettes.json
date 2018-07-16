@@ -130,10 +130,10 @@
     },
     {   "name":"BBQ",
         "ingredients":  [
-            { "name": "Merguez", "qty": 0.91},
-            { "name": "Chipos", "qty": 0.91},
-            { "name": "Brochette boeuf", "qty": 0.91},
-            { "name": "Brochette agneau", "qty": 0.91},
+            { "name": "Merguez", "qty": 0.82},
+            { "name": "Chipos", "qty": 0.88},
+            { "name": "Brochette boeuf", "qty": 0.88},
+            { "name": "Brochette agneau", "qty": 0.88},
             { "name": "Andouillette", "qty": 0.66},
             { "name": "Moutarde"}
         ]
