@@ -110,7 +110,7 @@
     {   "name":"Réveillon",
         "ingredients": [
             { "name": "Toasts / Pain de mie", "qty": 5},
-            { "name": "Saumon fumé (CHER)", "qty": 3, "_comment":"tranches"},
+            { "name": "Saumon fumé (CHER)", "qty": 1, "_comment":"tranches"},
             { "name": "Oeufs de truite/lump", "qty": 20},
             { "name": "Foie Gras entier", "qty": 100}
         ]
