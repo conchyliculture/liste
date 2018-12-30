@@ -112,7 +112,7 @@
             { "name": "Toasts / Pain de mie", "qty": 5},
             { "name": "Saumon fumé (CHER)", "qty": 1, "_comment":"tranches"},
             { "name": "Oeufs de truite/lump", "qty": 20},
-            { "name": "Foie Gras entier", "qty": 100}
+            { "name": "Foie Gras entier", "qty": 50}
         ]
     },
     {   "name":"Sauté de veau chorizo olives",
