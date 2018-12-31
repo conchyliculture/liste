@@ -91,7 +91,7 @@
             { "name": "Champignons", "qty": 150},
             { "name": "Sel"},
             { "name": "Poivre"},
-            { "name": "Beurre", "qty": 2}
+            { "name": "Beurre", "qty": 12}
         ]
     },
     {   "name":"Raclette",
@@ -109,6 +109,7 @@
     },
     {   "name":"Réveillon",
         "ingredients": [
+            { "name": "Beurre", "qty": 20},
             { "name": "Toasts / Pain de mie", "qty": 5},
             { "name": "Saumon fumé (CHER)", "qty": 1, "_comment":"tranches"},
             { "name": "Oeufs de truite/lump", "qty": 20},
