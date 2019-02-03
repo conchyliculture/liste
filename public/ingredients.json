@@ -92,6 +92,9 @@
     "rayon": "Épicerie",
     "unit": "g"
   },
+  "Huile": {
+    "rayon": "Épicerie"
+  },
   "Huile d'olive": {
     "rayon": "Épicerie"
   },
@@ -215,6 +218,10 @@
     "rayon": "Boucherie",
     "unit": ""
   },
+  "Andouille": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
   "Andouillette": {
     "rayon": "Boucherie",
     "unit": ""
@@ -231,6 +238,14 @@
     "rayon": "Boucherie",
     "unit": ""
   },
+  "Citron": {
+    "rayon": "FLEG",
+    "unit": ""
+  },
+  "Sucre": {
+    "rayon": "Épicerie",
+    "unit": ""
+  },
   "Veau": {
     "rayon": "Boucherie",
     "unit": "g"
@@ -242,6 +257,10 @@
   "Vin blanc de cuisine": {
     "rayon": "Alcool",
     "unit": "cL"
+  },
+  "Oeufs de truite/limpe": {
+    "rayon": "Épicerie",
+    "unit": "g"
   },
   "Vin blanc genre muscadet": {
     "rayon": "Alcool",
