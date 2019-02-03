@@ -2,6 +2,6 @@ language: ruby
 ruby:
     - '2.4.1'
 install:
-    - bundle install rack-test
+    - gem install rack-test
 script:
     - ruby tests/tests.rb
