@@ -1,5 +1,7 @@
 language: ruby
 ruby:
     - '2.5'
+install:
+    - bundle install rack-test
 script:
     - ruby tests/tests.rb
