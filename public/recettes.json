@@ -80,8 +80,7 @@
             { "name": "Reblochon (gros, fermier si possible)", "qty": 0.3},
             { "name": "Râpé", "qty": 50},
             { "name": "Sel"},
-            { "name": "Poivre"},
-            { "name": "Beurre", "qty": 1}
+            { "name": "Poivre"}
         ]
     },
     {   "name":"Omelette",
@@ -92,7 +91,8 @@
             { "name": "Râpé", "qty": 30},
             { "name": "Lardons", "qty": 50},
             { "name": "Vin blanc genre muscadet", "qty": 5},
-            { "name": "Crème Fraiche", "qty": 0.1}
+            { "name": "Beurre", "qty": 5},
+            { "name": "Crème Fraiche", "qty": 2}
         ]
     },
     {   "name":"Poulet champi crème",
@@ -179,8 +179,7 @@
             { "name": "Vin blanc genre muscadet", "qty": 5},
             { "name": "Râpé", "qty": 40},
             { "name": "Sel"},
-            { "name": "Poivre"},
-            { "name": "Beurre", "qty": 1}
+            { "name": "Poivre"}
         ]
     },
     {   "name":"Lasagnes",

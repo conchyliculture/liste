@@ -5,6 +5,7 @@
             { "name": "Lait", "qty":0.1, "_comment": "pas bcp de gens en prennent"},
             { "name": "Nutella", "qty":15},
             { "name": "Jus de fruits", "qty": 0.2},
+            { "name": "Beurre", "qty":10},
             { "name": "Café moulu"}
         ]
     },
@@ -14,7 +15,7 @@
             { "name": "Barre bretonne / Quatre Quart"},
             { "name": "Jus de fruits", "qty": 0.1},
             { "name": "Coca Zéro"},
-            { "name": "Beurre", "qty":10},
+            { "name": "Beurre", "qty":13},
             { "name": "Café moulu"}
         ]
     }
