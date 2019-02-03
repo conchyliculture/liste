@@ -60,19 +60,28 @@
             { "name": "Huile"}
         ]
     },
-
+    {   "name":"Quiche Lorraine",
+        "ingredients":  [
+            { "name": "Pâte brisée", "qty": 0.33},
+            { "name": "Lardons", "qty": 0.66},
+            { "name": "Oignons", "qty": 30},
+            { "name": "Crème Fraiche", "qty": 10},
+            { "name": "Oeufs", "qty": 1},
+            { "name": "Vin blanc genre muscadet", "qty": 10}
+        ]
+    },
     {   "name":"Croziflette",
         "ingredients":  [
             { "name": "Lardons", "qty": 100},
             { "name": "Oignons", "qty": 100},
             { "name": "Crozets (moitié normaux moitié complets, pas de parfum à la con)", "qty": 80},
-            { "name": "Vin blanc de cuisine", "qty": 5},
+            { "name": "Vin blanc genre muscadet", "qty": 5},
             { "name": "Crème Fraiche", "qty": 5},
             { "name": "Reblochon (gros, fermier si possible)", "qty": 0.3},
             { "name": "Râpé", "qty": 50},
             { "name": "Sel"},
             { "name": "Poivre"},
-            { "name": "Beurre"}
+            { "name": "Beurre", "qty": 1}
         ]
     },
     {   "name":"Omelette",
@@ -82,7 +91,7 @@
             { "name": "Oignons", "qty": 60},
             { "name": "Râpé", "qty": 30},
             { "name": "Lardons", "qty": 50},
-            { "name": "Vin blanc de cuisine", "qty": 5},
+            { "name": "Vin blanc genre muscadet", "qty": 5},
             { "name": "Crème Fraiche", "qty": 0.1}
         ]
     },
@@ -91,13 +100,13 @@
             { "name": "Riz", "qty": 80},
             { "name": "Râpé", "qty": 40},
             { "name": "Filet de poulet", "qty": 1},
-            { "name": "Vin blanc de cuisine", "qty": 3},
+            { "name": "Vin blanc genre muscadet", "qty": 3},
             { "name": "Oignons", "qty": 50 , "_comment":"VERIFY"},
             { "name": "Crème Fraiche", "qty": 5},
             { "name": "Champignons", "qty": 150},
             { "name": "Sel"},
             { "name": "Poivre"},
-            { "name": "Beurre"}
+            { "name": "Beurre", "qty": 12}
         ]
     },
     {   "name":"Raclette",
@@ -115,10 +124,11 @@
     },
     {   "name":"Réveillon",
         "ingredients": [
+            { "name": "Beurre", "qty": 20},
             { "name": "Toasts / Pain de mie", "qty": 5},
-            { "name": "Saumon fumé (CHER)", "qty": 3, "_comment":"tranches"},
-            { "name": "Oeufs de truite/limpe", "qty": 20},
-            { "name": "Foie Gras entier", "qty": 100}
+            { "name": "Saumon fumé (CHER)", "qty": 1, "_comment":"tranches"},
+            { "name": "Oeufs de truite/lump", "qty": 20},
+            { "name": "Foie Gras entier", "qty": 50}
         ]
     },
     {   "name":"Sauté de veau chorizo olives",
@@ -137,12 +147,26 @@
     },
     {   "name":"BBQ",
         "ingredients":  [
-            { "name": "Merguez", "qty": 0.91},
-            { "name": "Chipos", "qty": 0.91},
-            { "name": "Brochette boeuf", "qty": 0.91},
-            { "name": "Brochette agneau", "qty": 0.91},
+            { "name": "Merguez", "qty": 0.82},
+            { "name": "Chipos", "qty": 0.88},
+            { "name": "Brochette boeuf", "qty": 0.88},
+            { "name": "Brochette agneau", "qty": 0.88},
             { "name": "Andouillette", "qty": 0.66},
             { "name": "Moutarde"}
+        ]
+    },
+    {   "name":"Salades de pâtes",
+        "ingredients":  [
+            { "name": "Fusili", "qty": 85},
+            { "name": "Tomates", "qty": 0.5},
+            { "name": "Oeufs", "qty": 0.8},
+            { "name": "Comté", "qty": 66},
+            { "name": "Thon", "qty": 35},
+            { "name": "Échalottes", "qty": 0.3},
+            { "name": "Sel"},
+            { "name": "Poivre"},
+            { "name": "Moutarde"},
+            { "name": "Huile d'olive", "qty": 4}
         ]
     },
     {   "name":"Tartiflette",
@@ -152,24 +176,24 @@
             { "name": "Patates", "qty": 100},
             { "name": "Crème Fraiche", "qty": 8},
             { "name": "Reblochon (gros, fermier si possible)", "qty": 0.2},
-            { "name": "Vin blanc de cuisine", "qty": 5},
+            { "name": "Vin blanc genre muscadet", "qty": 5},
             { "name": "Râpé", "qty": 40},
             { "name": "Sel"},
             { "name": "Poivre"},
-            { "name": "Beurre"}
+            { "name": "Beurre", "qty": 1}
         ]
     },
     {   "name":"Lasagnes",
         "ingredients":  [
-            { "name": "Lasagnes", "qty": 50},
+            { "name": "Lasagnes", "qty": 60},
             { "name": "Tomates concassées", "qty": 400},
             { "name": "Oignons", "qty": 20},
-            { "name": "Carottes", "qty": 20},
+            { "name": "Carottes", "qty": 30},
             { "name": "Pancetta/Jambon cru", "qty": 20},
-            { "name": "Boeuf haché", "qty": 40},
-            { "name": "Porc haché", "qty": 40},
+            { "name": "Boeuf haché", "qty": 75},
+            { "name": "Porc haché", "qty": 75},
             { "name": "Huile d'olive", "qty": 2},
-            { "name": "Vin blanc de cuisine", "qty": 3},
+            { "name": "Vin blanc genre muscadet", "qty": 3},
             { "name": "Parmesan", "qty": 20},
             { "name": "Beurre", "qty": 10},
             { "name": "Farine", "qty": 10},
@@ -192,7 +216,7 @@
             { "name": "Boeuf haché", "qty": 40},
             { "name": "Porc haché", "qty": 40},
             { "name": "Huile d'olive", "qty": 2},
-            { "name": "Vin blanc de cuisine", "qty": 3},
+            { "name": "Vin blanc genre muscadet", "qty": 3},
             { "name": "Parmesan", "qty": 20},
             { "name": "Râpé", "qty": 20},
             { "name": "Bouillon cube"},
