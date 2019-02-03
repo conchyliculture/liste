@@ -3,5 +3,6 @@ ruby:
     - '2.4.1'
 install:
     - gem install rack-test
+    - gem install sinatra
 script:
     - ruby tests/tests.rb
