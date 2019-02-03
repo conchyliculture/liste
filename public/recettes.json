@@ -45,6 +45,21 @@
             { "name": "Riz", "qty": 80}
         ]
     },
+	{   "name":"Crêpes & galettes",
+        "ingredients":  [
+            { "name": "Oeufs", "qty": 2},
+            { "name": "Lait", "qty": 10},
+            { "name": "Farine", "qty": 40},
+            { "name": "Râpé", "qty": 20},
+            { "name": "Jambon blanc à la coupe", "qty": 2},
+            { "name": "Champignons", "qty": 100},
+            { "name": "Oignons", "qty": 25},
+            { "name": "Andouille"},
+            { "name": "Sucre"},
+            { "name": "Citron"},
+            { "name": "Huile"}
+        ]
+    },
     {   "name":"Quiche Lorraine",
         "ingredients":  [
             { "name": "Pâte brisée", "qty": 0.33},
