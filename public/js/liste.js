@@ -1,3 +1,16 @@
+var enum_rayon = [
+    "FLEG",
+    "Poissonnerie",
+    "Boucherie",
+    "Volaille",
+    "Charcuterie",
+    "Frais",
+    "Fromagerie",
+    "Matin",
+    "Épicerie",
+    "Jus",
+    "Alcool",
+];
 Object.defineProperty(Array.prototype, 'sortDesc', {
     enumerable: false,
     value: function(key){
@@ -350,20 +363,25 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
 
     updateHTMLListe = function(liste_json){
         // Generates the HTML code for the liste de course.
-        var html_result = "<ul>\n";
+        var html_result = "<ul>";
         liste_json = liste_json.sort(
             function(a,b) {
                 return ((a['rayon'] < b['rayon']) ? -1 : ((a['rayon'] > b['rayon']) ? 1 : 0));
             }
         );
+        var rayon = "";
         for (var i in liste_json) {
             var item = liste_json[i];
             var qty_txt = arrondi(item.qty, item.unit);
-            html_result += "<ul>"+item.name
+            if (item.rayon != rayon) {
+                rayon = item.rayon;
+                html_result += "</ul>"+enum_rayon[rayon]+"<ul>\n";
+            }
+            html_result += "<li>"+item.name
             if (qty_txt == "") {
-                html_result += "</ul>\n" ;
+                html_result += "</li>\n" ;
             } else {
-                html_result += ": "+qty_txt+"</ul>\n" ;
+                html_result += ": "+qty_txt+"</li>\n" ;
             }
         };
         html_result += "</ul>";

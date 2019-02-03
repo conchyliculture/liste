@@ -10,10 +10,11 @@
     },
     {"name":"Matin Kinzout",
        "ingredients": [
-            { "name": "Nutella", "qty":15},
+            { "name": "Nutella", "qty":30},
             { "name": "Barre bretonne / Quatre Quart"},
             { "name": "Jus de fruits", "qty": 0.1},
             { "name": "Coca Zéro"},
+            { "name": "Beurre", "qty":10},
             { "name": "Café moulu"}
         ]
     }
