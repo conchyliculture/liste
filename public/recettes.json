@@ -157,7 +157,7 @@
     },
     {   "name":"Salades de pâtes",
         "ingredients":  [
-            { "name": "Fusili", "qty": 85},
+            { "name": "Fusili (De Cecco ou Barilla)", "qty": 85},
             { "name": "Tomates", "qty": 0.5},
             { "name": "Oeufs", "qty": 0.8},
             { "name": "Comté", "qty": 66},
