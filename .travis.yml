@@ -1,0 +1,5 @@
+language: ruby
+ruby:
+    - '2.5'
+script:
+    - ruby tests/tests.rb

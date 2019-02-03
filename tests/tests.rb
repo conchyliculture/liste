@@ -28,6 +28,22 @@ class TestListe < Test::Unit::TestCase
         Sinatra::Application
     end
 
+    def test_recettes
+        ingredients_path = File.join(File.dirname(File.realpath(__FILE__)), "..", "public", "ingredients.json")
+        recettes_path = File.join(File.dirname(File.realpath(__FILE__)), "..", "public", "recettes.json")
+        ingredients = JSON.parse(File.open(ingredients_path).read())
+        recettes = JSON.parse(File.open(recettes_path).read())
+        ingredients_list = ingredients.keys
+        recettes["recettes"].each do |recette|
+            recette["ingredients"].each do |i|
+                assert ingredients_list.include?(i["name"]), "Plz add ingredient #{i['name']} in ingredients.json"
+            end
+        end
+        ingredients.each do |ingredient_name, reste|
+            assert reste["rayon"] != nil
+        end
+    end
+
     def test_it_gives_recettes
         get '/recettes.json'
         assert last_response.ok?
