@@ -2,15 +2,15 @@
 "recettes": [
     {"name":"Blanquette de veau",
         "ingredients":  [
-            { "name": "Veau", "qty": 120},
+            { "name": "Veau", "qty": 150},
             { "name": "Oignons", "qty": 40},
             { "name": "Vin blanc genre muscadet", "qty": 5},
             { "name": "Carottes", "qty": 30},
             { "name": "Blanc de poireau", "qty": 0.5},
             { "name": "Bouquet Garni"},
-            { "name": "Champignons", "qty": 120},
-            { "name": "Riz", "qty": 100},
-            { "name": "Beurre", "qty": 30},
+            { "name": "Champignons", "qty": 110},
+            { "name": "Riz", "qty": 80},
+            { "name": "Beurre", "qty": 20},
             { "name": "Farine", "qty": 15},
             { "name": "Sel"},
             { "name": "Poivre"}
