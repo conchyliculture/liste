@@ -2,7 +2,7 @@
 "recettes": [
     {"name":"Blanquette de veau",
         "ingredients":  [
-            { "name": "Veau", "qty": 150},
+            { "name": "Veau", "qty": 200},
             { "name": "Oignons", "qty": 40},
             { "name": "Vin blanc genre muscadet", "qty": 5},
             { "name": "Carottes", "qty": 30},
