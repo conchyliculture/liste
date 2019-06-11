@@ -11,6 +11,7 @@ var enum_rayon = [
     "Jus",
     "Alcool",
 ];
+
 Object.defineProperty(Array.prototype, 'sortDesc', {
     enumerable: false,
     value: function(key){
@@ -253,6 +254,13 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         };
     };
 
+    $scope.toggleListe = function($event) {
+        var colRight = angular.element(columnRight);
+        var colMid = angular.element(columnMid);
+        colMid.toggleClass('hide');
+        colRight.toggleClass('hide');
+    };
+
     $scope.loadStoredList = function(json_from_http) {
         // takes the result from the Json representation of the liste de courses,
         // and populates the $scope var
@@ -425,6 +433,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             },
             function() {console.log("Echec de save la liste")});
     };
+
 
 	$scope.showPromptLoad = function($event) {
         var parentEl = angular.element(document.body);

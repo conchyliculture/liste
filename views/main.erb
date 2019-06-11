@@ -16,7 +16,7 @@
 <body ng-controller="ListeCtrl">
 
 <md-toolbar class="md-tall">
-    <span flex><!-- Juste pour faire du vide --></span>
+    <span ><!-- Juste pour faire du vide --></span>
     <h1><span style="margin-left:2%">El toolos de la faisaciòn dela listà dell courses</span></h1>
 </md-toolbar>
 
@@ -26,12 +26,15 @@
     </md-toolbar>
 <% end %>
 
-<div layout="row" flex>
-    <md-card flex="30">
+<div layout="row">
+    <md-card flex="100">
         <md-card-header style="width: 95%" layout="column">
-            <div layout="row" layout-sm="column" layout-align="end" style="width: 100%">
+            <div layout="row" layout-sm="column" layout-align="start" style="width: 100%">
                 <div layout="row">
                     <% if @errormsg.empty? %>
+                    <md-button class="md-primary md-raised" ng-click="toggleListe()" >
+                            Toggle Liste
+                    </md-button>
                     <md-button class="md-primary md-raised" ng-click="showPromptSave($event)" >
                             Save Liste
                     </md-button>
@@ -45,7 +48,7 @@
         <md-card-content>
             <md-input-container class="md-block">
                 <label><h2>Liste</h2></label>
-                <div ng-bind-html="liste_html" flex ></div>
+                <div ng-bind-html="liste_html"></div>
             </md-input-container>
             <md-input-container class="md-block">
                 <label>Texte libre</label>
@@ -54,7 +57,7 @@
         </md-card-content>
     </md-card>
 
-    <div flex="30">
+    <div id="columnMid" flex="100">
         <md-card>
             <md-card-title><span class="md-headline">Valeurs globales</span></md-card-title>
             <md-card-content>
@@ -79,11 +82,11 @@
                         <span class="md-subhead">Matin</span>
                         <md-input-container>
                             <input type="number" max="100" ng-model="gens_par_matin[$index]" ng-change="updateListe();" flex="15">
-                            <span flex>Personnes</span>
+                            <span >Personnes</span>
                         </md-input-container>
                         <span class="md-subhead">Midi</span>
                         <md-input-container>
-                            <md-select ng-model="recette_dejeuner_par_jour[$index]" ng-change="updateListe()" placeholder="Recette Midi" flex>
+                            <md-select ng-model="recette_dejeuner_par_jour[$index]" ng-change="updateListe()" placeholder="Recette Midi" >
                                 <md-option ng-value="{{null}}">---</md-option>
                                 <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
                             </md-select>
@@ -91,7 +94,7 @@
                         <md-input-container layout="row">
                             <span flex="none" flex-order="-1">... pour&nbsp;</span>
                             <input type="number" max="100" ng-model="gens_par_dejeuner[$index]" ng-change="updateListe()" flex-order="1" flex="15">
-                            <span flex flex-order="2">personnes</span>
+                            <span flex-order="2">personnes</span>
                         </md-input-container>
                         <span class="md-subhead">Soir</span>
                         <md-input-container>
@@ -103,14 +106,14 @@
                         <md-input-container layout="row">
                             <span flex="none" flex-order="-1">... pour&nbsp;</span>
                             <input type="number" max="100" ng-model="gens_par_diner[$index]" ng-change="updateListe()" flex-order="1" flex="15">
-                            <span flex flex-order="2">&nbsp;personnes</span>
+                            <span flex-order="2">&nbsp;personnes</span>
                         </md-input-container>
                     </md-card-content>
                 </md-card>
             </div>
         </md-list>
     </div>
-    <md-card flex layout-align="start start">
+    <md-card layout-align="start start" id="columnRight" flex="100">
     <md-card-header layout-align=""><span class="md-headline">Extras</span></md-card-header>
     <md-card-content>
         <md-list layout="column">
