@@ -266,6 +266,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
             // first, every day's meals
             var jour = jours[i]
             $scope.gens_par_matin[i] = jour['matin']['gens'];
+            $scope.recette_matin = jour['matin']['recette'];
             $scope.recette_dejeuner_par_jour[i] = jour['dejeuner']['recette'];
             $scope.gens_par_dejeuner[i] = jour['dejeuner']['gens'];
             $scope.recette_diner_par_jour[i] = jour['diner']['recette'];
