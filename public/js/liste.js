@@ -254,7 +254,7 @@ function ListeCtrl($scope, $http, $mdDialog, recettesService) {
         };
     };
 
-    $scope.toggleListe = function($event) {
+    $scope.toggleListe = function() {
         var colRight = angular.element(columnRight);
         var colMid = angular.element(columnMid);
         colMid.toggleClass('hide');
