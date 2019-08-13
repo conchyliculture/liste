@@ -205,6 +205,18 @@
             { "name": "Romarin"}
         ]
     },
+    {"name":"Riz cantonais",
+        "ingredients":  [
+            { "name": "Riz", "qty": 50},
+            { "name": "Oignons", "qty": 40},
+            { "name": "Vin blanc genre muscadet", "qty": 5},
+            { "name": "Petits pois", "qty": 25},
+            { "name": "Lardons", "qty": 50},
+            { "name": "Oeufs", "qty": 0.5},
+            { "name": "Sel"},
+            { "name": "Poivre"}
+        ]
+    },
     {   "name":"Pâtes Bolo",
         "ingredients":  [
             { "name": "Spaghettis (De Cecco ou Barilla)", "qty": 120},
