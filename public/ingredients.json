@@ -3,6 +3,10 @@
     "rayon": "FLEG",
     "unit": ""
   },
+  "Aubergine": {
+    "rayon": "FLEG",
+    "unit": ""
+  },
   "Barre bretonne / Quatre Quart": {
       "rayon": "Matin",
       "unit": "~1 barre par jour"
@@ -16,6 +20,10 @@
   },
   "Blanc de poireau": {
     "rayon": "FLEG",
+    "unit": ""
+  },
+  "cotes de boeuf du boucher": {
+    "rayon": "Boucherie",
     "unit": ""
   },
   "Boeuf haché": {
@@ -38,6 +46,10 @@
   "Café moulu": {
     "rayon": "Matin",
     "unit":"(1.5 paquet par jour)"
+  },
+  "Courgette": {
+    "rayon": "FLEG",
+    "unit": ""
   },
   "Tomates": {
     "rayon": "FLEG"
@@ -167,6 +179,9 @@
   },
   "Petits oignons": {
     "rayon": "Épicerie"
+  },
+  "Petits pois": {
+    "rayon": "Frais"
   },
   "Piment": {
     "rayon": "Épicerie"

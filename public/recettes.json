@@ -45,7 +45,18 @@
             { "name": "Riz", "qty": 80}
         ]
     },
-	{   "name":"Crêpes & galettes",
+	{   "name":"côtes de boeuf & ratatouille",
+        "ingredients":  [
+            { "name": "cotes de boeuf du boucher", "qty": 0.25},
+            { "name": "Aubergine", "qty": 0.25},
+            { "name": "Courgette", "qty": 0.5},
+            { "name": "Poivrons", "qty": 0.25},
+            { "name": "Tomates", "qty": 1.25},
+            { "name": "Ail"},
+            { "name": "Huile d'olive"}
+        ]
+    },
+	{   "name":"crêpes & galettes",
         "ingredients":  [
             { "name": "Oeufs", "qty": 2},
             { "name": "Lait", "qty": 10},
@@ -214,6 +225,14 @@
             { "name": "Boeuf haché", "qty": 160},
             { "name": "Vin blanc genre muscadet", "qty": 3},
             { "name": "Râpé", "qty": 20},
+    {   "name":"Riz cantonais",
+        "ingredients":  [
+            { "name": "Riz", "qty": 50},
+            { "name": "Oignons", "qty": 40},
+            { "name": "Vin blanc genre muscadet", "qty": 5},
+            { "name": "Petits pois", "qty": 25},
+            { "name": "Lardons", "qty": 50},
+            { "name": "Oeufs", "qty": 0.5},
             { "name": "Sel"},
             { "name": "Poivre"}
         ]
