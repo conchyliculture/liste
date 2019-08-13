@@ -205,6 +205,19 @@
             { "name": "Romarin"}
         ]
     },
+    {   "name":"Hachis parmentier",
+        "ingredients":  [
+            { "name": "Patates", "qty": 220},
+            { "name": "Oignons", "qty": 20},
+            { "name": "Carottes", "qty": 10},
+            { "name": "Ail"},
+            { "name": "Boeuf haché", "qty": 160},
+            { "name": "Vin blanc genre muscadet", "qty": 3},
+            { "name": "Râpé", "qty": 20},
+            { "name": "Sel"},
+            { "name": "Poivre"}
+        ]
+    },
     {   "name":"Pâtes Bolo",
         "ingredients":  [
             { "name": "Spaghettis (De Cecco ou Barilla)", "qty": 120},
