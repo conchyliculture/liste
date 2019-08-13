@@ -224,7 +224,9 @@
             { "name": "Ail"},
             { "name": "Boeuf haché", "qty": 160},
             { "name": "Vin blanc genre muscadet", "qty": 3},
-            { "name": "Râpé", "qty": 20},
+            { "name": "Râpé", "qty": 20}
+        ]
+    },
     {   "name":"Riz cantonais",
         "ingredients":  [
             { "name": "Riz", "qty": 50},
