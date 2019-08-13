@@ -216,7 +216,16 @@
             { "name": "Romarin"}
         ]
     },
-    {"name":"Riz cantonais",
+    {   "name":"Hachis parmentier",
+        "ingredients":  [
+            { "name": "Patates", "qty": 220},
+            { "name": "Oignons", "qty": 20},
+            { "name": "Carottes", "qty": 10},
+            { "name": "Ail"},
+            { "name": "Boeuf haché", "qty": 160},
+            { "name": "Vin blanc genre muscadet", "qty": 3},
+            { "name": "Râpé", "qty": 20},
+    {   "name":"Riz cantonais",
         "ingredients":  [
             { "name": "Riz", "qty": 50},
             { "name": "Oignons", "qty": 40},
