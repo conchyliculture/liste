@@ -220,7 +220,8 @@
         "ingredients":  [
             { "name": "Patates", "qty": 220},
             { "name": "Oignons", "qty": 20},
-            { "name": "Carottes", "qty": 10},
+            { "name": "Carottes", "qty": 20},
+            { "name": "Tomates concassées", "qty": 40},
             { "name": "Ail"},
             { "name": "Boeuf haché", "qty": 160},
             { "name": "Vin blanc genre muscadet", "qty": 3},
