@@ -45,7 +45,7 @@
             { "name": "Riz", "qty": 80}
         ]
     },
-	{   "name":"côtes de boeuf & ratatouille",
+	{   "name":"Côtes de boeuf & ratatouille",
         "ingredients":  [
             { "name": "cotes de boeuf du boucher", "qty": 0.25},
             { "name": "Aubergine", "qty": 0.25},
@@ -56,7 +56,7 @@
             { "name": "Huile d'olive"}
         ]
     },
-	{   "name":"crêpes & galettes",
+	{   "name":"Crêpes & galettes",
         "ingredients":  [
             { "name": "Oeufs", "qty": 2},
             { "name": "Lait", "qty": 10},
