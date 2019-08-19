@@ -45,7 +45,7 @@
             { "name": "Riz", "qty": 80}
         ]
     },
-	{   "name":"côtes de boeuf & ratatouille",
+	{   "name":"Côtes de boeuf & ratatouille",
         "ingredients":  [
             { "name": "cotes de boeuf du boucher", "qty": 0.25},
             { "name": "Aubergine", "qty": 0.25},
@@ -56,7 +56,7 @@
             { "name": "Huile d'olive"}
         ]
     },
-	{   "name":"crêpes & galettes",
+	{   "name":"Crêpes & galettes",
         "ingredients":  [
             { "name": "Oeufs", "qty": 2},
             { "name": "Lait", "qty": 10},
@@ -220,7 +220,8 @@
         "ingredients":  [
             { "name": "Patates", "qty": 220},
             { "name": "Oignons", "qty": 20},
-            { "name": "Carottes", "qty": 10},
+            { "name": "Carottes", "qty": 20},
+            { "name": "Tomates concassées", "qty": 40},
             { "name": "Ail"},
             { "name": "Boeuf haché", "qty": 160},
             { "name": "Vin blanc genre muscadet", "qty": 3},
