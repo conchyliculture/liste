@@ -23,7 +23,7 @@
             { "name": "Oignons", "qty": 50},
             { "name": "Oeufs", "qty": 0.3},
             { "name": "Vin blanc genre muscadet", "qty": 5},
-            { "name": "Crème Fraiche", "qty": 6},
+            { "name": "Crème Fraiche", "qty": 4},
             { "name": "Parmesan", "qty": 50},
             { "name": "Sel"},
             { "name": "Poivre"}
@@ -45,7 +45,7 @@
             { "name": "Riz", "qty": 80}
         ]
     },
-	{   "name":"côtes de boeuf & ratatouille",
+	{   "name":"Côtes de boeuf & ratatouille",
         "ingredients":  [
             { "name": "cotes de boeuf du boucher", "qty": 0.25},
             { "name": "Aubergine", "qty": 0.25},
@@ -56,7 +56,7 @@
             { "name": "Huile d'olive"}
         ]
     },
-	{   "name":"crêpes & galettes",
+	{   "name":"Crêpes & galettes",
         "ingredients":  [
             { "name": "Oeufs", "qty": 2},
             { "name": "Lait", "qty": 10},
@@ -113,7 +113,7 @@
             { "name": "Filet de poulet", "qty": 1},
             { "name": "Vin blanc genre muscadet", "qty": 3},
             { "name": "Oignons", "qty": 50 , "_comment":"VERIFY"},
-            { "name": "Crème Fraiche", "qty": 5},
+            { "name": "Crème Fraiche", "qty": 4},
             { "name": "Champignons", "qty": 150},
             { "name": "Sel"},
             { "name": "Poivre"},
@@ -185,7 +185,7 @@
             { "name": "Lardons", "qty": 100},
             { "name": "Oignons", "qty": 50},
             { "name": "Patates", "qty": 200},
-            { "name": "Crème Fraiche", "qty": 6},
+            { "name": "Crème Fraiche", "qty": 4},
             { "name": "Reblochon (gros, fermier si possible)", "qty": 0.25},
             { "name": "Vin blanc genre muscadet", "qty": 4},
             { "name": "Râpé", "qty": 40},
@@ -220,7 +220,8 @@
         "ingredients":  [
             { "name": "Patates", "qty": 220},
             { "name": "Oignons", "qty": 20},
-            { "name": "Carottes", "qty": 10},
+            { "name": "Carottes", "qty": 20},
+            { "name": "Tomates concassées", "qty": 40},
             { "name": "Ail"},
             { "name": "Boeuf haché", "qty": 160},
             { "name": "Vin blanc genre muscadet", "qty": 3},
