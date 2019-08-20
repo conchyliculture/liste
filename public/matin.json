@@ -15,6 +15,8 @@
             { "name": "Barre bretonne / Quatre Quart"},
             { "name": "Jus de fruits", "qty": 0.1},
             { "name": "Coca Zéro"},
+            { "name": "Lait", "qty":0.1, "_comment": "pas bcp de gens en prennent"},
+            { "name": "Oeufs", "qty":0.1, "_comment": "pas bcp de gens en prennent"},
             { "name": "Beurre", "qty":13},
             { "name": "Café moulu"}
         ]
