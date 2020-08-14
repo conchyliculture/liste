@@ -54,6 +54,9 @@
   "Tomates": {
     "rayon": "FLEG"
   },
+  "Concombre": {
+    "rayon": "FLEG"
+  },
   "Carottes": {
     "rayon": "FLEG",
     "unit": "g"
@@ -155,6 +158,10 @@
     "rayon": "FLEG",
     "unit": "g"
   },
+  "Oignons blancs": {
+    "rayon": "FLEG",
+    "unit": "oignon"
+  },
   "Olives vertes dénoyautées": {
     "rayon": "Épicerie",
     "unit": "g"
@@ -221,6 +228,9 @@
   "Sel": {
     "rayon": "Épicerie"
   },
+  "Semoule moyenne": {
+    "rayon": "Épicerie"
+  },
   "Fusili (De Cecco ou Barilla)": {
     "rayon": "Épicerie",
     "unit": "g"
@@ -241,6 +251,15 @@
   },
   "Thym": {
     "rayon": "Épicerie"
+  },
+  "Menthe": {
+    "rayon": "FLEG"
+  },
+  "Persil": {
+    "rayon": "FLEG"
+  },
+  "Ciboulette": {
+    "rayon": "FLEG"
   },
   "Toasts / Pain de mie": {
     "rayon": "Matin",
