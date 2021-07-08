@@ -265,6 +265,22 @@
             { "name": "Thym"},
             { "name": "Romarin"}
         ]
+    },
+    {   "name":"Taboulé",
+        "ingredients":  [
+            { "name": "Semoule moyenne", "qty": 40},
+            { "name": "Tomates", "qty": 0.5},
+            { "name": "Poivrons", "qty": 0.1},
+            { "name": "Concombre", "qty": 0.17},
+            { "name": "Oignons blancs", "qty": 0.17},
+            { "name": "Citron", "qty": 0.3},
+            { "name": "Huile d'olive", "qty": 2},
+            { "name": "Sel"},
+            { "name": "Poivre"},
+            { "name": "Menthe"},
+            { "name": "Ciboulette"},
+            { "name": "Persil"}
+        ]
     }
 ]
 }
