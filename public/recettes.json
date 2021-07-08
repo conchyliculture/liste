@@ -140,7 +140,7 @@
             {"name": "Ail"},
             {"name": "Thym"},
             {"name": "Persil"},
-            {"name": "Boîte de pulpe de tomates", "qty": 0.5},
+            {"name": "Boîte de tomates pelées", "qty": 240},
             {"name": "Lardons", "qty": 60},
             {"name": "Vin blanc de cuisine", "qty": 4},
             {"name": "Lentilles", "qty": 50}

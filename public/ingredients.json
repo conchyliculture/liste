@@ -30,10 +30,6 @@
     "rayon": "Boucherie",
     "unit": "g"
   },
-  "Boîte de pulpe de tomates": {
-    "rayon": "Épicerie",
-    "unit": "gross boite"
-  },
   "Boîte de tomates pelées": {
     "rayon": "Épicerie",
     "unit": "g"
