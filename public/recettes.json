@@ -133,6 +133,19 @@
             { "name": "Poivre"}
         ]
     },
+    {   "name":"Rougail Saucisse",
+        "ingredients": [
+            {"name": "Saucisse de montbéliard fumée/cuite", "qty": 1},
+            {"name": "Oignons", "qty": 40},
+            {"name": "Ail"},
+            {"name": "Thym"},
+            {"name": "Persil"},
+            {"name": "Boîte de tomates pelées", "qty": 240},
+            {"name": "Lardons", "qty": 60},
+            {"name": "Vin blanc de cuisine", "qty": 4},
+            {"name": "Lentilles", "qty": 50}
+        ]
+    },
     {   "name":"Réveillon",
         "ingredients": [
             { "name": "Beurre", "qty": 20},

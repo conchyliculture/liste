@@ -143,6 +143,10 @@
     "rayon": "Épicerie",
     "unit": "g"
   },
+  "Lentilles": {
+    "rayon": "Épicerie",
+    "unit": "g"
+  },
   "Nutella": {
     "rayon": "Matin",
     "unit":"g"
@@ -220,6 +224,10 @@
   "Rosette à la coupe": {
     "rayon": "Charcuterie",
     "unit": "tranches"
+  },
+  "Saucisse de montbéliard fumée/cuite": {
+    "rayon": "charcuterie",
+    "unit": "saucisse"
   },
   "Saumon fumé (CHER)": {
     "rayon": "Poissonnerie",
