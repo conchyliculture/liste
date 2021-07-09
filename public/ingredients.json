@@ -103,7 +103,7 @@
     "unit": "g"
   },
   "Filet de poulet": {
-    "rayon": "Volaille"
+    "rayon": "Boucherie"
   },
   "Foie Gras entier": {
     "rayon": "Charcuterie",
@@ -226,7 +226,7 @@
     "unit": "tranches"
   },
   "Saucisse de montbéliard fumée/cuite": {
-    "rayon": "Charcuterie",
+    "rayon": "Boucherie",
     "unit": "saucisse"
   },
   "Saumon fumé (CHER)": {
