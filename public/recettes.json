@@ -195,13 +195,13 @@
     },
     {   "name":"Tartiflette",
         "ingredients":  [
-            { "name": "Lardons", "qty": 100},
+            { "name": "Lardons", "qty": 70},
             { "name": "Oignons", "qty": 50},
             { "name": "Patates", "qty": 200},
             { "name": "Crème Fraiche", "qty": 4},
             { "name": "Reblochon (gros, fermier si possible)", "qty": 0.25},
             { "name": "Vin blanc genre muscadet", "qty": 4},
-            { "name": "Râpé", "qty": 40},
+            { "name": "Râpé", "qty": 20},
             { "name": "Sel"},
             { "name": "Poivre"}
         ]
