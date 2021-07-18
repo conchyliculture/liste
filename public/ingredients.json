@@ -3,13 +3,21 @@
     "rayon": "FLEG",
     "unit": ""
   },
+  "Andouille": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Andouillette": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
   "Aubergine": {
     "rayon": "FLEG",
     "unit": ""
   },
   "Barre bretonne / Quatre Quart": {
-      "rayon": "Matin",
-      "unit": "~1 barre par jour"
+    "rayon": "Matin",
+    "unit": "~1 barre par jour"
   },
   "Basilic": {
     "rayon": "Épicerie"
@@ -22,20 +30,9 @@
     "rayon": "FLEG",
     "unit": ""
   },
-  "cotes de boeuf du boucher": {
-    "rayon": "Boucherie",
-    "unit": ""
-  },
   "Boeuf haché": {
     "rayon": "Boucherie",
     "unit": "g"
-  },
-  "Boîte de tomates pelées": {
-    "rayon": "Épicerie",
-    "unit": "g"
-  },
-  "Moutarde": {
-    "rayon": "Épicerie"
   },
   "Bouillon cube": {
     "rayon": "Épicerie"
@@ -43,19 +40,24 @@
   "Bouquet Garni": {
     "rayon": "FLEG"
   },
-  "Café moulu": {
-    "rayon": "Matin",
-    "unit":"(1.5 paquet par jour)"
+  "Boîte de tomates pelées": {
+    "rayon": "Épicerie",
+    "unit": "g"
   },
-  "Courgette": {
-    "rayon": "FLEG",
+  "Brochette agneau": {
+    "rayon": "Boucherie",
     "unit": ""
   },
-  "Tomates": {
-    "rayon": "FLEG"
+  "Brochette boeuf": {
+    "rayon": "Boucherie",
+    "unit": ""
   },
-  "Concombre": {
-    "rayon": "FLEG"
+  "Café moulu": {
+    "rayon": "Matin",
+    "unit": "(1.5 paquet par jour)"
+  },
+  "Carambar": {
+    "rayon": "Épicerie"
   },
   "Carottes": {
     "rayon": "FLEG",
@@ -65,8 +67,23 @@
     "rayon": "FLEG",
     "unit": "g"
   },
+  "Chipos": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Chocolat noir de cuisine": {
+    "rayon": "Épicerie",
+    "unit": "g"
+  },
   "Chorizo": {
     "rayon": "Charcuterie",
+    "unit": ""
+  },
+  "Ciboulette": {
+    "rayon": "FLEG"
+  },
+  "Citron": {
+    "rayon": "FLEG",
     "unit": ""
   },
   "Coca Zéro": {
@@ -77,9 +94,12 @@
     "rayon": "Frais",
     "unit": "g"
   },
+  "Concombre": {
+    "rayon": "FLEG"
+  },
   "Confitures": {
     "rayon": "Matin"
-    },
+  },
   "Coppa à la coupe": {
     "rayon": "Charcuterie",
     "unit": "tranches"
@@ -87,16 +107,21 @@
   "Cornichons": {
     "rayon": "Épicerie"
   },
-  "Crème Fraiche": {
-    "rayon": "Frais",
-    "unit": "cL"
+  "Cotes de boeuf du boucher": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Courgette": {
+    "rayon": "FLEG",
+    "unit": ""
   },
   "Crozets (moitié normaux moitié complets, pas de parfum à la con)": {
     "rayon": "Épicerie",
     "unit": "g"
   },
-  "Échalottes": {
-    "rayon": "FLEG"
+  "Crème Fraiche": {
+    "rayon": "Frais",
+    "unit": "cL"
   },
   "Farine": {
     "rayon": "Épicerie",
@@ -113,14 +138,18 @@
     "rayon": "Fromagerie",
     "unit": "g"
   },
+  "Fusili (De Cecco ou Barilla)": {
+    "rayon": "Épicerie",
+    "unit": "g"
+  },
   "Haricots rouges (en boîte, poids égoutté)": {
     "rayon": "Épicerie",
     "unit": "g"
   },
-  "Huile": {
+  "Huile d'olive": {
     "rayon": "Épicerie"
   },
-  "Huile d'olive": {
+  "Huile": {
     "rayon": "Épicerie"
   },
   "Jambon blanc à la coupe": {
@@ -147,10 +176,32 @@
     "rayon": "Épicerie",
     "unit": "g"
   },
+  "Levure chimique": {
+    "rayon": "Épicerie",
+    "unit": "sachet"
+  },
+  "Mascarpone": {
+    "rayon": "Fromagerie",
+    "unit": "gr"
+  },
+  "Menthe": {
+    "rayon": "FLEG"
+  },
+  "Merguez": {
+    "rayon": "Boucherie",
+    "unit": ""
+  },
+  "Moutarde": {
+    "rayon": "Épicerie"
+  },
   "Nutella": {
     "rayon": "Matin",
-    "unit":"g"
-    },
+    "unit": "g"
+  },
+  "Oeufs de truite/lompe": {
+    "rayon": "Épicerie",
+    "unit": "g"
+  },
   "Oeufs de truite/lump": {
     "rayon": "Frais",
     "unit": "g"
@@ -158,13 +209,13 @@
   "Oeufs": {
     "rayon": "Frais"
   },
-  "Oignons": {
-    "rayon": "FLEG",
-    "unit": "g"
-  },
   "Oignons blancs": {
     "rayon": "FLEG",
     "unit": "oignon"
+  },
+  "Oignons": {
+    "rayon": "FLEG",
+    "unit": "g"
   },
   "Olives vertes dénoyautées": {
     "rayon": "Épicerie",
@@ -185,8 +236,12 @@
     "rayon": "FLEG",
     "unit": "g"
   },
-  "Pâte brisée": {
-    "rayon": "Frais"
+  "Persil": {
+    "rayon": "FLEG"
+  },
+  "Petit LU": {
+    "rayon": "Épicerie",
+    "unit": "paquets"
   },
   "Petits oignons": {
     "rayon": "Épicerie"
@@ -207,12 +262,22 @@
     "rayon": "Boucherie",
     "unit": "g"
   },
-  "Râpé": {
-    "rayon": "Frais",
+  "Poudre d'amande": {
+    "rayon": "Épicerie",
     "unit": "g"
+  },
+  "Pâte brisée": {
+    "rayon": "Frais"
+  },
+  "Pâte feuilletée": {
+    "rayon": "Frais"
   },
   "Reblochon (gros, fermier si possible)": {
     "rayon": "Fromagerie"
+  },
+  "Rhum": {
+    "rayon": "Alcool",
+    "unit": "cL"
   },
   "Riz": {
     "rayon": "Épicerie",
@@ -224,6 +289,10 @@
   "Rosette à la coupe": {
     "rayon": "Charcuterie",
     "unit": "tranches"
+  },
+  "Râpé": {
+    "rayon": "Frais",
+    "unit": "g"
   },
   "Saucisse de montbéliard fumée/cuite": {
     "rayon": "Boucherie",
@@ -239,13 +308,13 @@
   "Semoule moyenne": {
     "rayon": "Épicerie"
   },
-  "Fusili (De Cecco ou Barilla)": {
-    "rayon": "Épicerie",
-    "unit": "g"
-  },
   "Spaghettis (De Cecco ou Barilla)": {
     "rayon": "Épicerie",
     "unit": "g"
+  },
+  "Sucre": {
+    "rayon": "Épicerie",
+    "unit": ""
   },
   "Tabasco": {
     "rayon": "Épicerie"
@@ -260,15 +329,6 @@
   "Thym": {
     "rayon": "Épicerie"
   },
-  "Menthe": {
-    "rayon": "FLEG"
-  },
-  "Persil": {
-    "rayon": "FLEG"
-  },
-  "Ciboulette": {
-    "rayon": "FLEG"
-  },
   "Toasts / Pain de mie": {
     "rayon": "Matin",
     "unit": "tranches"
@@ -277,37 +337,8 @@
     "rayon": "Épicerie",
     "unit": "g"
   },
-  "Merguez": {
-    "rayon": "Boucherie",
-    "unit": ""
-  },
-  "Andouille": {
-    "rayon": "Boucherie",
-    "unit": ""
-  },
-  "Andouillette": {
-    "rayon": "Boucherie",
-    "unit": ""
-  },
-  "Brochette agneau": {
-    "rayon": "Boucherie",
-    "unit": ""
-  },
-  "Brochette boeuf": {
-    "rayon": "Boucherie",
-    "unit": ""
-  },
-  "Chipos": {
-    "rayon": "Boucherie",
-    "unit": ""
-  },
-  "Citron": {
-    "rayon": "FLEG",
-    "unit": ""
-  },
-  "Sucre": {
-    "rayon": "Épicerie",
-    "unit": ""
+  "Tomates": {
+    "rayon": "FLEG"
   },
   "Veau": {
     "rayon": "Boucherie",
@@ -317,12 +348,11 @@
     "rayon": "Charcuterie",
     "unit": "tranches"
   },
-  "Oeufs de truite/lompe": {
-    "rayon": "Épicerie",
-    "unit": "g"
-  },
   "Vin blanc genre muscadet": {
     "rayon": "Alcool",
     "unit": "cL"
+  },
+  "Échalottes": {
+    "rayon": "FLEG"
   }
 }
