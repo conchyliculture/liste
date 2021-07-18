@@ -1,0 +1,33 @@
+{"recettes": [
+    {"name":"Galette frangipane",
+       "ingredients": [
+            { "name": "Poudre d'amande", "qty":150},
+            { "name": "Beurre", "qty": 75},
+            { "name": "Oeufs", "qty": 3},
+            { "name": "Sucre", "qty": 90},
+            { "name": "Pâte feuilletée", "qty":2},
+            { "name": "Rhum", "qty":2}
+        ]
+    },
+    {"name":"Tiramisu",
+       "ingredients": [
+            { "name": "Mascarpone", "qty":500},
+            { "name": "Oeufs", "qty": 6},
+            { "name": "Sucre", "qty": 100},
+            { "name": "Rhum", "qty":2},
+            { "name": "Petit LU", "qty":3},
+            { "name": "Café moulu"}
+        ]
+    },
+    {"name":"Gateau au chocolat",
+       "ingredients": [
+            { "name": "Haricots rouges (en boîte, poids égoutté)", "qty":250},
+            { "name": "Chocolat noir de cuisine", "qty":200},
+            { "name": "Sucre", "qty":50},
+            { "name": "Oeufs", "qty":3},
+            { "name": "Levure chimique", "qty":1},
+            { "name": "Carambar", "qty":1},
+        ]
+    }
+]
+}

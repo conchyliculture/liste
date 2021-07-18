@@ -47,7 +47,7 @@
     },
 	{   "name":"Côtes de boeuf & ratatouille",
         "ingredients":  [
-            { "name": "cotes de boeuf du boucher", "qty": 0.25},
+            { "name": "Cotes de boeuf du boucher", "qty": 0.25},
             { "name": "Aubergine", "qty": 0.25},
             { "name": "Courgette", "qty": 0.5},
             { "name": "Poivrons", "qty": 0.25},
