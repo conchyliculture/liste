@@ -4,7 +4,7 @@
         "ingredients":  [
             { "name": "Veau", "qty": 200},
             { "name": "Oignons", "qty": 40},
-            { "name": "Vin blanc genre muscadet", "qty": 5},
+            { "name": "Vin blanc genre muscadet", "qty": 10},
             { "name": "Carottes", "qty": 30},
             { "name": "Blanc de poireau", "qty": 0.5},
             { "name": "Bouquet Garni"},
