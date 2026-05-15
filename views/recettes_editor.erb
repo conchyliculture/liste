@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html ng-app="recettesEditorApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Éditeur de recettes</title>
+    <link rel="stylesheet" href="/css/angular-material.min.css">
+    <link href="/css/icon_family=Material+Icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/recettes_editor.css">
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/angular-sanitize.js"></script>
+    <script src="/js/angular-animate.min.js"></script>
+    <script src="/js/angular-aria.min.js"></script>
+    <script src="/js/angular-messages.min.js"></script>
+    <script src="/js/angular-material.min.js"></script>
+    <script src="/js/recettes_editor.js"></script>
+</head>
+<body ng-controller="EditorCtrl">
+
+<md-toolbar>
+    <div class="md-toolbar-tools">
+        <a href="/" class="back-link">
+            <md-button class="md-icon-button" aria-label="Retour">
+                <md-icon>arrow_back</md-icon>
+            </md-button>
+        </a>
+        <h2>Éditeur de recettes</h2>
+    </div>
+</md-toolbar>
+
+<md-tabs md-border-bottom>
+    <md-tab label="Recettes" md-on-select="switchTab(0)"></md-tab>
+    <md-tab label="Recettes du matin" md-on-select="switchTab(1)"></md-tab>
+    <md-tab label="Ingrédients" md-on-select="switchTab(2)"></md-tab>
+</md-tabs>
+
+<div class="editor-container">
+    <!-- Left: recipe list (tabs 0 & 1) -->
+    <div class="recipe-list-panel" ng-if="tabIndex < 2">
+        <md-button class="md-primary new-recipe-btn" ng-click="newRecette()">
+            <md-icon>add</md-icon> Nouvelle recette
+        </md-button>
+        <md-divider></md-divider>
+        <md-list>
+            <md-list-item
+                ng-repeat="r in currentList() | orderBy:'name'"
+                ng-click="selectRecette(r)"
+                ng-class="{active: selected && selected._originalName === r.name}">
+                <p>{{r.name}}</p>
+            </md-list-item>
+        </md-list>
+    </div>
+
+    <!-- Left: ingredient catalog list (tab 2) -->
+    <div class="recipe-list-panel catalog-panel" ng-if="tabIndex === 2">
+        <md-button class="md-primary new-recipe-btn" ng-click="newIng()">
+            <md-icon>add</md-icon> Nouvel ingrédient
+        </md-button>
+        <div class="catalog-search">
+            <input type="search" class="ing-input" ng-model="ingSearch" placeholder="Rechercher…">
+        </div>
+        <md-divider></md-divider>
+        <md-list>
+            <md-list-item
+                ng-repeat="ing in catalogList | filter:{name: ingSearch}"
+                ng-click="selectIng(ing)"
+                ng-class="{active: selectedIng && selectedIng._originalName === ing.name}">
+                <p>{{ing.name}}</p>
+                <p class="md-secondary catalog-rayon">{{ing.rayon}}</p>
+            </md-list-item>
+        </md-list>
+    </div>
+
+    <!-- Right: placeholder (recipes) -->
+    <div flex class="recipe-editor-panel" ng-if="tabIndex < 2 && !selected">
+        <div class="editor-empty">
+            <md-icon class="editor-empty-icon">restaurant_menu</md-icon>
+            <p>Sélectionnez une recette ou créez-en une nouvelle.</p>
+        </div>
+    </div>
+
+    <!-- Right: placeholder (ingredients) -->
+    <div flex class="recipe-editor-panel" ng-if="tabIndex === 2 && !selectedIng">
+        <div class="editor-empty">
+            <md-icon class="editor-empty-icon">local_grocery_store</md-icon>
+            <p>Sélectionnez un ingrédient ou créez-en un nouveau.</p>
+        </div>
+    </div>
+
+    <!-- Right: ingredient editor -->
+    <div flex class="recipe-editor-panel" ng-if="tabIndex === 2 && selectedIng">
+        <md-card>
+            <md-card-content>
+                <md-input-container class="md-block">
+                    <label>Nom de l'ingrédient</label>
+                    <input ng-model="selectedIng.name" required>
+                </md-input-container>
+
+                <div layout="row" layout-align="start center">
+                    <md-input-container flex>
+                        <label>Rayon</label>
+                        <md-select ng-model="selectedIng.rayon">
+                            <md-option ng-repeat="r in rayons" value="{{r}}">{{r}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-button class="md-icon-button" ng-click="addRayon()" aria-label="Ajouter un rayon">
+                        <md-icon>add_circle_outline</md-icon>
+                    </md-button>
+                </div>
+
+                <md-input-container class="md-block">
+                    <label>Unité par défaut (optionnel)</label>
+                    <input ng-model="selectedIng.unit" placeholder="ex: g, cL, tranche(s)…">
+                </md-input-container>
+            </md-card-content>
+
+            <md-card-actions layout="row" layout-align="space-between center">
+                <md-button class="md-warn" ng-click="deleteIng()" ng-if="!selectedIng._isNew">
+                    <md-icon>delete</md-icon> Supprimer
+                </md-button>
+                <span flex></span>
+                <md-button ng-click="cancelIngEdit()">Annuler</md-button>
+                <md-button class="md-primary md-raised" ng-click="saveIng()">
+                    <md-icon>save</md-icon> Enregistrer
+                </md-button>
+            </md-card-actions>
+        </md-card>
+    </div>
+
+    <!-- Right: editor -->
+    <div flex class="recipe-editor-panel" ng-if="tabIndex < 2 && selected">
+        <md-card>
+            <md-card-content>
+                <md-input-container class="md-block">
+                    <label>Nom de la recette</label>
+                    <input ng-model="selected.name" required>
+                </md-input-container>
+
+                <div layout="row" layout-align="space-between center" class="ing-header">
+                    <span class="ing-title">Ingrédients</span>
+                    <md-button class="md-primary" ng-click="addIngredient()">
+                        <md-icon>add</md-icon> Ajouter
+                    </md-button>
+                </div>
+
+                <datalist id="ing-list">
+                    <option ng-repeat="n in ingredientNames" value="{{n}}">
+                </datalist>
+
+                <table class="ing-table">
+                    <thead>
+                        <tr>
+                            <th>Ingrédient</th>
+                            <th>Qté</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="ing in selected.ingredients" class="ing-row">
+                            <td class="ing-name-cell">
+                                <input type="text" class="ing-input" ng-model="ing.name"
+                                       list="ing-list" placeholder="Ingrédient">
+                            </td>
+                            <td class="ing-qty-cell">
+                                <input type="number" class="ing-input qty-input" ng-model="ing.qty"
+                                       min="0" step="any" placeholder="—">
+                            </td>
+                            <td class="ing-del-cell">
+                                <md-button class="md-icon-button" ng-click="removeIngredient($index)"
+                                           aria-label="Supprimer l'ingrédient">
+                                    <md-icon>delete</md-icon>
+                                </md-button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </md-card-content>
+
+            <md-card-actions layout="row" layout-align="space-between center">
+                <md-button class="md-warn" ng-click="deleteRecette()" ng-if="!selected._isNew">
+                    <md-icon>delete</md-icon> Supprimer
+                </md-button>
+                <span flex></span>
+                <md-button ng-click="cancelEdit()">Annuler</md-button>
+                <md-button class="md-primary md-raised" ng-click="save()">
+                    <md-icon>save</md-icon> Enregistrer
+                </md-button>
+            </md-card-actions>
+        </md-card>
+    </div>
+</div>
+
+</body>
+</html>
