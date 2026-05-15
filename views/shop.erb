@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Liste de courses</title>
+    <link rel="stylesheet" href="/css/shop.css">
+</head>
+<body data-session="<%= @session_id %>">
+
+<!-- Nickname gate -->
+<div id="nickname-gate" class="gate-overlay" hidden>
+    <div class="gate-card">
+        <h2>Votre prénom ?</h2>
+        <input id="nickname-input" type="text" placeholder="Alice" maxlength="20" autocomplete="off">
+        <button id="nickname-ok">C'est parti !</button>
+    </div>
+</div>
+
+<!-- Main shopping view -->
+<header class="shop-header">
+    <div class="shop-header-inner">
+        <div>
+            <h1 id="shop-label" class="shop-title">Chargement…</h1>
+            <span id="shop-nick" class="shop-nick"></span>
+        </div>
+        <div class="shop-header-actions">
+            <button id="edit-toggle" class="icon-btn" title="Modifier la liste" aria-pressed="false">✏️</button>
+        </div>
+    </div>
+    <div id="shop-shoppers"></div>
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+</header>
+
+<main id="shop-list">
+    <p class="loading-msg">Chargement de la liste…</p>
+</main>
+
+<!-- Add-item panel (shown in edit mode) -->
+<div id="add-item-panel" class="add-panel" hidden>
+    <h3>Ajouter un article</h3>
+    <input id="add-name" type="text" placeholder="Nom de l'article" maxlength="60">
+    <input id="add-qty" type="text" placeholder="Quantité (ex: 500g)" maxlength="20">
+    <select id="add-rayon">
+        <option value="">— Rayon —</option>
+        <% $enum_rayon.each do |r| %>
+        <option><%= r %></option>
+        <% end %>
+    </select>
+    <button id="add-submit">Ajouter</button>
+</div>
+
+<script>
+(function () {
+    "use strict";
+
+    const SESSION_ID = document.body.dataset.session;
+    const RAYON_ORDER = <%= $enum_rayon.to_json %>;
+    const NICK_KEY = "shop_nick_" + SESSION_ID;
+
+    let nickname = localStorage.getItem(NICK_KEY) || "";
+    let editMode = false;
+    let currentState = null;
+
+    // ── Nickname gate ─────────────────────────────────────────────────────────
+
+    function showNicknameGate() {
+        document.getElementById("nickname-gate").hidden = false;
+        document.getElementById("nickname-input").focus();
+    }
+
+    function confirmNickname() {
+        const val = document.getElementById("nickname-input").value.trim();
+        if (!val) return;
+        nickname = val;
+        localStorage.setItem(NICK_KEY, nickname);
+        document.getElementById("nickname-gate").hidden = true;
+        document.getElementById("shop-nick").textContent = nickname;
+        startPush();
+    }
+
+    document.getElementById("nickname-ok").addEventListener("click", confirmNickname);
+    document.getElementById("nickname-input").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") confirmNickname();
+    });
+
+    // ── Edit mode toggle ──────────────────────────────────────────────────────
+
+    document.getElementById("edit-toggle").addEventListener("click", function() {
+        editMode = !editMode;
+        this.setAttribute("aria-pressed", editMode);
+        document.getElementById("add-item-panel").hidden = !editMode;
+        if (currentState) render(currentState);
+    });
+
+    // ── Add item ──────────────────────────────────────────────────────────────
+
+    document.getElementById("add-submit").addEventListener("click", function() {
+        const name = document.getElementById("add-name").value.trim();
+        const qty  = document.getElementById("add-qty").value.trim();
+        const rayon = document.getElementById("add-rayon").value;
+        if (!name) return;
+        document.getElementById("add-name").value = "";
+        document.getElementById("add-qty").value = "";
+        if (currentState) {
+            const idx = currentState.overrides.findIndex(function(o) { return o.item_name === name; });
+            const entry = {item_name: name, rayon: rayon || "Épicerie", qty_display: qty, is_deleted: false, created_by: nickname};
+            if (idx >= 0) { currentState.overrides[idx] = entry; } else { currentState.overrides.push(entry); }
+            render(currentState);
+        }
+        apiPost("/shop/" + SESSION_ID + "/override", {
+            item_name: name, rayon: rayon || "Épicerie",
+            qty_display: qty, is_deleted: false, nickname: nickname
+        });
+    });
+
+    // ── API helpers ───────────────────────────────────────────────────────────
+
+    function apiPost(url, body) {
+        return fetch(url, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(body)
+        });
+    }
+
+    function toggleCheck(itemName) {
+        if (currentState) {
+            const idx = currentState.checked.findIndex(function(c) { return c.item_name === itemName; });
+            if (idx >= 0) {
+                currentState.checked.splice(idx, 1);
+            } else {
+                currentState.checked.push({item_name: itemName, checked_by: nickname});
+            }
+            render(currentState);
+        }
+        apiPost("/shop/" + SESSION_ID + "/check", {item_name: itemName, nickname: nickname});
+    }
+
+    function deleteItem(itemName) {
+        if (currentState) {
+            currentState.overrides.push({item_name: itemName, is_deleted: true, created_by: nickname});
+            render(currentState);
+        }
+        apiPost("/shop/" + SESSION_ID + "/override",
+            {item_name: itemName, is_deleted: true, nickname: nickname});
+    }
+
+    // ── Rendering ─────────────────────────────────────────────────────────────
+
+    function esc(s) {
+        return String(s)
+            .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    function render(state) {
+        currentState = state;
+
+        document.getElementById("shop-label").textContent = state.label || "Liste de courses";
+
+        var shoppers = state.shoppers || [];
+        document.getElementById("shop-shoppers").textContent = shoppers.map(function(n) {
+            return n === nickname ? n + " (vous)" : n;
+        }).join(" · ");
+
+        const checkedMap = {};
+        state.checked.forEach(function(c) { checkedMap[c.item_name] = c.checked_by; });
+
+        const deletedSet = new Set();
+        const addedItems = [];
+        state.overrides.forEach(function(o) {
+            if (o.is_deleted) {
+                deletedSet.add(o.item_name);
+            } else {
+                addedItems.push({rayon: o.rayon || "Épicerie", name: o.item_name, qty_display: o.qty_display, added: true});
+            }
+        });
+
+        // Merge: base items (minus deleted) + added overrides (also minus deleted, not already in base)
+        const baseNames = new Set(state.items.map(function(i) { return i.name; }));
+        const allItems = state.items
+            .filter(function(i) { return !deletedSet.has(i.name); })
+            .concat(addedItems.filter(function(i) { return !deletedSet.has(i.name) && !baseNames.has(i.name); }));
+
+        // Group by rayon
+        const byRayon = {};
+        allItems.forEach(function(item) {
+            const r = item.rayon || "Épicerie";
+            if (!byRayon[r]) byRayon[r] = [];
+            byRayon[r].push(item);
+        });
+
+        // Progress
+        const total = allItems.length;
+        const done  = allItems.filter(function(i) { return checkedMap[i.name]; }).length;
+        document.getElementById("progress-bar").style.width = total ? (100 * done / total) + "%" : "0%";
+
+        // Build HTML
+        let html = "";
+        const rayons = RAYON_ORDER.filter(function(r) { return byRayon[r]; });
+        // Also include any unknown rayons (from added items)
+        Object.keys(byRayon).forEach(function(r) { if (!RAYON_ORDER.includes(r)) rayons.push(r); });
+
+        rayons.forEach(function(rayon) {
+            const items = byRayon[rayon];
+            html += '<div class="shop-rayon"><h3 class="shop-rayon-header">' + esc(rayon) + '</h3><ul>';
+            items.forEach(function(item) {
+                const isChecked = Boolean(checkedMap[item.name]);
+                const checker   = checkedMap[item.name] || "";
+                const addedClass = item.added ? " added-item" : "";
+                html += '<li class="shop-item' + (isChecked ? " checked" : "") + addedClass + '"'
+                      + ' onclick="window._shopToggle(' + JSON.stringify(item.name).replace(/"/g, '&quot;') + ')">'
+                      + '<span class="shop-check-icon">' + (isChecked ? "✓" : "") + '</span>'
+                      + '<span class="shop-name">' + esc(item.name) + '</span>';
+                if (item.qty_display) {
+                    html += '<span class="shop-qty">' + esc(item.qty_display) + '</span>';
+                }
+                if (checker) {
+                    html += '<span class="shop-checker">' + esc(checker) + '</span>';
+                }
+                if (editMode) {
+                    html += '<button class="delete-btn" onclick="event.stopPropagation();window._shopDelete('
+                          + JSON.stringify(item.name).replace(/"/g, '&quot;') + ')" title="Supprimer">🗑</button>';
+                }
+                html += '</li>';
+            });
+            html += '</ul></div>';
+        });
+
+        if (!html) html = '<p class="empty-msg">La liste est vide.</p>';
+        document.getElementById("shop-list").innerHTML = html;
+    }
+
+    window._shopToggle = toggleCheck;
+    window._shopDelete = deleteItem;
+
+    // ── Push (long poll) ──────────────────────────────────────────────────────
+
+    function startPush() {
+        fetch("/shop/" + SESSION_ID + "/state", {cache: "no-store"})
+            .then(function(r) { return r.json(); })
+            .then(function(state) { render(state); });
+
+        function connect() {
+            fetch("/shop/" + SESSION_ID + "/events?nickname=" + encodeURIComponent(nickname),
+                  {cache: "no-store"})
+                .then(function(r) { return r.json(); })
+                .then(function(state) { render(state); connect(); })
+                .catch(function() { setTimeout(connect, 2000); });
+        }
+        connect();
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+
+    if (nickname) {
+        document.getElementById("shop-nick").textContent = nickname;
+        startPush();
+    } else {
+        showNicknameGate();
+    }
+})();
+</script>
+</body>
+</html>

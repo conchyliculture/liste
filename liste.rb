@@ -33,6 +33,7 @@ $enum_rayon = [
 
 DB = SQLite3::Database.new(ENV.fetch("DB_PATH", "liste.db"))
 DB.results_as_hash = true
+DB.execute("PRAGMA foreign_keys = ON")
 DB.execute_batch(<<~SQL)
     CREATE TABLE IF NOT EXISTS saved_lists (
         id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,6 +71,14 @@ DB.execute_batch(<<~SQL)
     );
 SQL
 
+# Expire sessions older than 30 days (children first to satisfy FK constraints)
+DB.execute_batch(<<~SQL)
+    DELETE FROM checked_items     WHERE session_id IN (SELECT id FROM shopping_sessions WHERE created_at < datetime('now', '-30 days'));
+    DELETE FROM session_overrides WHERE session_id IN (SELECT id FROM shopping_sessions WHERE created_at < datetime('now', '-30 days'));
+    DELETE FROM session_presence  WHERE session_id IN (SELECT id FROM shopping_sessions WHERE created_at < datetime('now', '-30 days'));
+    DELETE FROM shopping_sessions WHERE created_at < datetime('now', '-30 days');
+SQL
+
 # One-time migration: import any existing stored_recettes/*.json files
 legacy_dir = File.absolute_path(File.join(File.dirname(__FILE__), "stored_recettes"))
 if File.exist?(legacy_dir)
@@ -83,6 +92,25 @@ if File.exist?(legacy_dir)
         rescue => e
             $stderr.puts "Migration: skipping #{path}: #{e.message}"
         end
+    end
+end
+
+# ── Shopping push (long-poll) registry ────────────────────────────────────────
+
+SESSION_WATCHERS = Hash.new { |h, k| h[k] = [] }
+SESSION_MUTEX = Mutex.new
+EVENTS_TIMEOUT = ENV.fetch("EVENTS_TIMEOUT", "20").to_i
+
+# Wake all long-poll threads on shutdown so the server exits promptly
+_wake_all = proc { SESSION_WATCHERS.each_value { |qs| qs.each { |q| q.push(nil) rescue nil } } }
+[:INT, :TERM].each do |sig|
+    prev = Signal.trap(sig) { _wake_all.call; prev.call if prev.respond_to?(:call) }
+end
+
+def broadcast_state(session_id)
+    state = session_state(session_id)
+    SESSION_MUTEX.synchronize do
+        SESSION_WATCHERS[session_id].each { |q| q.push(state) }
     end
 end
 
@@ -267,6 +295,33 @@ get '/shop/:id/state' do
     state.to_json
 end
 
+get '/shop/:id/events' do
+    session_id = params[:id]
+    nick       = params[:nickname].to_s.strip
+    halt 404, "Session introuvable" unless session_state(session_id)
+
+    unless nick.empty?
+        DB.execute(<<~SQL, [session_id, nick])
+            INSERT INTO session_presence (session_id, nickname, last_seen) VALUES (?, ?, datetime('now'))
+            ON CONFLICT(session_id, nickname) DO UPDATE SET last_seen = datetime('now')
+        SQL
+    end
+
+    queue = Queue.new
+    SESSION_MUTEX.synchronize { SESSION_WATCHERS[session_id] << queue }
+    begin
+        result = begin; queue.pop(timeout: EVENTS_TIMEOUT); rescue ThreadError; nil; end
+        content_type :json
+        headers 'Cache-Control' => 'no-store'
+        (result || session_state(session_id)).to_json
+    ensure
+        SESSION_MUTEX.synchronize do
+            SESSION_WATCHERS[session_id].delete(queue)
+            SESSION_WATCHERS.delete(session_id) if SESSION_WATCHERS[session_id].empty?
+        end
+    end
+end
+
 post '/shop/:id/check' do
     begin
         session_id = params[:id]
@@ -290,6 +345,7 @@ post '/shop/:id/check' do
                 [session_id, item_name, nickname, Time.now.iso8601]
             )
         end
+        broadcast_state(session_id)
         "ok"
     rescue => e
         status 500
@@ -300,6 +356,9 @@ end
 post '/shop/:id/override' do
     begin
         session_id = params[:id]
+        halt 404, "Session introuvable" unless DB.execute(
+            "SELECT 1 FROM shopping_sessions WHERE id = ?", [session_id]
+        ).first
         json = JSON.parse(request.body.read)
         item_name = json["item_name"].to_s
         raise "item_name required" if item_name.empty?
@@ -311,23 +370,7 @@ post '/shop/:id/override' do
                 rayon=excluded.rayon, qty_display=excluded.qty_display,
                 is_deleted=excluded.is_deleted, created_by=excluded.created_by
         SQL
-        "ok"
-    rescue => e
-        status 500
-        e.message
-    end
-end
-
-post '/shop/:id/heartbeat' do
-    begin
-        session_id = params[:id]
-        json = JSON.parse(request.body.read)
-        nick = json["nickname"].to_s.strip
-        return "ok" if nick.empty?
-        DB.execute(<<~SQL, [session_id, nick])
-            INSERT INTO session_presence (session_id, nickname, last_seen) VALUES (?, ?, datetime('now'))
-            ON CONFLICT(session_id, nickname) DO UPDATE SET last_seen = datetime('now')
-        SQL
+        broadcast_state(session_id)
         "ok"
     rescue => e
         status 500

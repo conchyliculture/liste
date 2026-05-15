@@ -1,0 +1,199 @@
+:root {
+    --primary: #1565c0;
+    --primary-light: #e3f2fd;
+    --checked: #81c784;
+    --checked-bg: #f1f8e9;
+    --text: #212121;
+    --text-secondary: #757575;
+    --divider: #e0e0e0;
+    --header-h: 64px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f5f5f5;
+    color: var(--text);
+    padding-top: calc(var(--header-h) + 4px);
+}
+
+/* ── Nickname gate ── */
+.gate-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+}
+.gate-overlay[hidden] { display: none; }
+
+.gate-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px 24px;
+    width: min(340px, 90vw);
+    display: flex; flex-direction: column; gap: 16px;
+    text-align: center;
+}
+.gate-card h2 { font-size: 1.4rem; }
+.gate-card input {
+    border: 2px solid var(--divider);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 1.1rem;
+    text-align: center;
+    outline: none;
+}
+.gate-card input:focus { border-color: var(--primary); }
+.gate-card button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ── Header ── */
+.shop-header {
+    position: fixed; top: 0; left: 0; right: 0;
+    min-height: var(--header-h);
+    background: var(--primary);
+    color: white;
+    z-index: 50;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.shop-header-inner {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: calc(var(--header-h) - 4px);
+}
+.shop-title { font-size: 1.1rem; font-weight: 600; }
+.shop-nick  { font-size: 0.8rem; opacity: 0.8; }
+#shop-shoppers { font-size: 0.75rem; opacity: 0.75; padding: 2px 16px 4px; letter-spacing: 0.02em; }
+.shop-header-actions { display: flex; gap: 8px; }
+.icon-btn {
+    background: rgba(255,255,255,0.15);
+    border: none; border-radius: 50%;
+    width: 40px; height: 40px;
+    font-size: 1.1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+}
+.icon-btn[aria-pressed="true"] { background: rgba(255,255,255,0.35); }
+
+/* ── Progress bar ── */
+#progress-bar-wrap {
+    height: 4px; background: rgba(255,255,255,0.25);
+}
+#progress-bar {
+    height: 100%; background: #a5d6a7;
+    transition: width 0.4s ease;
+}
+
+/* ── List ── */
+main {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 12px 8px 120px;
+}
+.loading-msg { text-align: center; color: var(--text-secondary); padding: 40px; }
+.empty-msg   { text-align: center; color: var(--text-secondary); padding: 40px; }
+
+.shop-rayon { margin-bottom: 16px; }
+
+.shop-rayon-header {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    padding: 4px 12px 6px;
+    border-bottom: 1px solid var(--divider);
+    margin-bottom: 4px;
+}
+
+ul { list-style: none; }
+
+.shop-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.shop-item:active { background: var(--primary-light); }
+
+.shop-item.checked {
+    background: var(--checked-bg);
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+.shop-item.added-item { font-style: italic; }
+
+.shop-check-icon {
+    width: 28px; height: 28px;
+    border: 2px solid var(--divider);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; font-weight: 700;
+    color: var(--checked);
+    flex-shrink: 0;
+    background: white;
+    transition: border-color 0.15s, background 0.15s;
+}
+.shop-item.checked .shop-check-icon {
+    background: var(--checked);
+    border-color: var(--checked);
+    color: white;
+}
+
+.shop-name { flex: 1; font-size: 1rem; }
+.shop-qty  { font-size: 0.85rem; color: var(--primary); font-weight: 500; flex-shrink: 0; }
+.shop-checker { font-size: 0.72rem; color: var(--text-secondary); flex-shrink: 0; }
+
+.delete-btn {
+    background: none; border: none;
+    font-size: 1.1rem; cursor: pointer;
+    opacity: 0.5; flex-shrink: 0;
+    padding: 4px;
+}
+.delete-btn:hover { opacity: 1; }
+
+/* ── Add item panel ── */
+.add-panel {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white;
+    border-top: 1px solid var(--divider);
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    z-index: 40;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+}
+.add-panel[hidden] { display: none; }
+.add-panel h3 { font-size: 0.9rem; color: var(--text-secondary); }
+.add-panel input, .add-panel select {
+    border: 1px solid var(--divider);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    width: 100%;
+    outline: none;
+}
+.add-panel input:focus, .add-panel select:focus { border-color: var(--primary); }
+.add-panel button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+}

@@ -5,6 +5,7 @@ require "test/unit"
 require 'rack/test'
 
 ENV["DB_PATH"] = ":memory:"
+ENV["EVENTS_TIMEOUT"] = "0"
 require_relative "../liste.rb"
 
 class TestListe < Test::Unit::TestCase
@@ -31,6 +32,7 @@ class TestListe < Test::Unit::TestCase
     def setup
         DB.execute("DELETE FROM checked_items")
         DB.execute("DELETE FROM session_overrides")
+        DB.execute("DELETE FROM session_presence")
         DB.execute("DELETE FROM shopping_sessions")
         DB.execute("DELETE FROM saved_lists")
     end
@@ -195,6 +197,34 @@ class TestListe < Test::Unit::TestCase
 
     def test_shop_404_for_unknown_session
         get '/shop/doesnotexist'
+        assert_equal 404, last_response.status
+    end
+
+    def test_shop_events_returns_state
+        sid = make_session
+        get "/shop/#{sid}/events?nickname=Alice"
+        assert last_response.ok?, last_response.body
+        state = json_body
+        assert state.key?("label")
+        assert state.key?("items")
+        assert state.key?("checked")
+        assert state.key?("overrides")
+        assert state.key?("shoppers")
+    end
+
+    def test_shop_events_updates_presence
+        sid = make_session
+        get "/shop/#{sid}/events?nickname=Alice"
+        assert last_response.ok?
+        row = DB.execute(
+            "SELECT nickname FROM session_presence WHERE session_id = ? AND nickname = ?",
+            [sid, "Alice"]
+        ).first
+        assert_not_nil row, "Alice should appear in session_presence after connecting"
+    end
+
+    def test_shop_events_404_for_unknown_session
+        get '/shop/doesnotexist/events?nickname=Alice'
         assert_equal 404, last_response.status
     end
 end
