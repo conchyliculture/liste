@@ -2,15 +2,18 @@
 <html ng-app="listeApp">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Liste de courses</title>
     <link rel="stylesheet" href="/css/angular-material.min.css">
     <link href="css/icon_family=Material+Icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <script src="js/angular.min.js"></script>
     <script src="js/angular-sanitize.js"></script>
     <script src="js/angular-animate.min.js"></script>
     <script src="js/angular-aria.min.js"></script>
     <script src="js/angular-messages.min.js"></script>
     <script src="js/angular-material.min.js"></script>
+    <script src="js/liste.helpers.js"></script>
     <script src="js/liste.js"></script>
 </head>
 <body ng-controller="ListeCtrl">
@@ -20,9 +23,11 @@
     <h1><span style="margin-left:2%">El toolos de la faisaciòn dela listà dell courses</span></h1>
 </md-toolbar>
 
-<% if not @errormsg.empty? %>
+<% unless @errors.empty? %>
     <md-toolbar class="md-accent">
-        <%= @errormsg %>
+        <h2 class="md-toolbar-tools">
+            <% @errors.each do |m| %><span><%= Rack::Utils.escape_html(m) %></span><% end %>
+        </h2>
     </md-toolbar>
 <% end %>
 
@@ -31,7 +36,7 @@
         <md-card-header style="width: 95%" layout="column">
             <div layout="row" layout-sm="column" layout-align="start" style="width: 100%">
                 <div layout="row">
-                    <% if @errormsg.empty? %>
+                    <% if @errors.empty? %>
                     <md-button class="md-primary md-raised" ng-click="toggleListe()" >
                             Toggle Liste
                     </md-button>
@@ -41,15 +46,64 @@
                     <md-button class="md-primary md-raised" ng-click="showPromptLoad($event)" >
                             Load Liste
                     </md-button>
+                    <md-button class="md-accent md-raised" ng-click="startShoppingCurrent()" ng-disabled="!liste_rayons || !liste_rayons.length">
+                            Faire les courses
+                    </md-button>
+                    <md-button href="/recettes-editor">
+                            Recettes
+                    </md-button>
                     <% end %>
                 </div>
             </div>
         </md-card-header>
         <md-card-content>
-            <md-input-container class="md-block">
-                <label><h2>Liste</h2></label>
-                <div ng-bind-html="liste_html"></div>
-            </md-input-container>
+            <h2 class="liste-title">Liste</h2>
+            <div class="liste-rayons">
+                <div ng-repeat="rayon in liste_rayons" class="rayon-section">
+                    <h3 class="rayon-header">{{rayon.name}}</h3>
+                    <ul class="rayon-items">
+                        <li ng-repeat="item in rayon.items" class="liste-item">
+                            <span class="item-name">{{item.name}}</span>
+                            <span class="item-qty" ng-if="displayQty(item) || item.editing">
+                                <button class="qty-btn" ng-click="adjustQty(item, -1)" ng-if="!item.editing">−</button>
+                                <span class="qty-value" ng-if="!item.editing" ng-click="startEditQty(item)" title="Cliquer pour modifier">{{displayQty(item)}}</span>
+                                <span class="qty-edit" ng-if="item.editing">
+                                    <input class="qty-edit-input" type="number" min="0" step="any" ng-model="item.editVal"
+                                        ng-blur="commitEditQty(item)"
+                                        ng-keydown="$event.key==='Enter' && commitEditQty(item) || $event.key==='Escape' && cancelEditQty(item)"
+                                        focus-on="item.editing">
+                                    <span class="qty-edit-unit">{{item.unit}}</span>
+                                </span>
+                                <button class="qty-btn" ng-click="adjustQty(item, 1)" ng-if="!item.editing">+</button>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="add-item-row">
+                <md-input-container class="add-item-article">
+                    <label>Article</label>
+                    <input ng-model="new_item.name" ng-keydown="$event.key==='Enter' && addCustomItem()">
+                </md-input-container>
+                <md-input-container class="add-item-qty">
+                    <label>Qté</label>
+                    <input ng-model="new_item.qty" type="number" min="0" step="any">
+                </md-input-container>
+                <md-input-container class="add-item-unit">
+                    <label>Unité</label>
+                    <input ng-model="new_item.unit">
+                </md-input-container>
+                <md-input-container class="add-item-rayon">
+                    <md-select ng-model="new_item.rayon" placeholder="Rayon">
+                        <md-option ng-repeat="r in enum_rayon" ng-value="$index">{{r}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-button class="md-primary md-raised" ng-click="addCustomItem()" ng-disabled="!new_item.name.trim()">+</md-button>
+            </div>
+            <div ng-repeat="item in custom_items" layout="row" layout-align="start center" class="custom-item-row">
+                <span flex class="custom-item-label">{{item.name}}<span ng-if="item.qty" class="custom-item-qty"> — {{item.qty}}{{item.unit ? ' ' + item.unit : ''}}</span></span>
+                <md-button class="md-icon-button" ng-click="removeCustomItem($index)" aria-label="Supprimer">✕</md-button>
+            </div>
             <md-input-container class="md-block">
                 <label>Texte libre</label>
                 <textarea ng-model="extras_txt" md-select-on-focus></textarea>
@@ -76,38 +130,32 @@
         </md-card>
         <md-list style="padding:0px">
             <div ng-repeat="jour in range_jours track by $index" md-ink-ripple="false" md-ni-ink="true">
-                <md-card>
-                    <md-card-title><span class="md-headline"> Jour {{$index+1}} </span></md-card-title>
-                    <md-card-content layout="column">
-                        <span class="md-subhead">Matin</span>
-                        <md-input-container>
-                            <input type="number" max="100" ng-model="gens_par_matin[$index]" ng-change="updateListe();" flex="15">
-                            <span >Personnes</span>
-                        </md-input-container>
-                        <span class="md-subhead">Midi</span>
-                        <md-input-container>
-                            <md-select ng-model="recette_dejeuner_par_jour[$index]" ng-change="updateListe()" placeholder="Recette Midi" >
+                <md-card class="jour-card">
+                    <md-card-content class="jour-card-content">
+                        <span class="jour-label">Jour {{$index+1}}</span>
+                        <div class="meal-row">
+                            <span class="meal-label">Matin</span>
+                            <input type="number" max="100" class="gens-input" ng-model="gens_par_matin[$index]" ng-change="updateListe()">
+                            <span class="pers-label">pers.</span>
+                        </div>
+                        <div class="meal-row">
+                            <span class="meal-label">Midi</span>
+                            <md-select class="meal-select" ng-model="recette_dejeuner_par_jour[$index]" ng-change="updateListe()" placeholder="---">
                                 <md-option ng-value="{{null}}">---</md-option>
                                 <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
                             </md-select>
-                        </md-input-container>
-                        <md-input-container layout="row">
-                            <span flex="none" flex-order="-1">... pour&nbsp;</span>
-                            <input type="number" max="100" ng-model="gens_par_dejeuner[$index]" ng-change="updateListe()" flex-order="1" flex="15">
-                            <span flex-order="2">personnes</span>
-                        </md-input-container>
-                        <span class="md-subhead">Soir</span>
-                        <md-input-container>
-                            <md-select ng-model="recette_diner_par_jour[$index]" ng-change="updateListe()" placeholder="Recette Soir">
+                            <input type="number" max="100" class="gens-input" ng-model="gens_par_dejeuner[$index]" ng-change="updateListe()">
+                            <span class="pers-label">pers.</span>
+                        </div>
+                        <div class="meal-row">
+                            <span class="meal-label">Soir</span>
+                            <md-select class="meal-select" ng-model="recette_diner_par_jour[$index]" ng-change="updateListe()" placeholder="---">
                                 <md-option ng-value="{{null}}">---</md-option>
                                 <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
                             </md-select>
-                        </md-input-container>
-                        <md-input-container layout="row">
-                            <span flex="none" flex-order="-1">... pour&nbsp;</span>
-                            <input type="number" max="100" ng-model="gens_par_diner[$index]" ng-change="updateListe()" flex-order="1" flex="15">
-                            <span flex-order="2">&nbsp;personnes</span>
-                        </md-input-container>
+                            <input type="number" max="100" class="gens-input" ng-model="gens_par_diner[$index]" ng-change="updateListe()">
+                            <span class="pers-label">pers.</span>
+                        </div>
                     </md-card-content>
                 </md-card>
             </div>

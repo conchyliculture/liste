@@ -97,6 +97,21 @@ class TestListe < Test::Unit::TestCase
         assert_equal 2, data["jours"].size
     end
 
+    def test_it_saves_and_restores_custom_items_and_adjustments
+        liste = $test_liste.merge("liste" => $test_liste["liste"].merge(
+            "custom_items"    => [{"name" => "Sel", "qty" => 1, "unit" => "kg", "rayon" => 8}],
+            "qty_adjustments" => {"Oeufs" => 3}
+        ))
+        json_post '/save', liste
+        assert last_response.ok?
+
+        get '/get-stored-listes'
+        rows = JSON.parse(last_response.body)
+        data = rows.first["liste"]
+        assert_equal [{"name" => "Sel", "qty" => 1, "unit" => "kg", "rayon" => 8}], data["custom_items"]
+        assert_equal({"Oeufs" => 3}, data["qty_adjustments"])
+    end
+
     def test_it_gives_stored_lists
         DB.execute("INSERT INTO saved_lists (name, created_at, data) VALUES (?, ?, ?)",
                    ["test", "2026-01-01T00-00-00", {jours: []}.to_json])
