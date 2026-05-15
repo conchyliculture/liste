@@ -14,8 +14,10 @@ Encoding.default_internal = Encoding::UTF_8
 set :protection, :except => [:json_csrf]
 set :host_authorization, { permitted_hosts: [] }
 
+PUBLIC_DIR = File.expand_path("public", __dir__)
+
 # Ordre dans lequel trier les rayons (dans l'ordre d'arrivée au supermarché)
-$enum_rayon = [
+_rayons_default = [
     "FLEG", # Fruits et legumes
     "Poissonnerie",
     "Boucherie",
@@ -28,6 +30,11 @@ $enum_rayon = [
     "Jus",
     "Alcool",
 ]
+$enum_rayon = begin
+    JSON.parse(File.read(File.join(PUBLIC_DIR, "rayons.json")))
+rescue Errno::ENOENT, JSON::ParserError
+    _rayons_default
+end
 
 # ── Database ──────────────────────────────────────────────────────────────────
 
@@ -80,7 +87,7 @@ DB.execute_batch(<<~SQL)
 SQL
 
 # One-time migration: import any existing stored_recettes/*.json files
-legacy_dir = File.absolute_path(File.join(File.dirname(__FILE__), "stored_recettes"))
+legacy_dir = File.expand_path("stored_recettes", __dir__)
 if File.exist?(legacy_dir)
     Dir.glob(File.join(legacy_dir, "*.json")).each do |path|
         begin
@@ -97,7 +104,7 @@ end
 
 # ── Shopping push (long-poll) registry ────────────────────────────────────────
 
-SESSION_WATCHERS = Hash.new { |h, k| h[k] = [] }
+SESSION_WATCHERS = {}
 SESSION_MUTEX = Mutex.new
 EVENTS_TIMEOUT = ENV.fetch("EVENTS_TIMEOUT", "20").to_i
 
@@ -110,7 +117,7 @@ end
 def broadcast_state(session_id)
     state = session_state(session_id)
     SESSION_MUTEX.synchronize do
-        SESSION_WATCHERS[session_id].each { |q| q.push(state) }
+        SESSION_WATCHERS[session_id]&.each { |q| q.push(state) }
     end
 end
 
@@ -145,30 +152,11 @@ end
 
 # ── Recipe validation ─────────────────────────────────────────────────────────
 
-def add_error(msg)
-    (@error_list ||= []) << msg
-    @errormsg = "<h2 class=\"md-toolbar-tools\">"
-    @error_list.each do |m|
-        @errormsg << "<span>#{m}</span>"
-    end
-    @errormsg << "</h2>"
-end
-
-def validate_recette_json(path)
-    j = JSON.parse(File.read(path))
-    ings_path = File.absolute_path(File.join(File.dirname(__FILE__),"public","ingredients.json"))
-    begin
-        liste_ingredients = JSON.parse(File.read(ings_path))
-    rescue JSON::ParserError => e
-        $stderr.puts e
-        add_error("Error parsing JSON file #{ings_path}")
-        raise e
-    end
-    raise "No ingredients" if liste_ingredients.size == 0
-    unless j.has_key?("recettes")
-        raise "missing top key 'recettes'"
-    end
-    raise "No recette" if j['recettes'].size == 0
+def validate_recette_data(j)
+    liste_ingredients = JSON.parse(File.read(File.join(PUBLIC_DIR, "ingredients.json")))
+    raise "No ingredients" if liste_ingredients.empty?
+    raise "missing top key 'recettes'" unless j.has_key?("recettes")
+    raise "No recette" if j['recettes'].empty?
     j['recettes'].each do |r|
         raise "missing key 'name' for a recette" unless r['name']
         raise "recette name empty" if r["name"].empty?
@@ -178,56 +166,125 @@ def validate_recette_json(path)
             raise "missing key 'name' for ingredient in recette #{r['name']}" unless ing['name']
             raise "ingredient name empty in recette #{r['name']}" if ing["name"].empty?
             if ing.has_key?('qty')
-                raise "ingredient #{ing['name']} in recette #{r['name']} is not a number but #{ing['qty'].class}" unless (ing['qty'].class == Float or ing['qty'].class == Integer)
+                unless ing['qty'].is_a?(Float) || ing['qty'].is_a?(Integer)
+                    raise "ingredient #{ing['name']} in recette #{r['name']} is not a number but #{ing['qty'].class}"
+                end
             end
-            if ing.has_key?('unit')
-                raise "bad unit '#{ing["unit"]}' for ingredient #{ing['name']} in recette #{r['name']}" unless ["g", "cL", "L", " tranche(s)"].include?(ing["unit"])
-            end
-            if not liste_ingredients.has_key?(ing['name'])
+            unless liste_ingredients.has_key?(ing['name'])
                 raise "ingredient #{ing['name']} in recette #{r['name']} is not in \"ingredients\" list"
             end
         end
     end
 end
 
-recettes_json = [
-    File.absolute_path(File.join(File.dirname(__FILE__),"public","recettes.json")),
-    File.absolute_path(File.join(File.dirname(__FILE__),"public","matin.json"))
-]
-recettes_json.each do |path|
-    begin
-        validate_recette_json(path)
-    rescue JSON::ParserError => e
-        add_error("Error parsing JSON file #{path}")
-    rescue RuntimeError =>e
-        add_error("Error parsing JSON file #{path}: #{e.message}")
-    end
+def validate_recette_json(path)
+    validate_recette_data(JSON.parse(File.read(path)))
+end
+
+# ── Startup validation ────────────────────────────────────────────────────────
+
+STARTUP_ERRORS = []
+[File.join(PUBLIC_DIR, "recettes.json"), File.join(PUBLIC_DIR, "matin.json")].each do |path|
+    validate_recette_json(path)
+rescue JSON::ParserError, RuntimeError => e
+    STARTUP_ERRORS << "Error in #{File.basename(path)}: #{e.message}"
 end
 
 before do
-    @error_list = []
-    @errormsg = ""
+    @errors = STARTUP_ERRORS.dup
+end
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+helpers do
+    def json_endpoint
+        yield
+    rescue JSON::ParserError => e
+        halt 400, "JSON invalide: #{e.message}"
+    rescue ArgumentError, RuntimeError => e
+        halt 400, e.message
+    end
+
+    def save_recettes_file(path, body)
+        j = JSON.parse(body)
+        validate_recette_data(j)
+        File.write(path, JSON.pretty_generate(j))
+        "ok"
+    end
 end
 
 # ── Static data routes ────────────────────────────────────────────────────────
 
 get '/recettes.json' do
-    send_file File.absolute_path(File.join(File.dirname(__FILE__),"public","recettes.json"))
+    send_file File.join(PUBLIC_DIR, "recettes.json")
 end
 
 get '/matin.json' do
-    send_file File.absolute_path(File.join(File.dirname(__FILE__),"public","matin.json"))
+    send_file File.join(PUBLIC_DIR, "matin.json")
 end
 
 get '/ingredients' do
-    ings_path = File.absolute_path(File.join(File.dirname(__FILE__),"public","ingredients.json"))
-    j = JSON.parse(File.read(ings_path))
-    j.each{|k,v| v["rayon"] = $enum_rayon.index(v["rayon"])}
+    j = JSON.parse(File.read(File.join(PUBLIC_DIR, "ingredients.json")))
+    j.each { |_k, v| v["rayon"] = $enum_rayon.index(v["rayon"]) }
     JSON.generate(j)
+end
+
+get '/rayons' do
+    content_type :json
+    JSON.generate($enum_rayon)
+end
+
+post '/rayons/save' do
+    json_endpoint do
+        j = JSON.parse(request.body.read)
+        raise ArgumentError, "Expected an array" unless j.is_a?(Array)
+        raise ArgumentError, "Empty list" if j.empty?
+        j.each { |r| raise ArgumentError, "Invalid rayon" unless r.is_a?(String) && !r.strip.empty? }
+        $enum_rayon = j
+        File.write(File.join(PUBLIC_DIR, "rayons.json"), JSON.pretty_generate(j))
+        "ok"
+    end
+end
+
+get '/ingredients/raw' do
+    content_type :json
+    File.read(File.join(PUBLIC_DIR, "ingredients.json"))
+end
+
+post '/ingredients/save' do
+    json_endpoint do
+        j = JSON.parse(request.body.read)
+        raise ArgumentError, "Expected an object" unless j.is_a?(Hash)
+        raise ArgumentError, "Empty catalog" if j.empty?
+        j.each do |name, v|
+            raise ArgumentError, "Invalid entry for '#{name}'" unless v.is_a?(Hash)
+            raise ArgumentError, "Missing rayon for '#{name}'" unless v['rayon'].is_a?(String) && !v['rayon'].empty?
+            raise ArgumentError, "Unknown rayon '#{v['rayon']}' for '#{name}'" unless $enum_rayon.include?(v['rayon'])
+            raise ArgumentError, "Invalid unit for '#{name}'" if v.key?('unit') && !v['unit'].is_a?(String)
+        end
+        File.write(File.join(PUBLIC_DIR, "ingredients.json"), JSON.pretty_generate(j.sort.to_h))
+        "ok"
+    end
 end
 
 get '/' do
     erb :main
+end
+
+get '/recettes-editor' do
+    erb :recettes_editor
+end
+
+post '/recettes/save' do
+    json_endpoint do
+        save_recettes_file(File.join(PUBLIC_DIR, "recettes.json"), request.body.read)
+    end
+end
+
+post '/matin/save' do
+    json_endpoint do
+        save_recettes_file(File.join(PUBLIC_DIR, "matin.json"), request.body.read)
+    end
 end
 
 # ── Saved lists ───────────────────────────────────────────────────────────────
@@ -242,29 +299,26 @@ get '/get-stored-listes' do
 end
 
 post '/save' do
-    begin
+    json_endpoint do
         json = JSON.parse(request.body.read)
         nom  = json["name"].to_s
-        raise "Invalid name" unless nom =~ /\A[a-z0-9 ]+\z/i
+        raise ArgumentError, "Invalid name" unless nom =~ /\A[a-z0-9 ]+\z/i
         date = Time.now.strftime("%Y-%m-%dT%H-%M-%S")
         DB.execute(
             "INSERT INTO saved_lists (name, created_at, data) VALUES (?, ?, ?)",
             [nom, date, json["liste"].to_json]
         )
         "done"
-    rescue => e
-        status 500
-        "Couldn't save: #{e.message}"
     end
 end
 
 # ── Shopping mode ─────────────────────────────────────────────────────────────
 
 post '/shopping-session' do
-    begin
+    json_endpoint do
         json  = JSON.parse(request.body.read)
         items = json["items"]
-        raise "items required" unless items.is_a?(Array)
+        raise ArgumentError, "items required" unless items.is_a?(Array)
         id    = SecureRandom.hex(8)
         date  = Time.now.strftime("%Y-%m-%dT%H-%M-%S")
         DB.execute(
@@ -273,9 +327,6 @@ post '/shopping-session' do
         )
         content_type :json
         { id: id, url: "/shop/#{id}" }.to_json
-    rescue => e
-        status 500
-        e.message
     end
 end
 
@@ -298,7 +349,8 @@ end
 get '/shop/:id/events' do
     session_id = params[:id]
     nick       = params[:nickname].to_s.strip
-    halt 404, "Session introuvable" unless session_state(session_id)
+    initial    = session_state(session_id)
+    halt 404, "Session introuvable" unless initial
 
     unless nick.empty?
         DB.execute(<<~SQL, [session_id, nick])
@@ -308,28 +360,28 @@ get '/shop/:id/events' do
     end
 
     queue = Queue.new
-    SESSION_MUTEX.synchronize { SESSION_WATCHERS[session_id] << queue }
+    SESSION_MUTEX.synchronize { (SESSION_WATCHERS[session_id] ||= []) << queue }
     begin
         result = begin; queue.pop(timeout: EVENTS_TIMEOUT); rescue ThreadError; nil; end
         content_type :json
         headers 'Cache-Control' => 'no-store'
-        (result || session_state(session_id)).to_json
+        (result || initial).to_json
     ensure
         SESSION_MUTEX.synchronize do
-            SESSION_WATCHERS[session_id].delete(queue)
-            SESSION_WATCHERS.delete(session_id) if SESSION_WATCHERS[session_id].empty?
+            SESSION_WATCHERS[session_id]&.delete(queue)
+            SESSION_WATCHERS.delete(session_id) if SESSION_WATCHERS[session_id]&.empty?
         end
     end
 end
 
 post '/shop/:id/check' do
-    begin
+    json_endpoint do
         session_id = params[:id]
-        json = JSON.parse(request.body.read)
+        json       = JSON.parse(request.body.read)
         item_name  = json["item_name"].to_s
         nickname   = json["nickname"].to_s.strip
-        raise "item_name required" if item_name.empty?
-        raise "nickname required"  if nickname.empty?
+        raise ArgumentError, "item_name required" if item_name.empty?
+        raise ArgumentError, "nickname required"  if nickname.empty?
 
         existing = DB.execute(
             "SELECT 1 FROM checked_items WHERE session_id = ? AND item_name = ?",
@@ -347,21 +399,18 @@ post '/shop/:id/check' do
         end
         broadcast_state(session_id)
         "ok"
-    rescue => e
-        status 500
-        e.message
     end
 end
 
 post '/shop/:id/override' do
-    begin
-        session_id = params[:id]
-        halt 404, "Session introuvable" unless DB.execute(
-            "SELECT 1 FROM shopping_sessions WHERE id = ?", [session_id]
-        ).first
-        json = JSON.parse(request.body.read)
+    session_id = params[:id]
+    halt 404, "Session introuvable" unless DB.execute(
+        "SELECT 1 FROM shopping_sessions WHERE id = ?", [session_id]
+    ).first
+    json_endpoint do
+        json      = JSON.parse(request.body.read)
         item_name = json["item_name"].to_s
-        raise "item_name required" if item_name.empty?
+        raise ArgumentError, "item_name required" if item_name.empty?
 
         DB.execute(<<~SQL, [session_id, item_name, json["rayon"], json["qty_display"], json["is_deleted"] ? 1 : 0, json["nickname"]])
             INSERT INTO session_overrides (session_id, item_name, rayon, qty_display, is_deleted, created_by)
@@ -372,8 +421,5 @@ post '/shop/:id/override' do
         SQL
         broadcast_state(session_id)
         "ok"
-    rescue => e
-        status 500
-        e.message
     end
 end

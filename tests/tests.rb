@@ -125,7 +125,136 @@ class TestListe < Test::Unit::TestCase
 
     def test_it_rejects_invalid_name
         json_post '/save', $test_liste.merge("name" => "../../etc/passwd")
-        assert_equal 500, last_response.status
+        assert_equal 400, last_response.status
+    end
+
+    # ── /recettes/save ─────────────────────────────────────────────────────────
+
+    def test_recettes_save_valid
+        original = File.read(File.join(PUBLIC_DIR, "recettes.json"))
+        json_post '/recettes/save', JSON.parse(original)
+        assert last_response.ok?, "Expected 200, got #{last_response.status}: #{last_response.body}"
+        assert_equal "ok", last_response.body
+    ensure
+        File.write(File.join(PUBLIC_DIR, "recettes.json"), original) if original
+    end
+
+    def test_recettes_save_invalid_json
+        post '/recettes/save', "{bad json", {'CONTENT_TYPE' => 'application/json'}
+        assert_equal 400, last_response.status
+        assert_include last_response.body, "JSON invalide"
+    end
+
+    def test_recettes_save_unknown_ingredient
+        original = File.read(File.join(PUBLIC_DIR, "recettes.json"))
+        bad = {"recettes" => [{"name" => "Test", "ingredients" => [{"name" => "__no_such_ingredient__", "qty" => 1}]}]}
+        json_post '/recettes/save', bad
+        assert_equal 400, last_response.status
+        assert_include last_response.body, "not in"
+        assert_equal original, File.read(File.join(PUBLIC_DIR, "recettes.json")), "File must not be modified on error"
+    ensure
+        File.write(File.join(PUBLIC_DIR, "recettes.json"), original) if original
+    end
+
+    def test_recettes_save_missing_recettes_key
+        original = File.read(File.join(PUBLIC_DIR, "recettes.json"))
+        json_post '/recettes/save', {"not_recettes" => []}
+        assert_equal 400, last_response.status
+        assert_equal original, File.read(File.join(PUBLIC_DIR, "recettes.json")), "File must not be modified on error"
+    ensure
+        File.write(File.join(PUBLIC_DIR, "recettes.json"), original) if original
+    end
+
+    # ── /matin/save ────────────────────────────────────────────────────────────
+
+    def test_matin_save_valid
+        original = File.read(File.join(PUBLIC_DIR, "matin.json"))
+        json_post '/matin/save', JSON.parse(original)
+        assert last_response.ok?, "Expected 200, got #{last_response.status}: #{last_response.body}"
+        assert_equal "ok", last_response.body
+    ensure
+        File.write(File.join(PUBLIC_DIR, "matin.json"), original) if original
+    end
+
+    def test_matin_save_invalid_json
+        post '/matin/save', "{bad json", {'CONTENT_TYPE' => 'application/json'}
+        assert_equal 400, last_response.status
+        assert_include last_response.body, "JSON invalide"
+    end
+
+    def test_matin_save_schema_error
+        original = File.read(File.join(PUBLIC_DIR, "matin.json"))
+        json_post '/matin/save', {"recettes" => [{"name" => "T", "ingredients" => [{"name" => "__ghost__", "qty" => 1}]}]}
+        assert_equal 400, last_response.status
+        assert_equal original, File.read(File.join(PUBLIC_DIR, "matin.json")), "File must not be modified on error"
+    ensure
+        File.write(File.join(PUBLIC_DIR, "matin.json"), original) if original
+    end
+
+    # ── /ingredients/save ──────────────────────────────────────────────────────
+
+    def test_ingredients_save_valid
+        original = File.read(File.join(PUBLIC_DIR, "ingredients.json"))
+        json_post '/ingredients/save', JSON.parse(original)
+        assert last_response.ok?, "Expected 200, got #{last_response.status}: #{last_response.body}"
+        assert_equal "ok", last_response.body
+    ensure
+        File.write(File.join(PUBLIC_DIR, "ingredients.json"), original) if original
+    end
+
+    def test_ingredients_save_invalid_json
+        post '/ingredients/save', "{bad json", {'CONTENT_TYPE' => 'application/json'}
+        assert_equal 400, last_response.status
+        assert_include last_response.body, "JSON invalide"
+    end
+
+    def test_ingredients_save_unknown_rayon
+        original = File.read(File.join(PUBLIC_DIR, "ingredients.json"))
+        bad = JSON.parse(original).merge("__test_ing__" => {"rayon" => "__no_such_rayon__"})
+        json_post '/ingredients/save', bad
+        assert_equal 400, last_response.status
+        assert_include last_response.body, "Unknown rayon"
+        assert_equal original, File.read(File.join(PUBLIC_DIR, "ingredients.json")), "File must not be modified on error"
+    ensure
+        File.write(File.join(PUBLIC_DIR, "ingredients.json"), original) if original
+    end
+
+    def test_ingredients_save_not_an_object
+        post '/ingredients/save', "[]", {'CONTENT_TYPE' => 'application/json'}
+        assert_equal 400, last_response.status
+    end
+
+    # ── /rayons/save ───────────────────────────────────────────────────────────
+
+    def test_rayons_save_valid
+        original = File.read(File.join(PUBLIC_DIR, "rayons.json"))
+        json_post '/rayons/save', JSON.parse(original)
+        assert last_response.ok?, "Expected 200, got #{last_response.status}: #{last_response.body}"
+        assert_equal "ok", last_response.body
+    ensure
+        File.write(File.join(PUBLIC_DIR, "rayons.json"), original) if original
+    end
+
+    def test_rayons_save_invalid_json
+        post '/rayons/save', "{bad json", {'CONTENT_TYPE' => 'application/json'}
+        assert_equal 400, last_response.status
+        assert_include last_response.body, "JSON invalide"
+    end
+
+    def test_rayons_save_empty_array
+        original = File.read(File.join(PUBLIC_DIR, "rayons.json"))
+        json_post '/rayons/save', []
+        assert_equal 400, last_response.status
+    ensure
+        File.write(File.join(PUBLIC_DIR, "rayons.json"), original) if original
+    end
+
+    def test_rayons_save_not_an_array
+        original = File.read(File.join(PUBLIC_DIR, "rayons.json"))
+        json_post '/rayons/save', {"rayon" => "FLEG"}
+        assert_equal 400, last_response.status
+    ensure
+        File.write(File.join(PUBLIC_DIR, "rayons.json"), original) if original
     end
 
     # ── Shopping sessions ──────────────────────────────────────────────────────

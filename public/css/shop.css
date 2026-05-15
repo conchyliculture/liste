@@ -132,8 +132,11 @@ ul { list-style: none; }
 
 .shop-item.checked {
     background: var(--checked-bg);
-    text-decoration: line-through;
     color: var(--text-secondary);
+}
+.shop-item.checked .shop-name,
+.shop-item.checked .shop-qty {
+    text-decoration: line-through;
 }
 .shop-item.added-item { font-style: italic; }
 
