@@ -1,30 +1,56 @@
 # Liste
 
-## Start the thing
+## Start
 
-### If you're a man
+### The easy way
 
 ```
-# apt-get install ruby-sinatra
+# apt-get install ruby-sinatra ruby-sqlite3 puma
 $ ruby liste.rb
 ```
 
 Point your browser to [http://localhost:4567](http://localhost:4567)
 
-### If you're a Docker lover
+### With bundler
+
+```
+bundle install
+bundle exec rackup
+```
+
+Point your browser to [http://localhost:9292](http://localhost:9292)
+
+### Docker
 
 ```
 docker build -t liste .
 docker run -d --name liste -p 4567:4567 liste
 ```
 
-Point your browser to [http://localhost:4567](http://localhost:4567)
+### Configuration
+
+| Environment variable | Default | Description |
+|---|---|---|
+| `DB_PATH` | `liste.db` | Path to the SQLite database |
+| `EVENTS_TIMEOUT` | `20` | Long-poll timeout in seconds |
+
+## Features
+
+- Plan meals for the week (lunch/dinner/breakfast, per-person quantities)
+- Shopping list generated automatically, sorted by supermarket aisle
+- Adjust quantities and add custom items before shopping
+- Save and reload lists
+- **Shopping mode**: share a session URL with others — everyone sees real-time updates as items get checked off
+
+## Shopping mode
+
+Click **Faire les courses** from the main page or the load dialog to create a session. Share the URL with other shoppers. Each person picks a nickname and can check items off, add items, or delete items. The list updates live across all connected devices via long-polling.
 
 ## Update recettes
 
-1) If it's a breakfast meal, update `public/matin.json`, otherwise it goes into `public/recettes.json`.
+1. Breakfast meals go in `public/matin.json`, everything else in `public/recettes.json`.
 
-2) Add your recette as a JSON object:
+2. Add your recette as a JSON object:
 
 ```json
 {   "name": "Sandwich au caca",
@@ -35,11 +61,9 @@ Point your browser to [http://localhost:4567](http://localhost:4567)
 }
 ```
 
-Here the qty is counted as the number needed for 1 person in that meal. You don't have to specify the unit here,
-this is taken care of in `public/ingredients.json`.
+`qty` is the amount per person per meal. Units are defined separately in `public/ingredients.json`.
 
-3) Make sure your ingredients are in the list of valid ingredients. Otherwise, update
-`public/ingredients.json`:
+3. Make sure all ingredients exist in `public/ingredients.json`, adding any new ones:
 
 ```json
   "Caca": {
@@ -48,28 +72,20 @@ this is taken care of in `public/ingredients.json`.
   }
 ```
 
-Done!
-
 ## Tests
 
 ```
 # apt-get install ruby-rack-test
-$ bash tests/run.sh
+$ ruby tests/tests.rb
 ```
-
-Then point your browser to [http://localhost:4567/jasmine_tests.html](http://localhost:4567/jasmine_tests.html).
 
 ## Dev
 
 WARNING all the crap is mostly in
 `public/js/liste.js` and is disgusting AngluarJS shit copy pasted from StackOverflow and inserted into the code with a sledgehammer.
 
-The backend is
-`liste.rb`, it mostly handles save and loading of the listes de courses.
-It also converts "rayon" into integers, used for sorting the courses.
+The backend is `liste.rb` (Sinatra): saves/loads lists (SQLite), serves the main page, handles shopping sessions.
 
-The backend serves the main html page through templating the
-`views/main.erb` file.
+The frontend is `public/js/liste.js` (AngularJS): `ListeCtrl` for the main page, `LoadCtrl` for the load dialog, `ShoppingCtrl` for the shopping session dialog.
 
-`liste.js` has 1 main Angular controller `ListeCtrl` for the main page, and a tiny controller
-`LoadCtrl` for the load liste popup.
+Shopping mode UI is a separate self-contained page (`views/shop.erb`) with vanilla JS and long-polling.

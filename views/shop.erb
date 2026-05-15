@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Liste de courses</title>
+    <link rel="stylesheet" href="/css/shop.css">
+</head>
+<body data-session="<%= @session_id %>"
+      data-rayons="<%= Rack::Utils.escape_html($enum_rayon.to_json) %>">
+
+<!-- Nickname gate -->
+<div id="nickname-gate" class="gate-overlay" hidden>
+    <div class="gate-card">
+        <h2>Votre prénom ?</h2>
+        <input id="nickname-input" type="text" placeholder="Alice" maxlength="20" autocomplete="off">
+        <button id="nickname-ok">C'est parti !</button>
+    </div>
+</div>
+
+<!-- Main shopping view -->
+<header class="shop-header">
+    <div class="shop-header-inner">
+        <div>
+            <h1 id="shop-label" class="shop-title">Chargement…</h1>
+            <span id="shop-nick" class="shop-nick"></span>
+        </div>
+        <div class="shop-header-actions">
+            <button id="edit-toggle" class="icon-btn" title="Modifier la liste" aria-pressed="false">✏️</button>
+        </div>
+    </div>
+    <div id="shop-shoppers"></div>
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+</header>
+
+<main id="shop-list">
+    <p class="loading-msg">Chargement de la liste…</p>
+</main>
+
+<!-- Add-item panel (shown in edit mode) -->
+<div id="add-item-panel" class="add-panel" hidden>
+    <h3>Ajouter un article</h3>
+    <input id="add-name" type="text" placeholder="Nom de l'article" maxlength="60">
+    <input id="add-qty" type="text" placeholder="Quantité (ex: 500g)" maxlength="20">
+    <select id="add-rayon">
+        <option value="">— Rayon —</option>
+        <% $enum_rayon.each do |r| %>
+        <option><%= Rack::Utils.escape_html(r) %></option>
+        <% end %>
+    </select>
+    <button id="add-submit">Ajouter</button>
+</div>
+
+<script src="/js/shop.js"></script>
+</body>
+</html>

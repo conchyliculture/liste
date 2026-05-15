@@ -1,0 +1,21 @@
+<md-dialog aria-label="Faire les courses">
+    <md-dialog-content>
+        <div class="md-dialog-content">
+            <h2>Faire les courses</h2>
+            <div ng-if="joinMode">
+                <md-input-container class="md-block">
+                    <label>URL ou identifiant de session</label>
+                    <input ng-model="form.joinId" placeholder="…/shop/abc123 ou abc123"
+                           ng-keydown="joinOnEnter($event)" md-autofocus>
+                </md-input-container>
+            </div>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <md-button ng-click="cancel()">Annuler</md-button>
+        <md-button ng-if="joinMode" ng-click="hideJoin()">← Retour</md-button>
+        <md-button ng-if="!joinMode" ng-click="showJoin()">Rejoindre une session</md-button>
+        <md-button class="md-primary md-raised" ng-if="!joinMode" ng-click="create()">Nouvelle session</md-button>
+        <md-button class="md-primary md-raised" ng-if="joinMode" ng-click="join()" ng-disabled="!form.joinId.trim()">Rejoindre</md-button>
+    </md-dialog-actions>
+</md-dialog>
