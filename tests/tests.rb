@@ -1,38 +1,59 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-require "fileutils"
 require "json"
-require "pp"
 require "test/unit"
 require 'rack/test'
 
+ENV["DB_PATH"] = ":memory:"
 require_relative "../liste.rb"
-
 
 class TestListe < Test::Unit::TestCase
     include Rack::Test::Methods
 
-    $test_dir = "test_dir"
-    $recettes_dir = File.join($test_dir,"recettes")
-    $test_liste = {"name":"lolilol","recettes":[{"diner":{"recette":"","gens":10},"dejeuner":{"recette":"Omelette","gens":10}},{"diner":{"recette":"","gens":10},"dejeuner":{"recette":"Croziflette","gens":10}},{"diner":{"recette":"","gens":10},"dejeuner":{"recette":"","gens":10}},{"diner":{"recette":"","gens":10},"dejeuner":{"recette":"","gens":10}},{"diner":{"recette":"","gens":10},"dejeuner":{"recette":"","gens":10}}],"date":"2017-01-25T16-26-38"}
+    $test_liste = {
+        "name" => "lolilol",
+        "liste" => {
+            "jours" => [
+                {"matin" => {"recette" => "", "gens" => 10}, "dejeuner" => {"recette" => "Omelette", "gens" => 10}, "diner" => {"recette" => "", "gens" => 10}},
+                {"matin" => {"recette" => "", "gens" => 10}, "dejeuner" => {"recette" => "Croziflette", "gens" => 10}, "diner" => {"recette" => "", "gens" => 10}},
+            ],
+            "extras" => [],
+            "extras_txt" => ""
+        }
+    }
+
+    $test_items = [
+        {"rayon" => "FLEG",     "name" => "Carottes",  "qty_display" => "1.2kg"},
+        {"rayon" => "Épicerie", "name" => "Sel",       "qty_display" => ""},
+        {"rayon" => "Alcool",   "name" => "Vin rouge", "qty_display" => "3L"},
+    ]
 
     def setup
-        FileUtils.mkdir_p($recettes_dir)
-    end
-
-    def teardown
-        FileUtils.rm_rf($test_dir)
+        DB.execute("DELETE FROM checked_items")
+        DB.execute("DELETE FROM session_overrides")
+        DB.execute("DELETE FROM shopping_sessions")
+        DB.execute("DELETE FROM saved_lists")
     end
 
     def app
         Sinatra::Application
     end
 
+    def json_post(path, body)
+        post path, body.to_json, {'CONTENT_TYPE' => 'application/json'}
+    end
+
+    def json_body
+        JSON.parse(last_response.body)
+    end
+
+    # ── Recipe data validation ─────────────────────────────────────────────────
+
     def test_recettes
         ingredients_path = File.join(File.dirname(File.realpath(__FILE__)), "..", "public", "ingredients.json")
-        recettes_path = File.join(File.dirname(File.realpath(__FILE__)), "..", "public", "recettes.json")
+        recettes_path    = File.join(File.dirname(File.realpath(__FILE__)), "..", "public", "recettes.json")
         ingredients = JSON.parse(File.open(ingredients_path).read())
-        recettes = JSON.parse(File.open(recettes_path).read())
+        recettes    = JSON.parse(File.open(recettes_path).read())
         ingredients_list = ingredients.keys
         recettes["recettes"].each do |recette|
             recette["ingredients"].each do |i|
@@ -44,39 +65,136 @@ class TestListe < Test::Unit::TestCase
         end
     end
 
-    def test_it_gives_recettes
-        get '/recettes.json'
-        assert last_response.ok?
-        j = JSON.parse(last_response.body)
-        assert { j['recettes'].size > 5}
-        assert_block {j['recettes'][0]["name"] =~/^[a-z ]+$/i}
-        assert_block { j['recettes'][0]["ingredients"].size > 3}
-    end
+    # ── Static routes ──────────────────────────────────────────────────────────
 
     def test_it_gives_index
         get '/'
         assert last_response.ok?
-        b = last_response.body
-        assert_send([b, :include?, "ng-controller=\"ListeCtrl\""])
+        assert_include last_response.body, "ng-controller=\"ListeCtrl\""
+    end
+
+    def test_it_gives_recettes
+        get '/recettes.json'
+        assert last_response.ok?
+        j = JSON.parse(last_response.body)
+        assert j['recettes'].size > 5
+        assert_match(/^[a-z ]+$/i, j['recettes'][0]["name"])
+        assert j['recettes'][0]["ingredients"].size > 3
+    end
+
+    # ── Saved lists ────────────────────────────────────────────────────────────
+
+    def test_it_saves_list
+        json_post '/save', $test_liste
+        assert last_response.ok?, "Expected 200, got #{last_response.status}: #{last_response.body}"
+        assert_equal "done", last_response.body
+
+        row = DB.execute("SELECT name, data FROM saved_lists").first
+        assert_equal "lolilol", row["name"]
+        data = JSON.parse(row["data"])
+        assert_equal 2, data["jours"].size
     end
 
     def test_it_gives_stored_lists
-        File.open(File.join($recettes_dir,"#{$test_liste[:date]}-#{$test_liste[:name]}.json"),'w+') do |f|
-            f.write($test_liste.to_json)
-        end
+        DB.execute("INSERT INTO saved_lists (name, created_at, data) VALUES (?, ?, ?)",
+                   ["test", "2026-01-01T00-00-00", {jours: []}.to_json])
         get '/get-stored-listes'
         assert last_response.ok?
-        assert {last_response.body == [$test_liste].to_json }
+        rows = JSON.parse(last_response.body)
+        assert_equal 1, rows.size
+        assert_equal "test", rows[0]["name"]
+        assert_equal "2026-01-01T00-00-00", rows[0]["date"]
     end
 
-    def test_it_saves_list
-        post '/save', $test_liste.to_json
-        assert last_response.ok?
-        assert { last_response.body == "done"}
+    def test_it_rejects_invalid_name
+        json_post '/save', $test_liste.merge("name" => "../../etc/passwd")
+        assert_equal 500, last_response.status
+    end
 
-        recette = File.read(Dir.glob($recettes_dir+"/*.json")[0])
-        j = JSON.parse(recette)
-        assert {j["name"] == "lolilol"}
-        assert {j["date"] == Time.now.strftime('%Y-%m-%dT%H-%M-%S')}
+    # ── Shopping sessions ──────────────────────────────────────────────────────
+
+    def make_session
+        json_post '/shopping-session', {items: $test_items, label: "Test session"}
+        assert last_response.ok?, last_response.body
+        json_body["id"]
+    end
+
+    def test_it_creates_shopping_session
+        sid = make_session
+        assert_not_nil sid
+        assert_equal "/shop/#{sid}", json_body["url"]
+        row = DB.execute("SELECT label FROM shopping_sessions WHERE id = ?", [sid]).first
+        assert_equal "Test session", row["label"]
+    end
+
+    def test_it_gives_shop_page
+        sid = make_session
+        get "/shop/#{sid}"
+        assert last_response.ok?
+        assert_include last_response.body, sid
+    end
+
+    def test_it_gives_shop_state
+        sid = make_session
+        get "/shop/#{sid}/state"
+        assert last_response.ok?
+        state = json_body
+        assert_equal 3, state["items"].size
+        assert_equal [], state["checked"]
+        assert_equal [], state["overrides"]
+    end
+
+    def test_it_checks_item
+        sid = make_session
+        json_post "/shop/#{sid}/check", {item_name: "Carottes", nickname: "Alice"}
+        assert last_response.ok?
+
+        get "/shop/#{sid}/state"
+        state = json_body
+        checked = state["checked"].find { |c| c["item_name"] == "Carottes" }
+        assert_not_nil checked
+        assert_equal "Alice", checked["checked_by"]
+    end
+
+    def test_it_unchecks_item
+        sid = make_session
+        json_post "/shop/#{sid}/check", {item_name: "Carottes", nickname: "Alice"}
+        json_post "/shop/#{sid}/check", {item_name: "Carottes", nickname: "Alice"}
+
+        get "/shop/#{sid}/state"
+        checked = json_body["checked"].find { |c| c["item_name"] == "Carottes" }
+        assert_nil checked, "Item should be unchecked after second toggle"
+    end
+
+    def test_it_adds_override_item
+        sid = make_session
+        json_post "/shop/#{sid}/override", {
+            item_name: "Beurre", rayon: "Frais", qty_display: "250g", is_deleted: false, nickname: "Bob"
+        }
+        assert last_response.ok?
+
+        get "/shop/#{sid}/state"
+        added = json_body["overrides"].find { |o| o["item_name"] == "Beurre" }
+        assert_not_nil added
+        assert_equal 0, added["is_deleted"]
+        assert_equal "Bob", added["created_by"]
+    end
+
+    def test_it_deletes_item
+        sid = make_session
+        json_post "/shop/#{sid}/override", {
+            item_name: "Carottes", is_deleted: true, nickname: "Bob"
+        }
+        assert last_response.ok?
+
+        get "/shop/#{sid}/state"
+        deleted = json_body["overrides"].find { |o| o["item_name"] == "Carottes" }
+        assert_not_nil deleted
+        assert_equal 1, deleted["is_deleted"]
+    end
+
+    def test_shop_404_for_unknown_session
+        get '/shop/doesnotexist'
+        assert_equal 404, last_response.status
     end
 end

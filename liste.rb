@@ -4,19 +4,19 @@
 require "erb"
 require "json"
 require "sinatra"
+require "sqlite3"
+require "securerandom"
 
 set :bind, "0.0.0.0"
 Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
 set :protection, :except => [:json_csrf]
+set :host_authorization, { permitted_hosts: [] }
 
-$recettes_dir = File.absolute_path(File.join(File.dirname(__FILE__), "stored_recettes"))
-$jsonsep = "___"
-
-# Ordre dans lequel trier les rayons (dans l'ordre d'arrivée au supermarché)
+# Ordre dans lequel trier les rayons (dans l'ordre d'arrivée au supermarché)
 $enum_rayon = [
-    "FLEG", # Fruits et legumes
+    "FLEG", # Fruits et legumes
     "Poissonnerie",
     "Boucherie",
     "Volaille",
@@ -28,6 +28,94 @@ $enum_rayon = [
     "Jus",
     "Alcool",
 ]
+
+# ── Database ──────────────────────────────────────────────────────────────────
+
+DB = SQLite3::Database.new(ENV.fetch("DB_PATH", "liste.db"))
+DB.results_as_hash = true
+DB.execute_batch(<<~SQL)
+    CREATE TABLE IF NOT EXISTS saved_lists (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        name       TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        data       TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS shopping_sessions (
+        id         TEXT PRIMARY KEY,
+        label      TEXT,
+        created_at TEXT NOT NULL,
+        items      TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS checked_items (
+        session_id TEXT NOT NULL REFERENCES shopping_sessions(id),
+        item_name  TEXT NOT NULL,
+        checked_by TEXT NOT NULL,
+        checked_at TEXT NOT NULL,
+        PRIMARY KEY (session_id, item_name)
+    );
+    CREATE TABLE IF NOT EXISTS session_overrides (
+        session_id  TEXT NOT NULL REFERENCES shopping_sessions(id),
+        item_name   TEXT NOT NULL,
+        rayon       TEXT,
+        qty_display TEXT,
+        is_deleted  INTEGER DEFAULT 0,
+        created_by  TEXT,
+        PRIMARY KEY (session_id, item_name)
+    );
+    CREATE TABLE IF NOT EXISTS session_presence (
+        session_id TEXT NOT NULL REFERENCES shopping_sessions(id),
+        nickname   TEXT NOT NULL,
+        last_seen  TEXT NOT NULL,
+        PRIMARY KEY (session_id, nickname)
+    );
+SQL
+
+# One-time migration: import any existing stored_recettes/*.json files
+legacy_dir = File.absolute_path(File.join(File.dirname(__FILE__), "stored_recettes"))
+if File.exist?(legacy_dir)
+    Dir.glob(File.join(legacy_dir, "*.json")).each do |path|
+        begin
+            j = JSON.parse(File.read(path))
+            DB.execute(
+                "INSERT OR IGNORE INTO saved_lists (name, created_at, data) VALUES (?, ?, ?)",
+                [j["name"], j["date"], j.fetch("liste", j).to_json]
+            )
+        rescue => e
+            $stderr.puts "Migration: skipping #{path}: #{e.message}"
+        end
+    end
+end
+
+def session_state(session_id)
+    session = DB.execute("SELECT label, items FROM shopping_sessions WHERE id = ?", [session_id]).first
+    return nil unless session
+    checked = DB.execute(
+        "SELECT item_name, checked_by FROM checked_items WHERE session_id = ?", [session_id]
+    )
+    overrides = DB.execute(
+        "SELECT item_name, rayon, qty_display, is_deleted, created_by FROM session_overrides WHERE session_id = ?",
+        [session_id]
+    )
+    shoppers = DB.execute(
+        "SELECT nickname FROM session_presence WHERE session_id = ? AND last_seen > datetime('now', '-30 seconds')",
+        [session_id]
+    ).map { |r| r["nickname"] }
+    {
+        label:     session["label"],
+        items:     JSON.parse(session["items"]),
+        checked:   checked.map  { |r| { item_name: r["item_name"], checked_by: r["checked_by"] } },
+        overrides: overrides.map { |r| {
+            item_name:   r["item_name"],
+            rayon:       r["rayon"],
+            qty_display: r["qty_display"],
+            is_deleted:  r["is_deleted"],
+            created_by:  r["created_by"]
+        }},
+        shoppers:  shoppers
+    }
+end
+
+# ── Recipe validation ─────────────────────────────────────────────────────────
 
 def add_error(msg)
     (@error_list ||= []) << msg
@@ -71,7 +159,6 @@ def validate_recette_json(path)
                 raise "ingredient #{ing['name']} in recette #{r['name']} is not in \"ingredients\" list"
             end
         end
-
     end
 end
 
@@ -94,46 +181,14 @@ before do
     @errormsg = ""
 end
 
+# ── Static data routes ────────────────────────────────────────────────────────
 
-get '/get-stored-listes' do
-    content_type :json
-    liste = []
-    Dir.glob(File.join($recettes_dir,"*.json")).each do |j|
-        jj = JSON.parse(File.read(j))
-        liste << jj
-    end
-    return liste.to_json
+get '/recettes.json' do
+    send_file File.absolute_path(File.join(File.dirname(__FILE__),"public","recettes.json"))
 end
 
-def save(data)
-    json = JSON.parse(data)
-    nom = json["name"]
-    if nom =~ /[a-z0-9 ]+/i
-        liste = json["liste"]
-        date = Time.now().strftime("%Y-%m-%dT%H-%M-%S")
-        json["date"] = date
-        path = File.join($recettes_dir,"#{date}-#{nom}.json")
-        if File.exist?(path)
-            status 500
-            return "File exists"
-        end
-        File.open(path, "w") do |f|
-            f.write JSON.pretty_generate(json)
-        end
-        return "done"
-    else
-        status 500
-    end
-end
-
-post '/save' do
-    begin
-        save(request.body.read)
-    rescue Exception =>e
-    rescue Exception =>e 
-        status 500
-        "Couldn't save recette #{e.message}"
-    end
+get '/matin.json' do
+    send_file File.absolute_path(File.join(File.dirname(__FILE__),"public","matin.json"))
 end
 
 get '/ingredients' do
@@ -144,12 +199,138 @@ get '/ingredients' do
 end
 
 get '/' do
-    if not File.exists?($recettes_dir)
-        begin
-            Dir.mkdir($recettes_dir)
-        rescue Errno::EACCES
-            add_error("Can't create #{$recettes_dir} directory because of permissions issues (access denied), you won't be able to save listes.")
-        end
-    end
     erb :main
+end
+
+# ── Saved lists ───────────────────────────────────────────────────────────────
+
+get '/get-stored-listes' do
+    content_type :json
+    rows = DB.execute("SELECT id, name, created_at, data FROM saved_lists ORDER BY created_at DESC")
+    rows.map { |r|
+        d = JSON.parse(r["data"]) rescue {}
+        { "id" => r["id"], "name" => r["name"], "date" => r["created_at"], "liste" => d }
+    }.to_json
+end
+
+post '/save' do
+    begin
+        json = JSON.parse(request.body.read)
+        nom  = json["name"].to_s
+        raise "Invalid name" unless nom =~ /\A[a-z0-9 ]+\z/i
+        date = Time.now.strftime("%Y-%m-%dT%H-%M-%S")
+        DB.execute(
+            "INSERT INTO saved_lists (name, created_at, data) VALUES (?, ?, ?)",
+            [nom, date, json["liste"].to_json]
+        )
+        "done"
+    rescue => e
+        status 500
+        "Couldn't save: #{e.message}"
+    end
+end
+
+# ── Shopping mode ─────────────────────────────────────────────────────────────
+
+post '/shopping-session' do
+    begin
+        json  = JSON.parse(request.body.read)
+        items = json["items"]
+        raise "items required" unless items.is_a?(Array)
+        id    = SecureRandom.hex(8)
+        date  = Time.now.strftime("%Y-%m-%dT%H-%M-%S")
+        DB.execute(
+            "INSERT INTO shopping_sessions (id, label, created_at, items) VALUES (?, ?, ?, ?)",
+            [id, json["label"], date, items.to_json]
+        )
+        content_type :json
+        { id: id, url: "/shop/#{id}" }.to_json
+    rescue => e
+        status 500
+        e.message
+    end
+end
+
+get '/shop/:id' do
+    @session_id = params[:id]
+    halt 404, "Session introuvable" unless DB.execute(
+        "SELECT 1 FROM shopping_sessions WHERE id = ?", [@session_id]
+    ).first
+    erb :shop
+end
+
+get '/shop/:id/state' do
+    content_type :json
+    headers 'Cache-Control' => 'no-store'
+    state = session_state(params[:id])
+    halt 404, "Session introuvable" unless state
+    state.to_json
+end
+
+post '/shop/:id/check' do
+    begin
+        session_id = params[:id]
+        json = JSON.parse(request.body.read)
+        item_name  = json["item_name"].to_s
+        nickname   = json["nickname"].to_s.strip
+        raise "item_name required" if item_name.empty?
+        raise "nickname required"  if nickname.empty?
+
+        existing = DB.execute(
+            "SELECT 1 FROM checked_items WHERE session_id = ? AND item_name = ?",
+            [session_id, item_name]
+        ).first
+
+        if existing
+            DB.execute("DELETE FROM checked_items WHERE session_id = ? AND item_name = ?",
+                       [session_id, item_name])
+        else
+            DB.execute(
+                "INSERT INTO checked_items (session_id, item_name, checked_by, checked_at) VALUES (?, ?, ?, ?)",
+                [session_id, item_name, nickname, Time.now.iso8601]
+            )
+        end
+        "ok"
+    rescue => e
+        status 500
+        e.message
+    end
+end
+
+post '/shop/:id/override' do
+    begin
+        session_id = params[:id]
+        json = JSON.parse(request.body.read)
+        item_name = json["item_name"].to_s
+        raise "item_name required" if item_name.empty?
+
+        DB.execute(<<~SQL, [session_id, item_name, json["rayon"], json["qty_display"], json["is_deleted"] ? 1 : 0, json["nickname"]])
+            INSERT INTO session_overrides (session_id, item_name, rayon, qty_display, is_deleted, created_by)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON CONFLICT(session_id, item_name) DO UPDATE SET
+                rayon=excluded.rayon, qty_display=excluded.qty_display,
+                is_deleted=excluded.is_deleted, created_by=excluded.created_by
+        SQL
+        "ok"
+    rescue => e
+        status 500
+        e.message
+    end
+end
+
+post '/shop/:id/heartbeat' do
+    begin
+        session_id = params[:id]
+        json = JSON.parse(request.body.read)
+        nick = json["nickname"].to_s.strip
+        return "ok" if nick.empty?
+        DB.execute(<<~SQL, [session_id, nick])
+            INSERT INTO session_presence (session_id, nickname, last_seen) VALUES (?, ?, datetime('now'))
+            ON CONFLICT(session_id, nickname) DO UPDATE SET last_seen = datetime('now')
+        SQL
+        "ok"
+    rescue => e
+        status 500
+        e.message
+    end
 end
