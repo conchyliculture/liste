@@ -74,18 +74,30 @@ Click **Faire les courses** from the main page or the load dialog to create a se
 
 ## Tests
 
+### Unit tests (API)
+
 ```
 # apt-get install ruby-rack-test
-$ ruby tests/tests.rb
+ruby tests/tests.rb
+```
+
+### Browser tests (end-to-end)
+
+Requires Chrome and the selenium-webdriver + capybara packages:
+
+```
+# apt-get install chromium chromium-driver ruby-selenium-webdriver ruby-capybara
+ruby tests/browser_tests.rb
 ```
 
 ## Dev
 
-WARNING all the crap is mostly in
-`public/js/liste.js` and is disgusting AngluarJS shit copy pasted from StackOverflow and inserted into the code with a sledgehammer.
+The backend is `liste.rb` (Sinatra): saves/loads lists (SQLite), serves all pages, handles shopping sessions via long-polling.
 
-The backend is `liste.rb` (Sinatra): saves/loads lists (SQLite), serves the main page, handles shopping sessions.
+The frontend uses [Alpine.js](https://alpinejs.dev/) for reactivity:
+- `public/js/liste.js` — main planner (`listeApp`)
+- `public/js/recettes_editor.js` — recipe/ingredient editor (`editorApp`)
+- `public/js/cook.js` — cook view (`cookApp`)
+- `public/js/shop.js` — shopping session (vanilla JS, no Alpine)
 
-The frontend is `public/js/liste.js` (AngularJS): `ListeCtrl` for the main page, `LoadCtrl` for the load dialog, `ShoppingCtrl` for the shopping session dialog.
-
-Shopping mode UI is a separate self-contained page (`views/shop.erb`) with vanilla JS and long-polling.
+Data files in `public/`: `recettes.json`, `matin.json`, `ingredients.json`, `rayons.json`.

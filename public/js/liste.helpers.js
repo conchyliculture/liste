@@ -35,7 +35,7 @@ var ListeHelpers = (function () {
         }
         var sep = (unit === "g" || unit === "cL") ? "" : " ";
         var u   = unit.trim();
-        return (nb > 10 ? Math.round(nb) : nb) + sep + u;
+        return (nb > 10 ? Math.round(nb) : parseFloat(nb.toPrecision(6))) + sep + u;
     }
 
     function addToListe(liste_json, ingredient, nb_gens) {
@@ -43,7 +43,7 @@ var ListeHelpers = (function () {
             var item = liste_json[i];
             if (item.name === ingredient.name) {
                 if ("qty" in ingredient) {
-                    item.qty = item.qty + ingredient.qty * nb_gens;
+                    item.qty = (item.qty || 0) + ingredient.qty * nb_gens;
                 }
                 return;
             }

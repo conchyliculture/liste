@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cuisiner — <%= Rack::Utils.escape_html(@list_name) %></title>
+    <link rel="icon" type="image/svg+xml" href="/img/logo.svg">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cook.css">
+    <script defer src="/js/alpine.min.js"></script>
+    <script src="/js/marked.min.js"></script>
+    <script src="/js/liste.helpers.js"></script>
+    <script src="/js/cook.js"></script>
+</head>
+<body x-data="cookApp()" x-cloak
+      data-saved-list="<%= Rack::Utils.escape_html(@saved_list.to_json) %>"
+      data-list-name="<%= Rack::Utils.escape_html(@list_name) %>">
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <h1 class="brand">
+            <img class="brand-logo" src="/img/logo.svg" alt="">
+            <span class="brand-text" x-text="list_name"></span>
+        </h1>
+        <nav class="topbar-actions">
+            <a class="btn btn-ghost" href="/">
+                <span class="ico">←</span><span class="label">Retour</span>
+            </a>
+        </nav>
+    </div>
+</header>
+
+<main class="cook-layout">
+    <p class="empty" x-show="ready && !days.length">Aucun jour dans cette liste.</p>
+
+    <div class="days cook-days" x-show="ready">
+        <template x-for="(jour, idx) in days" :key="idx">
+            <div class="day">
+                <div class="day-header">Jour <span x-text="idx + 1"></span></div>
+
+                <template x-for="slot in ['matin','dejeuner','diner']" :key="slot">
+                    <div class="meal cook-meal"
+                         :class="{empty: !jour[slot].recette, clickable: jour[slot].recette}"
+                         @click="jour[slot].recette && openMeal(idx, slot)">
+                        <span class="meal-tag" :title="slotLabel(slot)" x-text="slotTag(slot)"></span>
+                        <span class="meal-name" x-text="jour[slot].recette || '—'"></span>
+                        <span class="cook-gens" x-show="jour[slot].recette">
+                            <span x-text="jour[slot].gens"></span>
+                            <span class="pers">pers.</span>
+                        </span>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+
+    <p class="loading-msg" x-show="!ready">Chargement…</p>
+</main>
+
+<!-- ── Recipe modal ────────────────────────────────────────────────────── -->
+<div class="modal" x-show="dialog === 'meal'" @click.self="closeDialog()" x-cloak x-transition.opacity>
+    <div class="modal-card modal-card-wide" @keydown.escape.window="closeDialog()" x-show="current_meal">
+        <header class="cook-modal-head">
+            <div>
+                <h2 x-text="current_meal && current_meal.name"></h2>
+                <p class="muted">
+                    <span x-text="current_meal && current_meal.slot_label"></span> ·
+                    <span x-text="current_meal && current_meal.gens"></span> pers.
+                </p>
+            </div>
+            <button class="x" @click="closeDialog()" aria-label="Fermer">✕</button>
+        </header>
+
+        <section class="cook-section" x-show="current_meal && current_meal.ingredients.length">
+            <h3 class="card-title">Ingrédients</h3>
+            <ul class="cook-ing-list">
+                <template x-for="ing in (current_meal ? current_meal.ingredients : [])" :key="ing.name">
+                    <li class="cook-ing">
+                        <span class="cook-ing-name" x-text="ing.name"></span>
+                        <span class="cook-ing-qty muted" x-text="ing.display"></span>
+                    </li>
+                </template>
+            </ul>
+        </section>
+
+        <section class="cook-section" x-show="current_meal && current_meal.instructions">
+            <h3 class="card-title">Préparation</h3>
+            <div class="cook-instructions" x-html="renderMarkdown(current_meal && current_meal.instructions)"></div>
+        </section>
+
+        <p class="muted cook-empty" x-show="current_meal && !current_meal.ingredients.length && !current_meal.instructions">
+            Pas de détails pour cette recette.
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
