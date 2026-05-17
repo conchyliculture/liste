@@ -8,14 +8,15 @@ on:
 jobs:
   run-minitest:
     runs-on: ubuntu-latest
-    steps:
+    - steps:
       - uses: actions/checkout@v2
-      - name: Install dependancies
-        run: |
-          apt install bundler
       - name: Set up Ruby
-        run: |
-          bundle install
+        uses: ruby/setup-ruby@v1
+        with:
+          # Not needed with a .ruby-version file
+          ruby-version: 3.3
+          # runs 'bundle install' and caches installed gems automatically
+          bundler-cache: true
       - name: Run tests
         run: |
           bash tests/run.sh
