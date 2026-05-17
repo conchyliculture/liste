@@ -1,478 +1,490 @@
+// Main planner view — Alpine.js controller.
+// Builds the consolidated shopping list from selected recipes, extras and custom items.
+// Backend routes used: /recettes.json, /matin.json, /ingredients, /rayons,
+// /save, /get-stored-listes, /shopping-session.
+
 (function () {
     "use strict";
 
-    Object.defineProperty(Array.prototype, "sortDesc", {
-        enumerable: false,
-        value: function (key) {
-            this.sort(function (a, b) {
-                return a[key] > b[key] ? -1 : a[key] < b[key] ? 1 : 0;
-            });
-        }
-    });
+    const NB_GENS_DEFAULT = 10;
+    const NB_JOURS_DEFAULT = 5;
 
-    var listeApp = angular.module("listeApp", ["ngSanitize", "ngMaterial"]);
+    function sortByName(a, b) {
+        return a.name.localeCompare(b.name, "fr", {sensitivity: "base"});
+    }
 
-    listeApp.directive("focusOn", function ($timeout) {
-        return function (scope, elem, attr) {
-            scope.$watch(attr.focusOn, function (val) {
-                if (val) { $timeout(function () { elem[0].focus(); elem[0].select(); }); }
-            });
-        };
-    });
+    function blankItem() {
+        return {name: "", qty: "", unit: "", rayon: null};
+    }
 
-    listeApp.service("recettesService", function ($http) {
-        this.getRecettesJsonData      = function () { return $http.get("/recettes.json"); };
-        this.getRecettesMatinJsonData  = function () { return $http.get("/matin.json"); };
-        this.getIngredientsJsonData    = function () { return $http.get("/ingredients"); };
-        this.getRayons                 = function () { return $http.get("/rayons"); };
-    });
+    function listeApp() {
+        return {
+            // ── Loaded data ───────────────────────────────────────────────────
+            recettes: [],
+            recettes_matin: [],
+            liste_ingredients: {},
+            enum_rayon: [],
+            errors_msg: "",
+            ready: false,
 
-    listeApp.controller("ListeCtrl", ListeCtrl);
-    listeApp.controller("LoadCtrl",  LoadCtrl);
-    listeApp.controller("ShoppingCtrl", ShoppingCtrl);
+            // ── Planner state ─────────────────────────────────────────────────
+            nb_jours: NB_JOURS_DEFAULT,
+            recette_matin: "",
+            gens_par_matin: new Array(NB_JOURS_DEFAULT).fill(NB_GENS_DEFAULT),
+            gens_par_dejeuner: new Array(NB_JOURS_DEFAULT).fill(NB_GENS_DEFAULT),
+            gens_par_diner: new Array(NB_JOURS_DEFAULT).fill(NB_GENS_DEFAULT),
+            recette_dejeuner_par_jour: new Array(NB_JOURS_DEFAULT).fill(""),
+            recette_diner_par_jour: new Array(NB_JOURS_DEFAULT).fill(""),
 
-    // ── ListeCtrl ─────────────────────────────────────────────────────────────
+            extras: [
+                {name: "Capitain Morgan Spiced Rum", enabled: false, key: "rum",  unit: " bouteilles (75cl)"},
+                {name: "Crème de marron (Clément Faugier)", enabled: false, key: "marron", unit: " Pots (500g)"},
+                {name: "Fruits divers", enabled: false, key: "fruits", unit: " kg (0.5*nb jours)"},
+                {name: "Gateau apéro", enabled: false, key: "apero",  unit: " Paquets divers (chips, bretzels, etc)"},
+                {name: "Pastille lave-vaisselle", enabled: false, key: "pastille", unit: " tablettes"},
+                {name: "Produit vaisselle", enabled: false, key: "vaisselle", unit: " bidon"},
+                {name: "PQ", enabled: false, key: "pq", unit: " rouleaux"},
+                {name: "Sacs poubelle", enabled: false, key: "sacs", unit: " rouleaux de 10"},
+                {name: "Pain", enabled: false, key: "pain", unit: " "},
+                {name: "Saucisson", enabled: false, key: "saucisson", unit: " saucissons"},
+                {name: "Torchons", enabled: false, key: "torchons", unit: " "},
+                {name: "Yaourts", enabled: false, key: "yaourts", unit: " pots de yaourts"},
+            ],
 
-    function ListeCtrl($scope, $http, $mdDialog, recettesService) {
+            extras_txt: "",
+            custom_items: [],
+            new_item: blankItem(),
 
-        recettesService.getRecettesJsonData().then(function (r) {
-            $scope.recettes = r.data["recettes"].sort(function (a, b) {
-                return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-            });
-        });
-        recettesService.getRecettesMatinJsonData().then(function (r) {
-            $scope.recettes_matin = r.data["recettes"].sort(function (a, b) {
-                return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-            });
-        });
-        recettesService.getIngredientsJsonData().then(function (r) {
-            $scope.liste_ingredients = r.data;
-        });
-        recettesService.getRayons().then(function (r) {
-            $scope.enum_rayon = r.data;
-        });
+            liste_rayons: [],
 
-        var nb_gens_default    = 10;
-        var liste_courses_json = [];
+            // ── UI state ──────────────────────────────────────────────────────
+            view: "planner",                   // mobile: 'planner' | 'list'
+            dialog: null,                      // 'save' | 'load' | 'shop' | 'cook' | null
+            save_name: "",
+            load_listes: [],
+            load_selected: null,
+            cook_selected: null,
+            shop_mode: "create",               // 'create' | 'join'
+            shop_join_id: "",
+            toast: "",
 
-        $scope.nb_jours            = 5;
-        $scope.range_jours         = new Array($scope.nb_jours);
-        $scope.enum_rayon          = [];
-        $scope.custom_items        = [];
-        $scope.new_item            = {name: "", qty: "", unit: "", rayon: null};
-        $scope.range_jours_default = ListeHelpers.range(20);
-        $scope.range_gens_default  = ListeHelpers.range(25);
-
-        $scope.extras = [
-            {name: "Capitain Morgan Spiced Rum", enabled: false,
-                calc_qty: function () { return Math.ceil(parseInt($scope.nb_jours) / 2); },
-                unit: " bouteilles (75cl)"},
-            {name: "Crème de marron (Clément Faugier)", enabled: false,
-                calc_qty: function () { return Math.ceil(parseInt($scope.nb_jours) / 3); },
-                unit: " Pots (500g)"},
-            {name: "Fruits divers", enabled: false,
-                calc_qty: function () { return $scope.nb_jours / 2; },
-                unit: " kg (0.5*nb jours)"},
-            {name: "Gateau apéro", enabled: false,
-                calc_qty: function () { return $scope.nb_jours * 3; },
-                unit: " Paquets divers (chips, bretzels, etc)"},
-            {name: "Pastille lave-vaisselle", enabled: false,
-                calc_qty: function () { return $scope.nb_jours * 2; },
-                unit: " tablettes"},
-            {name: "Produit vaisselle", enabled: false,
-                calc_qty: function () { return Math.ceil($scope.nb_jours / 5); },
-                unit: " bidon"},
-            {name: "PQ", enabled: false,
-                calc_qty: function () { return Math.ceil(getNbGensTotal() * $scope.nb_jours / 24) * 6; },
-                unit: " rouleaux"},
-            {name: "Sacs poubelle", enabled: false,
-                calc_qty: function () { return Math.ceil($scope.nb_jours * 0.3); },
-                unit: " rouleaux de 10"},
-            {name: "Pain", enabled: false,
-                calc_qty: function () { return getNbGensTotal(); },
-                unit: " "},
-            {name: "Saucisson", enabled: false,
-                calc_qty: function () { return $scope.nb_jours * 3; },
-                unit: " saucissons"},
-            {name: "Torchons", enabled: false,
-                calc_qty: function () { return 2; },
-                unit: " "},
-            {name: "Yaourts", enabled: false,
-                calc_qty: function () { return Math.ceil(getNbGensTotal() * $scope.nb_jours / 6) * 6; },
-                unit: " pots de yaourts"},
-        ];
-
-        $scope.recette_matin             = "";
-        $scope.gens_par_matin            = new Array($scope.nb_jours).fill(nb_gens_default);
-        $scope.gens_par_diner            = new Array($scope.nb_jours).fill(nb_gens_default);
-        $scope.recette_diner_par_jour    = new Array($scope.nb_jours).fill("");
-        $scope.gens_par_dejeuner         = new Array($scope.nb_jours).fill(nb_gens_default);
-        $scope.recette_dejeuner_par_jour = new Array($scope.nb_jours).fill("");
-
-        // ── $scope-dependent helpers (private) ────────────────────────────────
-
-        var getRayon = function (ingredient_name) {
-            return $scope.liste_ingredients[ingredient_name]["rayon"];
-        };
-
-        var getUnit = function (ingredient_name) {
-            return $scope.liste_ingredients[ingredient_name]["unit"];
-        };
-
-        var getNbGensTotal = function () {
-            var total = 0;
-            for (var j = 0; j < $scope.nb_jours; j++) {
-                total += ($scope.gens_par_matin[j] + $scope.gens_par_dejeuner[j] + $scope.gens_par_diner[j]) / 3;
-            }
-            return Math.ceil(total / $scope.nb_jours);
-        };
-
-        var getIngredients = function (recette_name, liste_recettes) {
-            var ingredients = [];
-            for (var a = 0; a < liste_recettes.length; a++) {
-                var r = liste_recettes[a];
-                if (r.name === recette_name) {
-                    for (var i = 0; i < r.ingredients.length; i++) {
-                        var ing = r.ingredients[i];
-                        ing["rayon"] = getRayon(ing["name"]);
-                        var u = getUnit(ing["name"]);
-                        if (typeof u !== "undefined" && u !== "") { ing["unit"] = u; }
-                        ingredients.push(ing);
+            // ── Init ──────────────────────────────────────────────────────────
+            async init() {
+                try {
+                    await this._fetchData();
+                    this.ready = true;
+                    const draft = localStorage.getItem("liste_draft");
+                    if (draft) {
+                        try { this._applyStoredListe(JSON.parse(draft)); }
+                        catch (_) { this.updateListe(); }
+                    } else {
+                        this.updateListe();
                     }
+                } catch (e) {
+                    this.errors_msg = "Erreur de chargement: " + e.message;
                 }
-            }
-            return ingredients;
-        };
-
-        var generate_saved_liste = function () {
-            var json_result = {jours: [], extras: [], extras_txt: ""};
-            for (var i = 0; i < $scope.nb_jours; i++) {
-                var recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
-                var recette_diner    = $scope.recette_diner_par_jour[i];
-                json_result.jours.push({
-                    matin:    {recette: $scope.recette_matin, gens: $scope.gens_par_matin[i]},
-                    dejeuner: {recette: recette_dejeuner,     gens: $scope.gens_par_dejeuner[i]},
-                    diner:    {recette: recette_diner,        gens: $scope.gens_par_diner[i]}
+                // bfcache: page restored from memory after back-navigation — re-fetch
+                // recipe data so edits made in the editor tab are reflected immediately.
+                window.addEventListener("pageshow", async (ev) => {
+                    if (!ev.persisted) { return; }
+                    try { await this._fetchData(); this.updateListe(); } catch (_) {}
                 });
-            }
-            for (var i = 0; i < $scope.extras.length; i++) {
-                json_result.extras.push({name: $scope.extras[i].name, enabled: $scope.extras[i].enabled});
-            }
-            json_result.extras_txt   = $scope.extras_txt;
-            json_result.custom_items = $scope.custom_items;
-            var adjs   = {};
-            var rayons = $scope.liste_rayons || [];
-            for (var i = 0; i < rayons.length; i++) {
-                for (var j = 0; j < rayons[i].items.length; j++) {
-                    var item = rayons[i].items[j];
-                    if (item.adj !== 0) { adjs[item.name] = item.adj; }
+            },
+
+            async _fetchData() {
+                const [a, b, c, d] = await Promise.all([
+                    fetch("/recettes.json", {cache: "no-cache"}).then(r => r.json()),
+                    fetch("/matin.json",    {cache: "no-cache"}).then(r => r.json()),
+                    fetch("/ingredients",   {cache: "no-cache"}).then(r => r.json()),
+                    fetch("/rayons",        {cache: "no-cache"}).then(r => r.json()),
+                ]);
+                this.recettes        = (a.recettes || []).slice().sort(sortByName);
+                this.recettes_matin  = (b.recettes || []).slice().sort(sortByName);
+                this.liste_ingredients = c;
+                this.enum_rayon      = d;
+            },
+
+            // ── Derived ───────────────────────────────────────────────────────
+            get totalGens() {
+                let total = 0;
+                for (let j = 0; j < this.nb_jours; j++) {
+                    total += ((this.gens_par_matin[j] || 0)
+                            + (this.gens_par_dejeuner[j] || 0)
+                            + (this.gens_par_diner[j] || 0)) / 3;
                 }
-            }
-            json_result.qty_adjustments = adjs;
-            return json_result;
-        };
+                return Math.ceil(total / this.nb_jours);
+            },
 
-        // Rebuilds $scope.liste_rayons from a flat ingredient list.
-        // Carries adj and in-progress qty edits over from the previous render.
-        var updateHTMLListe = function (liste_json) {
-            var prevAdj  = {};
-            var prevEdit = {};
-            var prevRayons = $scope.liste_rayons || [];
-            for (var i = 0; i < prevRayons.length; i++) {
-                for (var j = 0; j < prevRayons[i].items.length; j++) {
-                    var prev = prevRayons[i].items[j];
-                    if (prev.adj !== 0) { prevAdj[prev.name] = prev.adj; }
-                    if (prev.editing)   { prevEdit[prev.name] = {editVal: prev.editVal}; }
-                }
-            }
-            liste_json = liste_json.sort(function (a, b) {
-                var ai = a.rayon !== null ? a.rayon : 999;
-                var bi = b.rayon !== null ? b.rayon : 999;
-                return ai - bi;
-            });
-            var rayons       = [];
-            var currentRayon = null;
-            for (var i = 0; i < liste_json.length; i++) {
-                var item = liste_json[i];
-                if (item.rayon !== currentRayon) {
-                    currentRayon = item.rayon;
-                    rayons.push({name: ($scope.enum_rayon || [])[currentRayon] || "", items: []});
-                }
-                var adj = prevAdj[item.name] || 0;
-                if (typeof item.qty !== "undefined" && item.qty + adj < 0) { adj = -item.qty; }
-                var itemObj = {name: item.name, base_qty: item.qty, adj: adj, unit: item.unit};
-                if (prevEdit[item.name]) {
-                    itemObj.editing = true;
-                    itemObj.editVal = prevEdit[item.name].editVal;
-                }
-                rayons[rayons.length - 1].items.push(itemObj);
-            }
-            $scope.liste_rayons = rayons;
-        };
+            get totalItems() {
+                let n = 0;
+                for (const r of this.liste_rayons) { n += r.items.length; }
+                return n;
+            },
 
-        var save = function (name) {
-            $http.post("/save", {name: name, liste: generate_saved_liste()});
-        };
+            // ── Helpers (private) ─────────────────────────────────────────────
+            _getRayon(name)     { return this.liste_ingredients[name]?.rayon; },
+            _getUnit(name)      { return this.liste_ingredients[name]?.unit; },
 
-        // ── $scope methods ────────────────────────────────────────────────────
-
-        $scope.toggleListe = function () {
-            angular.element(document.getElementById("columnMid")).toggleClass("hide");
-            angular.element(document.getElementById("columnRight")).toggleClass("hide");
-        };
-
-        $scope.loadStoredList = function (json_from_http) {
-            var liste = json_from_http["liste"];
-            var jours = liste["jours"];
-            $scope.nb_jours = jours.length;
-            for (var i = 0; i < jours.length; i++) {
-                var jour = jours[i];
-                $scope.gens_par_matin[i]            = jour["matin"]["gens"];
-                $scope.recette_matin                 = jour["matin"]["recette"];
-                $scope.recette_dejeuner_par_jour[i]  = jour["dejeuner"]["recette"];
-                $scope.gens_par_dejeuner[i]          = jour["dejeuner"]["gens"];
-                $scope.recette_diner_par_jour[i]     = jour["diner"]["recette"];
-                $scope.gens_par_diner[i]             = jour["diner"]["gens"];
-            }
-            $scope.extras_txt = liste["extras_txt"];
-            var _extras = liste["extras"] || [];
-            for (var i = 0; i < _extras.length; i++) {
-                for (var j = 0; j < $scope.extras.length; j++) {
-                    if ($scope.extras[j].name === _extras[i].name) {
-                        $scope.extras[j].enabled = _extras[i].enabled;
+            _getIngredients(recette_name, source) {
+                const out = [];
+                for (const r of source) {
+                    if (r.name !== recette_name) { continue; }
+                    for (const ing of r.ingredients) {
+                        const copy = Object.assign({}, ing);
+                        copy.rayon = this._getRayon(ing.name);
+                        const u = this._getUnit(ing.name);
+                        if (typeof u !== "undefined" && u !== "") { copy.unit = u; }
+                        out.push(copy);
                     }
                 }
-            }
-            $scope.custom_items = liste["custom_items"] || [];
-            $scope.updateListe();
-            var adjs   = liste["qty_adjustments"] || {};
-            var rayons = $scope.liste_rayons || [];
-            for (var i = 0; i < rayons.length; i++) {
-                for (var j = 0; j < rayons[i].items.length; j++) {
-                    var item = rayons[i].items[j];
-                    if (adjs[item.name] !== undefined) { item.adj = adjs[item.name]; }
+                return out;
+            },
+
+            _extraQty(e) {
+                const n = this.nb_jours;
+                switch (e.key) {
+                    case "rum":       return Math.ceil(n / 2);
+                    case "marron":    return Math.ceil(n / 3);
+                    case "fruits":    return n / 2;
+                    case "apero":     return n * 3;
+                    case "pastille":  return n * 2;
+                    case "vaisselle": return Math.ceil(n / 5);
+                    case "pq":        return Math.ceil(this.totalGens * n / 24) * 6;
+                    case "sacs":      return Math.ceil(n * 0.3);
+                    case "pain":      return this.totalGens;
+                    case "saucisson": return n * 3;
+                    case "torchons":  return 2;
+                    case "yaourts":   return Math.ceil(this.totalGens * n / 6) * 6;
                 }
-            }
-        };
+                return 0;
+            },
 
-        $scope.updateListe = function () {
-            liste_courses_json = [];
-            for (var i = 0; i < $scope.nb_jours; i++) {
-                var ings;
-                var gens_matin = $scope.gens_par_matin[i];
-                if ($scope.recette_matin !== "") {
-                    ings = getIngredients($scope.recette_matin, $scope.recettes_matin);
-                    for (var k = 0; k < ings.length; k++) { ListeHelpers.addToListe(liste_courses_json, ings[k], gens_matin); }
+            _rebuildListe() {
+                // Carry over qty adjustments and in-progress edits from previous render.
+                const prevAdj = {};
+                const prevEdit = {};
+                for (const r of this.liste_rayons) {
+                    for (const it of r.items) {
+                        if (it.adj !== 0) { prevAdj[it.name] = it.adj; }
+                        if (it.editing)   { prevEdit[it.name] = it.editVal; }
+                    }
                 }
-                var recette_dejeuner = $scope.recette_dejeuner_par_jour[i];
-                var gens_dejeuner    = $scope.gens_par_dejeuner[i];
-                if (recette_dejeuner !== "") {
-                    ings = getIngredients(recette_dejeuner, $scope.recettes);
-                    for (var k = 0; k < ings.length; k++) { ListeHelpers.addToListe(liste_courses_json, ings[k], gens_dejeuner); }
+
+                const flat = [];
+                for (let i = 0; i < this.nb_jours; i++) {
+                    if (this.recette_matin) {
+                        for (const ing of this._getIngredients(this.recette_matin, this.recettes_matin)) {
+                            ListeHelpers.addToListe(flat, ing, this.gens_par_matin[i] || 0);
+                        }
+                    }
+                    const d = this.recette_dejeuner_par_jour[i];
+                    if (d) {
+                        for (const ing of this._getIngredients(d, this.recettes)) {
+                            ListeHelpers.addToListe(flat, ing, this.gens_par_dejeuner[i] || 0);
+                        }
+                    }
+                    const s = this.recette_diner_par_jour[i];
+                    if (s) {
+                        for (const ing of this._getIngredients(s, this.recettes)) {
+                            ListeHelpers.addToListe(flat, ing, this.gens_par_diner[i] || 0);
+                        }
+                    }
                 }
-                var recette_diner = $scope.recette_diner_par_jour[i];
-                var gens_diner    = $scope.gens_par_diner[i];
-                if (recette_diner !== "") {
-                    ings = getIngredients(recette_diner, $scope.recettes);
-                    for (var k = 0; k < ings.length; k++) { ListeHelpers.addToListe(liste_courses_json, ings[k], gens_diner); }
+
+                for (const e of this.extras) {
+                    if (!e.enabled) { continue; }
+                    ListeHelpers.addToListe(flat, {name: e.name, qty: this._extraQty(e), unit: e.unit}, 1);
                 }
-            }
-            for (var i = 0; i < $scope.extras.length; i++) {
-                var e = $scope.extras[i];
-                if (e.enabled) {
-                    if (typeof e.calc_qty !== "undefined") { e.qty = e.calc_qty(); }
-                    ListeHelpers.addToListe(liste_courses_json, e, 1);
+                for (const ci of this.custom_items) {
+                    ListeHelpers.addToListe(flat, ci, 1);
                 }
-            }
-            for (var i = 0; i < $scope.custom_items.length; i++) {
-                ListeHelpers.addToListe(liste_courses_json, $scope.custom_items[i], 1);
-            }
-            updateHTMLListe(liste_courses_json);
-        };
 
-        $scope.stepForUnit = function (unit) {
-            return {g: 100, cL: 25, L: 1}[unit] || 1;
-        };
+                flat.sort((a, b) => {
+                    const ai = a.rayon !== null && typeof a.rayon !== "undefined" ? a.rayon : 999;
+                    const bi = b.rayon !== null && typeof b.rayon !== "undefined" ? b.rayon : 999;
+                    return ai - bi;
+                });
 
-        $scope.displayQty = function (item) {
-            if (typeof item.base_qty === "undefined") { return ""; }
-            return ListeHelpers.arrondi(item.base_qty + item.adj, item.unit);
-        };
-
-        $scope.adjustQty = function (item, dir) {
-            if (typeof item.base_qty === "undefined") { return; }
-            var step = $scope.stepForUnit(item.unit);
-            item.adj += dir * step;
-            if (item.base_qty + item.adj < 0) { item.adj = -item.base_qty; }
-        };
-
-        $scope.startEditQty = function (item) {
-            item.editVal = item.base_qty + item.adj;
-            item.editing = true;
-        };
-
-        $scope.commitEditQty = function (item) {
-            var v = Number(item.editVal);
-            if (!isNaN(v) && v >= 0) { item.adj = v - item.base_qty; }
-            item.editing = false;
-        };
-
-        $scope.cancelEditQty = function (item) { item.editing = false; };
-
-        $scope.addCustomItem = function () {
-            var name = $scope.new_item.name.trim();
-            if (!name) { return; }
-            var qty  = $scope.new_item.qty !== "" ? Number($scope.new_item.qty) : undefined;
-            var item = {name: name, unit: $scope.new_item.unit, rayon: $scope.new_item.rayon};
-            if (typeof qty !== "undefined") { item.qty = qty; }
-            $scope.custom_items.push(item);
-            $scope.new_item = {name: "", qty: "", unit: "", rayon: null};
-            $scope.updateListe();
-        };
-
-        $scope.removeCustomItem = function (idx) {
-            $scope.custom_items.splice(idx, 1);
-            $scope.updateListe();
-        };
-
-        $scope.joursChanged = function () {
-            var old_len = $scope.gens_par_matin.length;
-            $scope.range_jours = new Array($scope.nb_jours);
-            for (var i = old_len; i < $scope.nb_jours; i++) {
-                $scope.gens_par_matin[i]            = nb_gens_default;
-                $scope.gens_par_dejeuner[i]         = nb_gens_default;
-                $scope.gens_par_diner[i]            = nb_gens_default;
-                $scope.recette_dejeuner_par_jour[i] = "";
-                $scope.recette_diner_par_jour[i]    = "";
-            }
-            $scope.updateListe();
-        };
-
-        $scope.flattenListeRayons = flattenListeRayons;
-        function flattenListeRayons(label) {
-            var items  = [];
-            var rayons = $scope.liste_rayons || [];
-            for (var i = 0; i < rayons.length; i++) {
-                var rayon = rayons[i];
-                for (var j = 0; j < rayon.items.length; j++) {
-                    var item = rayon.items[j];
-                    items.push({rayon: rayon.name, name: item.name, qty_display: $scope.displayQty(item)});
+                const rayons = [];
+                let currentRayon = -1;
+                for (const it of flat) {
+                    if (it.rayon !== currentRayon) {
+                        currentRayon = it.rayon;
+                        rayons.push({name: this.enum_rayon[currentRayon] || "", items: []});
+                    }
+                    let adj = prevAdj[it.name] || 0;
+                    if (typeof it.qty !== "undefined" && it.qty + adj < 0) { adj = -it.qty; }
+                    const obj = {name: it.name, base_qty: it.qty, adj, unit: it.unit};
+                    if (Object.prototype.hasOwnProperty.call(prevEdit, it.name)) {
+                        obj.editing = true;
+                        obj.editVal = prevEdit[it.name];
+                    } else {
+                        obj.editing = false;
+                        obj.editVal = 0;
+                    }
+                    rayons[rayons.length - 1].items.push(obj);
                 }
-            }
-            return {items: items, label: label || ""};
-        }
+                this.liste_rayons = rayons;
+                this._saveToLocalStorage();
+            },
 
-        $scope.startShoppingCurrent = function () {
-            $mdDialog.show({
-                controller: ShoppingCtrl,
-                templateUrl: "shoptemplate.html",
-                parent: angular.element(document.body),
-                clickOutsideToClose: true
-            }).then(function (result) {
-                if (result === "create") {
-                    var payload = flattenListeRayons("");
-                    $http.post("/shopping-session", payload).then(
-                        function (r) { window.open(r.data.url, "_blank"); },
-                        function ()  { alert("Impossible de créer la session de courses."); }
-                    );
-                } else if (result && result.action === "join") {
-                    window.open("/shop/" + result.id, "_blank");
+            _saveToLocalStorage() {
+                try { localStorage.setItem("liste_draft", JSON.stringify(this._serialize())); } catch (_) {}
+            },
+
+            // ── Public actions ────────────────────────────────────────────────
+            updateListe() { if (this.ready) { this._rebuildListe(); } },
+
+            resetListe() {
+                if (!confirm("Réinitialiser la liste ?")) { return; }
+                localStorage.removeItem("liste_draft");
+                this.nb_jours = NB_JOURS_DEFAULT;
+                this.recette_matin = "";
+                this.gens_par_matin            = new Array(NB_JOURS_DEFAULT).fill(NB_GENS_DEFAULT);
+                this.gens_par_dejeuner         = new Array(NB_JOURS_DEFAULT).fill(NB_GENS_DEFAULT);
+                this.gens_par_diner            = new Array(NB_JOURS_DEFAULT).fill(NB_GENS_DEFAULT);
+                this.recette_dejeuner_par_jour = new Array(NB_JOURS_DEFAULT).fill("");
+                this.recette_diner_par_jour    = new Array(NB_JOURS_DEFAULT).fill("");
+                for (const e of this.extras) { e.enabled = false; }
+                this.extras_txt = "";
+                this.custom_items = [];
+                this.updateListe();
+            },
+
+            onJoursChanged() {
+                const n = Math.max(1, Math.min(20, parseInt(this.nb_jours) || 1));
+                this.nb_jours = n;
+                const ensure = (arr, def) => {
+                    while (arr.length < n) { arr.push(def); }
+                    arr.length = n;
+                };
+                ensure(this.gens_par_matin,            NB_GENS_DEFAULT);
+                ensure(this.gens_par_dejeuner,         NB_GENS_DEFAULT);
+                ensure(this.gens_par_diner,            NB_GENS_DEFAULT);
+                ensure(this.recette_dejeuner_par_jour, "");
+                ensure(this.recette_diner_par_jour,    "");
+                this.updateListe();
+            },
+
+            hasQty(item) {
+                return typeof item.base_qty !== "undefined" && item.base_qty !== null;
+            },
+
+            displayQty(item) {
+                if (!this.hasQty(item)) { return ""; }
+                return ListeHelpers.arrondi(item.base_qty + item.adj, item.unit);
+            },
+
+            stepForUnit(unit) { return {g: 100, cL: 25, L: 1}[unit] || 1; },
+
+            adjustQty(item, dir) {
+                if (!this.hasQty(item)) { return; }
+                const step = this.stepForUnit(item.unit);
+                item.adj += dir * step;
+                if (item.base_qty + item.adj < 0) { item.adj = -item.base_qty; }
+            },
+
+            startEditQty(item) {
+                if (!this.hasQty(item)) { return; }
+                item.editVal = item.base_qty + item.adj;
+                item.editing = true;
+            },
+
+            commitEditQty(item) {
+                const v = Number(item.editVal);
+                if (!isNaN(v) && v >= 0) { item.adj = v - item.base_qty; }
+                item.editing = false;
+            },
+
+            cancelEditQty(item) { item.editing = false; },
+
+            addCustomItem() {
+                const name = this.new_item.name.trim();
+                if (!name) { return; }
+                const qty = this.new_item.qty !== "" && this.new_item.qty !== null
+                    ? Number(this.new_item.qty)
+                    : undefined;
+                const item = {name, unit: this.new_item.unit || "", rayon: this.new_item.rayon};
+                if (typeof qty !== "undefined" && !isNaN(qty)) { item.qty = qty; }
+                this.custom_items.push(item);
+                this.new_item = blankItem();
+                this.updateListe();
+            },
+
+            removeCustomItem(idx) {
+                this.custom_items.splice(idx, 1);
+                this.updateListe();
+            },
+
+            // ── Save / Load ───────────────────────────────────────────────────
+            _serialize() {
+                const result = {jours: [], extras: [], extras_txt: this.extras_txt};
+                for (let i = 0; i < this.nb_jours; i++) {
+                    result.jours.push({
+                        matin:    {recette: this.recette_matin,                  gens: this.gens_par_matin[i]},
+                        dejeuner: {recette: this.recette_dejeuner_par_jour[i],   gens: this.gens_par_dejeuner[i]},
+                        diner:    {recette: this.recette_diner_par_jour[i],      gens: this.gens_par_diner[i]},
+                    });
                 }
-            }, angular.noop);
-        };
+                for (const e of this.extras) {
+                    result.extras.push({name: e.name, enabled: e.enabled});
+                }
+                result.custom_items = this.custom_items;
+                const adjs = {};
+                for (const r of this.liste_rayons) {
+                    for (const it of r.items) {
+                        if (it.adj !== 0) { adjs[it.name] = it.adj; }
+                    }
+                }
+                result.qty_adjustments = adjs;
+                return result;
+            },
 
-        $scope.showPromptSave = function (ev) {
-            $mdDialog.show(
-                $mdDialog.prompt()
-                    .title("Renseigner un nom pour la liste")
-                    .textContent("(ie: 'Kinzout 2019')")
-                    .placeholder("Liste")
-                    .ariaLabel("Liste")
-                    .targetEvent(ev)
-                    .ok("Done!")
-                    .cancel("Cancel")
-            ).then(function (result) { save(result); }, angular.noop);
-        };
+            openSave()  { this.save_name = ""; this.dialog = "save"; },
+            openShop()  { this.shop_mode = "create"; this.shop_join_id = ""; this.dialog = "shop"; },
+            closeDialog() { this.dialog = null; },
 
-        $scope.showPromptLoad = function ($event) {
-            $mdDialog.show({
-                parent: angular.element(document.body),
-                targetEvent: $event,
-                controller: LoadCtrl,
-                scope: $scope,
-                templateUrl: "loadtemplate.html",
-                preserveScope: true,
-                locals: {load_liste: $scope.load_liste},
-                clickOutsideToClose: true
-            });
+            async _fetchStoredListes() {
+                const r = await fetch("/get-stored-listes");
+                const list = await r.json();
+                list.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+                this.load_listes = list;
+                return list;
+            },
+
+            async openLoad() {
+                try {
+                    const list = await this._fetchStoredListes();
+                    this.load_selected = list[0] || null;
+                    this.dialog = "load";
+                } catch (e) {
+                    this._toast("Impossible de charger les listes");
+                }
+            },
+
+            async openCook() {
+                try {
+                    const list = await this._fetchStoredListes();
+                    this.cook_selected = list[0] || null;
+                    this.dialog = "cook";
+                } catch (e) {
+                    this._toast("Impossible de charger les listes");
+                }
+            },
+
+            confirmCook() {
+                if (!this.cook_selected) { return; }
+                window.location = "/cook/" + this.cook_selected.id;
+                this.dialog = null;
+            },
+
+            async confirmSave() {
+                const name = (this.save_name || "").trim();
+                if (!/^[a-z0-9 ]+$/i.test(name)) {
+                    this._toast("Nom invalide (lettres, chiffres, espaces uniquement)");
+                    return;
+                }
+                try {
+                    const r = await fetch("/save", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({name, liste: this._serialize()}),
+                    });
+                    if (!r.ok) { throw new Error(await r.text()); }
+                    this._toast("Liste sauvegardée");
+                    this.dialog = null;
+                } catch (e) {
+                    this._toast("Erreur: " + e.message);
+                }
+            },
+
+            loadFromSelection() {
+                if (!this.load_selected) { return; }
+                this._applyStoredListe(this.load_selected.liste);
+                this.dialog = null;
+                this._toast("Liste chargée");
+            },
+
+            _applyStoredListe(liste) {
+                const jours = liste.jours || [];
+                this.nb_jours = jours.length || NB_JOURS_DEFAULT;
+                this.gens_par_matin            = new Array(this.nb_jours).fill(NB_GENS_DEFAULT);
+                this.gens_par_dejeuner         = new Array(this.nb_jours).fill(NB_GENS_DEFAULT);
+                this.gens_par_diner            = new Array(this.nb_jours).fill(NB_GENS_DEFAULT);
+                this.recette_dejeuner_par_jour = new Array(this.nb_jours).fill("");
+                this.recette_diner_par_jour    = new Array(this.nb_jours).fill("");
+                this.recette_matin = jours[0]?.matin?.recette ?? "";
+                for (let i = 0; i < jours.length; i++) {
+                    const j = jours[i];
+                    this.gens_par_matin[i]            = j.matin?.gens     ?? NB_GENS_DEFAULT;
+                    this.recette_dejeuner_par_jour[i] = j.dejeuner?.recette ?? "";
+                    this.gens_par_dejeuner[i]         = j.dejeuner?.gens    ?? NB_GENS_DEFAULT;
+                    this.recette_diner_par_jour[i]    = j.diner?.recette    ?? "";
+                    this.gens_par_diner[i]            = j.diner?.gens       ?? NB_GENS_DEFAULT;
+                }
+                this.extras_txt = liste.extras_txt || "";
+                const savedExtras = liste.extras || [];
+                for (const e of this.extras) { e.enabled = false; }
+                for (const se of savedExtras) {
+                    const local = this.extras.find(x => x.name === se.name);
+                    if (local) { local.enabled = !!se.enabled; }
+                }
+                this.custom_items = liste.custom_items || [];
+                this.updateListe();
+                const adjs = liste.qty_adjustments || {};
+                for (const r of this.liste_rayons) {
+                    for (const it of r.items) {
+                        if (Object.prototype.hasOwnProperty.call(adjs, it.name)) {
+                            it.adj = adjs[it.name];
+                        }
+                    }
+                }
+                this._saveToLocalStorage();
+            },
+
+            // ── Shopping ──────────────────────────────────────────────────────
+            _flatten(label) {
+                const items = [];
+                for (const r of this.liste_rayons) {
+                    for (const it of r.items) {
+                        items.push({rayon: r.name, name: it.name, qty_display: this.displayQty(it)});
+                    }
+                }
+                return {items, label: label || ""};
+            },
+
+            async confirmShop() {
+                if (this.shop_mode === "join") {
+                    const raw = (this.shop_join_id || "").trim();
+                    if (!raw) { return; }
+                    const m = raw.match(/\/shop\/([a-f0-9]+)/i);
+                    window.location = "/shop/" + (m ? m[1] : raw);
+                    this.dialog = null;
+                    return;
+                }
+                try {
+                    const r = await fetch("/shopping-session", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify(this._flatten("")),
+                    });
+                    if (!r.ok) { throw new Error(await r.text()); }
+                    const data = await r.json();
+                    window.location = data.url;
+                    this.dialog = null;
+                } catch (e) {
+                    this._toast("Erreur: " + e.message);
+                }
+            },
+
+            // ── Misc ──────────────────────────────────────────────────────────
+            _toast(msg) {
+                this.toast = msg;
+                clearTimeout(this._toastT);
+                this._toastT = setTimeout(() => { this.toast = ""; }, 2500);
+            },
         };
     }
 
-    // ── LoadCtrl ──────────────────────────────────────────────────────────────
-
-    function LoadCtrl($scope, $mdDialog, $http) {
-        $scope.loadhide   = function () { $mdDialog.hide(); };
-        $scope.loadcancel = function () { $mdDialog.cancel(); };
-        $scope.loadanswer = function (answer) {
-            $scope.loadStoredList($scope.liste_select);
-            $mdDialog.hide(answer);
-        };
-
-        $scope.startShopping = function () {
-            $mdDialog.show({
-                controller: ShoppingCtrl,
-                templateUrl: "shoptemplate.html",
-                parent: angular.element(document.body),
-                clickOutsideToClose: true
-            }).then(function (result) {
-                if (result === "create") {
-                    var label = $scope.liste_select ? $scope.liste_select.name : "";
-                    $scope.loadStoredList($scope.liste_select);
-                    var payload = $scope.flattenListeRayons(label);
-                    $http.post("/shopping-session", payload).then(
-                        function (r) { window.open(r.data.url, "_blank"); $mdDialog.hide(); },
-                        function ()  { alert("Impossible de créer la session de courses."); }
-                    );
-                } else if (result && result.action === "join") {
-                    window.open("/shop/" + result.id, "_blank");
-                    $mdDialog.hide();
-                }
-            }, angular.noop);
-        };
-
-        function fetch_stored_listes() {
-            $http.get("/get-stored-listes").then(
-                function (response) {
-                    $scope.load_liste = response.data.slice();
-                    $scope.load_liste.sortDesc("date");
-                    $scope.liste_select = $scope.load_liste[0];
-                },
-                function () { console.log("listes load fail"); }
-            );
-        }
-        fetch_stored_listes();
-    }
-
-    // ── ShoppingCtrl ──────────────────────────────────────────────────────────
-
-    function ShoppingCtrl($scope, $mdDialog) {
-        $scope.joinMode = false;
-        $scope.form     = {joinId: ""};
-
-        $scope.cancel   = function () { $mdDialog.cancel(); };
-        $scope.create   = function () { $mdDialog.hide("create"); };
-        $scope.showJoin = function () { $scope.joinMode = true; };
-        $scope.hideJoin = function () { $scope.joinMode = false; };
-
-        $scope.join = function () {
-            var raw = $scope.form.joinId.trim();
-            var m   = raw.match(/\/shop\/([a-f0-9]+)/i);
-            $mdDialog.hide({action: "join", id: m ? m[1] : raw});
-        };
-
-        $scope.joinOnEnter = function (e) {
-            if (e.key === "Enter" && $scope.form.joinId.trim()) { $scope.join(); }
-        };
-    }
-
+    window.listeApp = listeApp;
 })();

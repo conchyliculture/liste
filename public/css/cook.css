@@ -1,0 +1,149 @@
+.cook-layout {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.cook-days {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.cook-meal {
+    border-radius: var(--radius-sm);
+    padding: 6px 8px;
+    transition: background 0.12s;
+}
+
+.cook-meal.clickable {
+    cursor: pointer;
+}
+.cook-meal.clickable:hover {
+    background: var(--primary-light);
+}
+.cook-meal.empty {
+    opacity: 0.55;
+}
+
+.meal-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.92rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cook-gens {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.modal-card-wide {
+    width: min(640px, 92vw);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.cook-modal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.cook-modal-head h2 {
+    font-size: 1.2rem;
+    line-height: 1.25;
+}
+.cook-modal-head .x {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+.cook-modal-head .x:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.cook-section {
+    margin-top: 16px;
+}
+.cook-section:first-of-type { margin-top: 8px; }
+
+.cook-ing-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.cook-ing {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 4px 0;
+    border-bottom: 1px dashed var(--divider);
+}
+.cook-ing:last-child { border-bottom: none; }
+.cook-ing-name { flex: 1; }
+.cook-ing-qty { font-variant-numeric: tabular-nums; }
+
+.cook-instructions {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    line-height: 1.55;
+}
+.cook-instructions p { margin: 0 0 0.6em 0; }
+.cook-instructions p:last-child { margin-bottom: 0; }
+.cook-instructions h1,
+.cook-instructions h2,
+.cook-instructions h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 0.8em 0 0.4em 0;
+}
+.cook-instructions h1:first-child,
+.cook-instructions h2:first-child,
+.cook-instructions h3:first-child { margin-top: 0; }
+.cook-instructions ul,
+.cook-instructions ol {
+    margin: 0 0 0.6em 1.4em;
+}
+.cook-instructions li { margin: 0.15em 0; }
+.cook-instructions code {
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 0.9em;
+}
+.cook-instructions pre {
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    overflow-x: auto;
+}
+
+.cook-empty {
+    margin-top: 16px;
+    text-align: center;
+    font-style: italic;
+}
+
+.loading-msg {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 40px 16px;
+}
+
+@media (max-width: 540px) {
+    .cook-modal-head h2 { font-size: 1.05rem; }
+    .cook-layout { padding: 12px; }
+}

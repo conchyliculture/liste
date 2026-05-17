@@ -1,293 +1,876 @@
 {
-"recettes": [
-    {"name":"Blanquette de veau",
-        "ingredients":  [
-            { "name": "Veau", "qty": 200},
-            { "name": "Oignons", "qty": 40},
-            { "name": "Vin blanc genre muscadet", "qty": 10},
-            { "name": "Carottes", "qty": 30},
-            { "name": "Blanc de poireau", "qty": 0.5},
-            { "name": "Bouquet Garni"},
-            { "name": "Champignons", "qty": 110},
-            { "name": "Riz", "qty": 80},
-            { "name": "Beurre", "qty": 20},
-            { "name": "Farine", "qty": 15},
-            { "name": "Sel"},
-            { "name": "Poivre"}
-        ]
+  "recettes": [
+    {
+      "name": "Blanquette de veau",
+      "ingredients": [
+        {
+          "name": "Veau",
+          "qty": 200
+        },
+        {
+          "name": "Oignons",
+          "qty": 40
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 10
+        },
+        {
+          "name": "Carottes",
+          "qty": 30
+        },
+        {
+          "name": "Blanc de poireau",
+          "qty": 0.5
+        },
+        {
+          "name": "Bouquet Garni"
+        },
+        {
+          "name": "Champignons",
+          "qty": 110
+        },
+        {
+          "name": "Riz",
+          "qty": 80
+        },
+        {
+          "name": "Beurre",
+          "qty": 20
+        },
+        {
+          "name": "Farine",
+          "qty": 15
+        },
+        {
+          "name": "Sel"
+        },
+        {
+          "name": "Poivre"
+        }
+      ]
     },
-    {"name":"Carbo",
-        "ingredients":  [
-            { "name": "Spaghettis (De Cecco ou Barilla)", "qty": 120},
-            { "name": "Lardons", "qty": 100},
-            { "name": "Oignons", "qty": 50},
-            { "name": "Oeufs", "qty": 0.3},
-            { "name": "Vin blanc genre muscadet", "qty": 5},
-            { "name": "Crème Fraiche", "qty": 4},
-            { "name": "Parmesan", "qty": 50},
-            { "name": "Sel"},
-            { "name": "Poivre"}
-        ]
+    {
+      "name": "Carbo",
+      "ingredients": [
+        {
+          "name": "Spaghettis (De Cecco ou Barilla)",
+          "qty": 120
+        },
+        {
+          "name": "Lardons",
+          "qty": 100
+        },
+        {
+          "name": "Oignons",
+          "qty": 50
+        },
+        {
+          "name": "Oeufs",
+          "qty": 0.3
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 5
+        },
+        {
+          "name": "Crème Fraiche",
+          "qty": 4
+        },
+        {
+          "name": "Parmesan",
+          "qty": 50
+        },
+        {
+          "name": "Sel"
+        },
+        {
+          "name": "Poivre"
+        }
+      ]
     },
-    {   "name": "Chili",
-        "ingredients":  [
-            { "name": "Oignons", "qty": 60},
-            { "name": "Ail"},
-            { "name": "Poivrons", "qty": 0.125},
-            { "name": "Boîte de tomates pelées", "qty": 120},
-            { "name": "Haricots rouges (en boîte, poids égoutté)", "qty": 100},
-            { "name": "Boeuf haché", "qty": 120},
-            { "name": "Bouillon cube"},
-            { "name": "Huile d'olive"},
-            { "name": "Origan"},
-            { "name": "Tabasco"},
-            { "name": "Piment"},
-            { "name": "Riz", "qty": 80}
-        ]
+    {
+      "name": "Chili",
+      "ingredients": [
+        {
+          "name": "Oignons",
+          "qty": 60
+        },
+        {
+          "name": "Ail"
+        },
+        {
+          "name": "Poivrons",
+          "qty": 0.125
+        },
+        {
+          "name": "Boîte de tomates pelées",
+          "qty": 120
+        },
+        {
+          "name": "Haricots rouges (en boîte, poids égoutté)",
+          "qty": 100
+        },
+        {
+          "name": "Boeuf haché",
+          "qty": 120
+        },
+        {
+          "name": "Bouillon cube"
+        },
+        {
+          "name": "Huile d'olive"
+        },
+        {
+          "name": "Origan"
+        },
+        {
+          "name": "Tabasco"
+        },
+        {
+          "name": "Piment"
+        },
+        {
+          "name": "Riz",
+          "qty": 80
+        }
+      ]
     },
-	{   "name":"Côtes de boeuf & ratatouille",
-        "ingredients":  [
-            { "name": "cotes de boeuf du boucher", "qty": 0.25},
-            { "name": "Aubergine", "qty": 0.25},
-            { "name": "Courgette", "qty": 0.5},
-            { "name": "Poivrons", "qty": 0.25},
-            { "name": "Tomates", "qty": 1.25},
-            { "name": "Ail"},
-            { "name": "Huile d'olive"}
-        ]
+    {
+      "name": "Côtes de boeuf & ratatouille",
+      "ingredients": [
+        {
+          "name": "cotes de boeuf du boucher",
+          "qty": 0.25
+        },
+        {
+          "name": "Aubergine",
+          "qty": 0.25
+        },
+        {
+          "name": "Courgette",
+          "qty": 0.5
+        },
+        {
+          "name": "Poivrons",
+          "qty": 0.25
+        },
+        {
+          "name": "Tomates",
+          "qty": 1.25
+        },
+        {
+          "name": "Ail"
+        },
+        {
+          "name": "Huile d'olive"
+        }
+      ],
+      "instructions": "Demander au chef"
     },
-	{   "name":"Crêpes & galettes",
-        "ingredients":  [
-            { "name": "Oeufs", "qty": 2},
-            { "name": "Lait", "qty": 10},
-            { "name": "Farine", "qty": 40},
-            { "name": "Râpé", "qty": 20},
-            { "name": "Jambon blanc à la coupe", "qty": 2},
-            { "name": "Champignons", "qty": 100},
-            { "name": "Oignons", "qty": 25},
-            { "name": "Andouille"},
-            { "name": "Sucre"},
-            { "name": "Citron"},
-            { "name": "Huile"}
-        ]
+    {
+      "name": "Crêpes & galettes",
+      "ingredients": [
+        {
+          "name": "Oeufs",
+          "qty": 2
+        },
+        {
+          "name": "Lait",
+          "qty": 10
+        },
+        {
+          "name": "Farine",
+          "qty": 40
+        },
+        {
+          "name": "Râpé",
+          "qty": 20
+        },
+        {
+          "name": "Jambon blanc à la coupe",
+          "qty": 2
+        },
+        {
+          "name": "Champignons",
+          "qty": 100
+        },
+        {
+          "name": "Oignons",
+          "qty": 25
+        },
+        {
+          "name": "Andouille"
+        },
+        {
+          "name": "Sucre"
+        },
+        {
+          "name": "Citron"
+        },
+        {
+          "name": "Huile"
+        }
+      ]
     },
-    {   "name":"Quiche Lorraine",
-        "ingredients":  [
-            { "name": "Pâte brisée", "qty": 0.33},
-            { "name": "Lardons", "qty": 0.66},
-            { "name": "Oignons", "qty": 30},
-            { "name": "Crème Fraiche", "qty": 10},
-            { "name": "Oeufs", "qty": 1},
-            { "name": "Vin blanc genre muscadet", "qty": 10}
-        ]
+    {
+      "name": "Quiche Lorraine",
+      "ingredients": [
+        {
+          "name": "Pâte brisée",
+          "qty": 0.33
+        },
+        {
+          "name": "Lardons",
+          "qty": 0.66
+        },
+        {
+          "name": "Oignons",
+          "qty": 30
+        },
+        {
+          "name": "Crème Fraiche",
+          "qty": 10
+        },
+        {
+          "name": "Oeufs",
+          "qty": 1
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 10
+        }
+      ]
     },
-    {   "name":"Croziflette",
-        "ingredients":  [
-            { "name": "Lardons", "qty": 100},
-            { "name": "Oignons", "qty": 100},
-            { "name": "Crozets (moitié normaux moitié complets, pas de parfum à la con)", "qty": 80},
-            { "name": "Vin blanc genre muscadet", "qty": 5},
-            { "name": "Crème Fraiche", "qty": 5},
-            { "name": "Reblochon (gros, fermier si possible)", "qty": 0.3},
-            { "name": "Râpé", "qty": 50},
-            { "name": "Sel"},
-            { "name": "Poivre"}
-        ]
+    {
+      "name": "Croziflette",
+      "ingredients": [
+        {
+          "name": "Lardons",
+          "qty": 100
+        },
+        {
+          "name": "Oignons",
+          "qty": 100
+        },
+        {
+          "name": "Crozets (moitié normaux moitié complets, pas de parfum à la con)",
+          "qty": 80
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 5
+        },
+        {
+          "name": "Crème Fraiche",
+          "qty": 5
+        },
+        {
+          "name": "Reblochon (gros, fermier si possible)",
+          "qty": 0.3
+        },
+        {
+          "name": "Râpé",
+          "qty": 50
+        },
+        {
+          "name": "Sel"
+        },
+        {
+          "name": "Poivre"
+        }
+      ]
     },
-    {   "name":"Omelette",
-        "ingredients":  [
-            { "name": "Oeufs", "qty": 2.5},
-            { "name": "Champignons", "qty": 150},
-            { "name": "Oignons", "qty": 60},
-            { "name": "Râpé", "qty": 30},
-            { "name": "Lardons", "qty": 50},
-            { "name": "Vin blanc genre muscadet", "qty": 5},
-            { "name": "Beurre", "qty": 5},
-            { "name": "Crème Fraiche", "qty": 2}
-        ]
+    {
+      "name": "Omelette",
+      "ingredients": [
+        {
+          "name": "Oeufs",
+          "qty": 2.5
+        },
+        {
+          "name": "Champignons",
+          "qty": 150
+        },
+        {
+          "name": "Oignons",
+          "qty": 60
+        },
+        {
+          "name": "Râpé",
+          "qty": 30
+        },
+        {
+          "name": "Lardons",
+          "qty": 50
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 5
+        },
+        {
+          "name": "Beurre",
+          "qty": 5
+        },
+        {
+          "name": "Crème Fraiche",
+          "qty": 2
+        }
+      ]
     },
-    {   "name":"Poulet champi crème",
-        "ingredients": [
-            { "name": "Riz", "qty": 80},
-            { "name": "Râpé", "qty": 40},
-            { "name": "Filet de poulet", "qty": 1},
-            { "name": "Vin blanc genre muscadet", "qty": 3},
-            { "name": "Oignons", "qty": 50 , "_comment":"VERIFY"},
-            { "name": "Crème Fraiche", "qty": 6},
-            { "name": "Champignons", "qty": 150},
-            { "name": "Sel"},
-            { "name": "Poivre"},
-            { "name": "Beurre", "qty": 12}
-        ]
+    {
+      "name": "Poulet champi crème",
+      "ingredients": [
+        {
+          "name": "Riz",
+          "qty": 80
+        },
+        {
+          "name": "Râpé",
+          "qty": 40
+        },
+        {
+          "name": "Filet de poulet",
+          "qty": 1
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 3
+        },
+        {
+          "name": "Oignons",
+          "qty": 50,
+          "_comment": "VERIFY"
+        },
+        {
+          "name": "Crème Fraiche",
+          "qty": 6
+        },
+        {
+          "name": "Champignons",
+          "qty": 150
+        },
+        {
+          "name": "Sel"
+        },
+        {
+          "name": "Poivre"
+        },
+        {
+          "name": "Beurre",
+          "qty": 12
+        }
+      ]
     },
-    {   "name":"Raclette",
-        "ingredients":  [
-            { "name": "Patates", "qty": 200},
-            { "name": "Fromage à raclette", "qty": 200},
-            { "name": "Cornichons"},
-            { "name": "Petits oignons"},
-            { "name": "Jambon blanc à la coupe", "qty": 1},
-            { "name": "Rosette à la coupe", "qty": 1},
-            { "name": "Coppa à la coupe", "qty": 1},
-            { "name": "Viande des grisons à la coupe", "qty": 50},
-            { "name": "Poivre"}
-        ]
+    {
+      "name": "Raclette",
+      "ingredients": [
+        {
+          "name": "Patates",
+          "qty": 200
+        },
+        {
+          "name": "Fromage à raclette",
+          "qty": 200
+        },
+        {
+          "name": "Cornichons"
+        },
+        {
+          "name": "Petits oignons"
+        },
+        {
+          "name": "Jambon blanc à la coupe",
+          "qty": 1
+        },
+        {
+          "name": "Rosette à la coupe",
+          "qty": 1
+        },
+        {
+          "name": "Coppa à la coupe",
+          "qty": 1
+        },
+        {
+          "name": "Viande des grisons à la coupe",
+          "qty": 5
+        },
+        {
+          "name": "Poivre"
+        }
+      ]
     },
-    {   "name":"Rougail Saucisse",
-        "ingredients": [
-            {"name": "Saucisse de montbéliard fumée/cuite", "qty": 1},
-            {"name": "Oignons", "qty": 40},
-            {"name": "Ail"},
-            {"name": "Thym"},
-            {"name": "Persil"},
-            {"name": "Boîte de tomates pelées", "qty": 240},
-            {"name": "Lardons", "qty": 60},
-            {"name": "Vin blanc genre muscadet", "qty": 4},
-            {"name": "Lentilles", "qty": 50}
-        ]
+    {
+      "name": "Rougail Saucisse",
+      "ingredients": [
+        {
+          "name": "Saucisse de montbéliard fumée/cuite",
+          "qty": 1
+        },
+        {
+          "name": "Oignons",
+          "qty": 40
+        },
+        {
+          "name": "Ail"
+        },
+        {
+          "name": "Thym"
+        },
+        {
+          "name": "Persil"
+        },
+        {
+          "name": "Boîte de tomates pelées",
+          "qty": 240
+        },
+        {
+          "name": "Lardons",
+          "qty": 60
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 4
+        },
+        {
+          "name": "Lentilles",
+          "qty": 50
+        }
+      ]
     },
-    {   "name":"Réveillon",
-        "ingredients": [
-            { "name": "Beurre", "qty": 20},
-            { "name": "Toasts / Pain de mie", "qty": 5},
-            { "name": "Saumon fumé (CHER)", "qty": 1, "_comment":"tranches"},
-            { "name": "Oeufs de truite/lump", "qty": 20},
-            { "name": "Foie Gras entier", "qty": 50}
-        ]
+    {
+      "name": "Réveillon",
+      "ingredients": [
+        {
+          "name": "Beurre",
+          "qty": 20
+        },
+        {
+          "name": "Toasts / Pain de mie",
+          "qty": 5
+        },
+        {
+          "name": "Saumon fumé (CHER)",
+          "qty": 1,
+          "_comment": "tranches"
+        },
+        {
+          "name": "Oeufs de truite/lump",
+          "qty": 20
+        },
+        {
+          "name": "Foie Gras entier",
+          "qty": 50
+        }
+      ]
     },
-    {   "name":"Sauté de veau chorizo olives",
-        "ingredients": [
-            { "name": "Veau", "qty": 170},
-            { "name": "Chorizo", "qty": 0.2},
-            { "name": "Tomates concassées", "qty": 150},
-            { "name": "Olives vertes dénoyautées", "qty": 30},
-            { "name": "Oignons", "qty": 40},
-            { "name": "Basilic"},
-            { "name": "Ail"},
-            { "name": "Huile d'olive"},
-            { "name": "Poivre"},
-            { "name": "Sel"}
-        ]
+    {
+      "name": "Sauté de veau chorizo olives",
+      "ingredients": [
+        {
+          "name": "Veau",
+          "qty": 170
+        },
+        {
+          "name": "Chorizo",
+          "qty": 0.2
+        },
+        {
+          "name": "Tomates concassées",
+          "qty": 150
+        },
+        {
+          "name": "Olives vertes dénoyautées",
+          "qty": 30
+        },
+        {
+          "name": "Oignons",
+          "qty": 40
+        },
+        {
+          "name": "Basilic"
+        },
+        {
+          "name": "Ail"
+        },
+        {
+          "name": "Huile d'olive"
+        },
+        {
+          "name": "Poivre"
+        },
+        {
+          "name": "Sel"
+        }
+      ]
     },
-    {   "name":"BBQ",
-        "ingredients":  [
-            { "name": "Merguez", "qty": 0.8},
-            { "name": "Chipos", "qty": 0.8},
-            { "name": "Brochette boeuf", "qty": 0.666},
-            { "name": "Brochette agneau", "qty": 0.666},
-            { "name": "Andouillette", "qty": 0.60},
-            { "name": "Moutarde"}
-        ]
+    {
+      "name": "BBQ",
+      "ingredients": [
+        {
+          "name": "Merguez",
+          "qty": 0.8
+        },
+        {
+          "name": "Chipos",
+          "qty": 0.8
+        },
+        {
+          "name": "Brochette boeuf",
+          "qty": 0.666
+        },
+        {
+          "name": "Brochette agneau",
+          "qty": 0.666
+        },
+        {
+          "name": "Andouillette",
+          "qty": 0.6
+        },
+        {
+          "name": "Moutarde"
+        }
+      ]
     },
-    {   "name":"Salades de pâtes",
-        "ingredients":  [
-            { "name": "Fusili (De Cecco ou Barilla)", "qty": 85},
-            { "name": "Tomates", "qty": 0.5},
-            { "name": "Oeufs", "qty": 0.8},
-            { "name": "Comté", "qty": 66},
-            { "name": "Thon", "qty": 35},
-            { "name": "Échalottes", "qty": 0.3},
-            { "name": "Sel"},
-            { "name": "Poivre"},
-            { "name": "Moutarde"},
-            { "name": "Huile d'olive", "qty": 4}
-        ]
+    {
+      "name": "Salades de pâtes",
+      "ingredients": [
+        {
+          "name": "Fusili (De Cecco ou Barilla)",
+          "qty": 85
+        },
+        {
+          "name": "Tomates",
+          "qty": 0.5
+        },
+        {
+          "name": "Oeufs",
+          "qty": 0.8
+        },
+        {
+          "name": "Comté",
+          "qty": 66
+        },
+        {
+          "name": "Thon",
+          "qty": 35
+        },
+        {
+          "name": "Échalottes",
+          "qty": 0.3
+        },
+        {
+          "name": "Sel"
+        },
+        {
+          "name": "Poivre"
+        },
+        {
+          "name": "Moutarde"
+        },
+        {
+          "name": "Huile d'olive",
+          "qty": 4
+        }
+      ]
     },
-    {   "name":"Tartiflette",
-        "ingredients":  [
-            { "name": "Lardons", "qty": 70},
-            { "name": "Oignons", "qty": 50},
-            { "name": "Patates", "qty": 200},
-            { "name": "Crème Fraiche", "qty": 4},
-            { "name": "Reblochon (gros, fermier si possible)", "qty": 0.25},
-            { "name": "Vin blanc genre muscadet", "qty": 4},
-            { "name": "Râpé", "qty": 20},
-            { "name": "Sel"},
-            { "name": "Poivre"}
-        ]
+    {
+      "name": "Tartiflette",
+      "ingredients": [
+        {
+          "name": "Lardons",
+          "qty": 70
+        },
+        {
+          "name": "Oignons",
+          "qty": 50
+        },
+        {
+          "name": "Patates",
+          "qty": 200
+        },
+        {
+          "name": "Crème Fraiche",
+          "qty": 4
+        },
+        {
+          "name": "Reblochon (gros, fermier si possible)",
+          "qty": 0.25
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 4
+        },
+        {
+          "name": "Râpé",
+          "qty": 20
+        },
+        {
+          "name": "Sel"
+        },
+        {
+          "name": "Poivre"
+        }
+      ]
     },
-    {   "name":"Lasagnes",
-        "ingredients":  [
-            { "name": "Lasagnes", "qty": 60},
-            { "name": "Tomates concassées", "qty": 400},
-            { "name": "Oignons", "qty": 20},
-            { "name": "Carottes", "qty": 30},
-            { "name": "Pancetta/Jambon cru", "qty": 20},
-            { "name": "Boeuf haché", "qty": 75},
-            { "name": "Porc haché", "qty": 75},
-            { "name": "Huile d'olive", "qty": 2},
-            { "name": "Vin blanc genre muscadet", "qty": 3},
-            { "name": "Parmesan", "qty": 20},
-            { "name": "Beurre", "qty": 10},
-            { "name": "Farine", "qty": 10},
-            { "name": "Lait", "qty": 10},
-            { "name": "Râpé", "qty": 20},
-            { "name": "Bouillon cube"},
-            { "name": "Sel"},
-            { "name": "Poivre"},
-            { "name": "Thym"},
-            { "name": "Romarin"}
-        ]
+    {
+      "name": "Lasagnes",
+      "ingredients": [
+        {
+          "name": "Lasagnes",
+          "qty": 60
+        },
+        {
+          "name": "Tomates concassées",
+          "qty": 400
+        },
+        {
+          "name": "Oignons",
+          "qty": 20
+        },
+        {
+          "name": "Carottes",
+          "qty": 30
+        },
+        {
+          "name": "Pancetta/Jambon cru",
+          "qty": 20
+        },
+        {
+          "name": "Boeuf haché",
+          "qty": 75
+        },
+        {
+          "name": "Porc haché",
+          "qty": 75
+        },
+        {
+          "name": "Huile d'olive",
+          "qty": 2
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 3
+        },
+        {
+          "name": "Parmesan",
+          "qty": 20
+        },
+        {
+          "name": "Beurre",
+          "qty": 10
+        },
+        {
+          "name": "Farine",
+          "qty": 10
+        },
+        {
+          "name": "Lait",
+          "qty": 10
+        },
+        {
+          "name": "Râpé",
+          "qty": 20
+        },
+        {
+          "name": "Bouillon cube"
+        },
+        {
+          "name": "Sel"
+        },
+        {
+          "name": "Poivre"
+        },
+        {
+          "name": "Thym"
+        },
+        {
+          "name": "Romarin"
+        }
+      ]
     },
-    {   "name":"Hachis parmentier",
-        "ingredients":  [
-            { "name": "Patates", "qty": 220},
-            { "name": "Oignons", "qty": 20},
-            { "name": "Carottes", "qty": 20},
-            { "name": "Tomates concassées", "qty": 40},
-            { "name": "Ail"},
-            { "name": "Boeuf haché", "qty": 160},
-            { "name": "Vin blanc genre muscadet", "qty": 3},
-            { "name": "Râpé", "qty": 20}
-        ]
+    {
+      "name": "Hachis parmentier",
+      "ingredients": [
+        {
+          "name": "Patates",
+          "qty": 220
+        },
+        {
+          "name": "Oignons",
+          "qty": 20
+        },
+        {
+          "name": "Carottes",
+          "qty": 20
+        },
+        {
+          "name": "Tomates concassées",
+          "qty": 40
+        },
+        {
+          "name": "Ail"
+        },
+        {
+          "name": "Boeuf haché",
+          "qty": 160
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 3
+        },
+        {
+          "name": "Râpé",
+          "qty": 20
+        }
+      ]
     },
-    {   "name":"Riz cantonais",
-        "ingredients":  [
-            { "name": "Riz", "qty": 50},
-            { "name": "Oignons", "qty": 40},
-            { "name": "Vin blanc genre muscadet", "qty": 5},
-            { "name": "Petits pois", "qty": 25},
-            { "name": "Lardons", "qty": 50},
-            { "name": "Oeufs", "qty": 0.5},
-            { "name": "Sel"},
-            { "name": "Poivre"}
-        ]
+    {
+      "name": "Riz cantonais",
+      "ingredients": [
+        {
+          "name": "Riz",
+          "qty": 50
+        },
+        {
+          "name": "Oignons",
+          "qty": 40
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 5
+        },
+        {
+          "name": "Petits pois",
+          "qty": 25
+        },
+        {
+          "name": "Lardons",
+          "qty": 50
+        },
+        {
+          "name": "Oeufs",
+          "qty": 0.5
+        },
+        {
+          "name": "Sel"
+        },
+        {
+          "name": "Poivre"
+        }
+      ]
     },
-    {   "name":"Pâtes Bolo",
-        "ingredients":  [
-            { "name": "Spaghettis (De Cecco ou Barilla)", "qty": 120},
-            { "name": "Tomates concassées", "qty": 400},
-            { "name": "Oignons", "qty": 20},
-            { "name": "Carottes", "qty": 20},
-            { "name": "Pancetta/Jambon cru", "qty": 20},
-            { "name": "Boeuf haché", "qty": 40},
-            { "name": "Porc haché", "qty": 40},
-            { "name": "Huile d'olive", "qty": 2},
-            { "name": "Vin blanc genre muscadet", "qty": 3},
-            { "name": "Parmesan", "qty": 20},
-            { "name": "Râpé", "qty": 20},
-            { "name": "Bouillon cube"},
-            { "name": "Sel"},
-            { "name": "Poivre"},
-            { "name": "Thym"},
-            { "name": "Romarin"}
-        ]
+    {
+      "name": "Pâtes Bolo",
+      "ingredients": [
+        {
+          "name": "Spaghettis (De Cecco ou Barilla)",
+          "qty": 120
+        },
+        {
+          "name": "Tomates concassées",
+          "qty": 400
+        },
+        {
+          "name": "Oignons",
+          "qty": 20
+        },
+        {
+          "name": "Carottes",
+          "qty": 20
+        },
+        {
+          "name": "Pancetta/Jambon cru",
+          "qty": 20
+        },
+        {
+          "name": "Boeuf haché",
+          "qty": 40
+        },
+        {
+          "name": "Porc haché",
+          "qty": 40
+        },
+        {
+          "name": "Huile d'olive",
+          "qty": 2
+        },
+        {
+          "name": "Vin blanc genre muscadet",
+          "qty": 3
+        },
+        {
+          "name": "Parmesan",
+          "qty": 20
+        },
+        {
+          "name": "Râpé",
+          "qty": 20
+        },
+        {
+          "name": "Bouillon cube"
+        },
+        {
+          "name": "Sel"
+        },
+        {
+          "name": "Poivre"
+        },
+        {
+          "name": "Thym"
+        },
+        {
+          "name": "Romarin"
+        }
+      ]
     },
-    {   "name":"Taboulé",
-        "ingredients":  [
-            { "name": "Semoule moyenne", "qty": 40},
-            { "name": "Tomates", "qty": 0.5},
-            { "name": "Poivrons", "qty": 0.1},
-            { "name": "Concombre", "qty": 0.17},
-            { "name": "Oignons blancs", "qty": 0.17},
-            { "name": "Citron", "qty": 0.3},
-            { "name": "Huile d'olive", "qty": 2},
-            { "name": "Sel"},
-            { "name": "Poivre"},
-            { "name": "Menthe"},
-            { "name": "Ciboulette"},
-            { "name": "Persil"}
-        ]
+    {
+      "name": "Taboulé",
+      "ingredients": [
+        {
+          "name": "Semoule moyenne",
+          "qty": 40
+        },
+        {
+          "name": "Tomates",
+          "qty": 0.5
+        },
+        {
+          "name": "Poivrons",
+          "qty": 0.1
+        },
+        {
+          "name": "Concombre",
+          "qty": 0.17
+        },
+        {
+          "name": "Oignons blancs",
+          "qty": 0.1
+        },
+        {
+          "name": "Citron",
+          "qty": 0.3
+        },
+        {
+          "name": "Huile d'olive",
+          "qty": 2
+        },
+        {
+          "name": "Sel"
+        },
+        {
+          "name": "Poivre"
+        },
+        {
+          "name": "Menthe"
+        },
+        {
+          "name": "Ciboulette"
+        },
+        {
+          "name": "Persil"
+        }
+      ]
     }
-]
+  ]
 }

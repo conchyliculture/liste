@@ -72,7 +72,7 @@ class TestListe < Test::Unit::TestCase
     def test_it_gives_index
         get '/'
         assert last_response.ok?
-        assert_include last_response.body, "ng-controller=\"ListeCtrl\""
+        assert_include last_response.body, 'x-data="listeApp()"'
     end
 
     def test_it_gives_recettes
@@ -145,6 +145,30 @@ class TestListe < Test::Unit::TestCase
         assert_include last_response.body, "JSON invalide"
     end
 
+    def test_recettes_save_with_instructions
+        original = File.read(File.join(PUBLIC_DIR, "recettes.json"))
+        j = JSON.parse(original)
+        j["recettes"][0]["instructions"] = "1. Faire revenir les oignons\n2. Ajouter le sel"
+        json_post '/recettes/save', j
+        assert last_response.ok?, "Expected 200, got #{last_response.status}: #{last_response.body}"
+        saved = JSON.parse(File.read(File.join(PUBLIC_DIR, "recettes.json")))
+        assert_equal "1. Faire revenir les oignons\n2. Ajouter le sel", saved["recettes"][0]["instructions"]
+    ensure
+        File.write(File.join(PUBLIC_DIR, "recettes.json"), original) if original
+    end
+
+    def test_recettes_save_rejects_non_string_instructions
+        original = File.read(File.join(PUBLIC_DIR, "recettes.json"))
+        j = JSON.parse(original)
+        j["recettes"][0]["instructions"] = ["not", "a", "string"]
+        json_post '/recettes/save', j
+        assert_equal 400, last_response.status
+        assert_include last_response.body, "instructions"
+        assert_equal original, File.read(File.join(PUBLIC_DIR, "recettes.json")), "File must not be modified on error"
+    ensure
+        File.write(File.join(PUBLIC_DIR, "recettes.json"), original) if original
+    end
+
     def test_recettes_save_unknown_ingredient
         original = File.read(File.join(PUBLIC_DIR, "recettes.json"))
         bad = {"recettes" => [{"name" => "Test", "ingredients" => [{"name" => "__no_such_ingredient__", "qty" => 1}]}]}
@@ -180,6 +204,30 @@ class TestListe < Test::Unit::TestCase
         post '/matin/save', "{bad json", {'CONTENT_TYPE' => 'application/json'}
         assert_equal 400, last_response.status
         assert_include last_response.body, "JSON invalide"
+    end
+
+    def test_matin_save_with_instructions
+        original = File.read(File.join(PUBLIC_DIR, "matin.json"))
+        j = JSON.parse(original)
+        j["recettes"][0]["instructions"] = "Préparer **les tartines** au beurre."
+        json_post '/matin/save', j
+        assert last_response.ok?, "Expected 200, got #{last_response.status}: #{last_response.body}"
+        saved = JSON.parse(File.read(File.join(PUBLIC_DIR, "matin.json")))
+        assert_equal "Préparer **les tartines** au beurre.", saved["recettes"][0]["instructions"]
+    ensure
+        File.write(File.join(PUBLIC_DIR, "matin.json"), original) if original
+    end
+
+    def test_matin_save_rejects_non_string_instructions
+        original = File.read(File.join(PUBLIC_DIR, "matin.json"))
+        j = JSON.parse(original)
+        j["recettes"][0]["instructions"] = 42
+        json_post '/matin/save', j
+        assert_equal 400, last_response.status
+        assert_include last_response.body, "instructions"
+        assert_equal original, File.read(File.join(PUBLIC_DIR, "matin.json")), "File must not be modified on error"
+    ensure
+        File.write(File.join(PUBLIC_DIR, "matin.json"), original) if original
     end
 
     def test_matin_save_schema_error
@@ -369,6 +417,24 @@ class TestListe < Test::Unit::TestCase
 
     def test_shop_events_404_for_unknown_session
         get '/shop/doesnotexist/events?nickname=Alice'
+        assert_equal 404, last_response.status
+    end
+
+    # ── Cook view ──────────────────────────────────────────────────────────────
+
+    def test_cook_renders_for_existing_list
+        json_post '/save', $test_liste
+        assert last_response.ok?
+        id = DB.execute("SELECT id FROM saved_lists ORDER BY id DESC LIMIT 1").first["id"]
+
+        get "/cook/#{id}"
+        assert last_response.ok?, "Expected 200, got #{last_response.status}: #{last_response.body}"
+        assert_include last_response.body, "lolilol"
+        assert_include last_response.body, 'x-data="cookApp()"'
+    end
+
+    def test_cook_404_for_unknown_list
+        get '/cook/9999999'
         assert_equal 404, last_response.status
     end
 end

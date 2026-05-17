@@ -86,22 +86,6 @@ DB.execute_batch(<<~SQL)
     DELETE FROM shopping_sessions WHERE created_at < datetime('now', '-30 days');
 SQL
 
-# One-time migration: import any existing stored_recettes/*.json files
-legacy_dir = File.expand_path("stored_recettes", __dir__)
-if File.exist?(legacy_dir)
-    Dir.glob(File.join(legacy_dir, "*.json")).each do |path|
-        begin
-            j = JSON.parse(File.read(path))
-            DB.execute(
-                "INSERT OR IGNORE INTO saved_lists (name, created_at, data) VALUES (?, ?, ?)",
-                [j["name"], j["date"], j.fetch("liste", j).to_json]
-            )
-        rescue => e
-            $stderr.puts "Migration: skipping #{path}: #{e.message}"
-        end
-    end
-end
-
 # ── Shopping push (long-poll) registry ────────────────────────────────────────
 
 SESSION_WATCHERS = {}
@@ -156,12 +140,16 @@ def validate_recette_data(j)
     liste_ingredients = JSON.parse(File.read(File.join(PUBLIC_DIR, "ingredients.json")))
     raise "No ingredients" if liste_ingredients.empty?
     raise "missing top key 'recettes'" unless j.has_key?("recettes")
-    raise "No recette" if j['recettes'].empty?
+    names = j['recettes'].map { |r| r['name'] }
+    raise "Duplicate recipe name: #{names.find { |n| names.count(n) > 1 }}" if names.uniq.length != names.length
     j['recettes'].each do |r|
         raise "missing key 'name' for a recette" unless r['name']
         raise "recette name empty" if r["name"].empty?
         raise "missing key 'ingredients' for a recette" unless r['ingredients']
         raise "recette ingredients empty" if r["ingredients"].empty?
+        if r.has_key?('instructions') && !r['instructions'].is_a?(String)
+            raise "instructions for recette #{r['name']} must be a string"
+        end
         r["ingredients"].each do |ing|
             raise "missing key 'name' for ingredient in recette #{r['name']}" unless ing['name']
             raise "ingredient name empty in recette #{r['name']}" if ing["name"].empty?
@@ -210,6 +198,12 @@ helpers do
         validate_recette_data(j)
         File.write(path, JSON.pretty_generate(j))
         "ok"
+    end
+
+    def require_session!(id)
+        halt 404, "Session introuvable" unless DB.execute(
+            "SELECT 1 FROM shopping_sessions WHERE id = ?", [id]
+        ).first
     end
 end
 
@@ -275,6 +269,19 @@ get '/recettes-editor' do
     erb :recettes_editor
 end
 
+get '/cook/:id' do
+    row = DB.execute(
+        "SELECT id, name, created_at, data FROM saved_lists WHERE id = ?",
+        [params[:id]]
+    ).first
+    halt 404, "Liste introuvable" unless row
+    @list_id    = row["id"]
+    @list_name  = row["name"]
+    @list_date  = row["created_at"]
+    @saved_list = (JSON.parse(row["data"]) rescue {})
+    erb :cook
+end
+
 post '/recettes/save' do
     json_endpoint do
         save_recettes_file(File.join(PUBLIC_DIR, "recettes.json"), request.body.read)
@@ -303,7 +310,7 @@ post '/save' do
         json = JSON.parse(request.body.read)
         nom  = json["name"].to_s
         raise ArgumentError, "Invalid name" unless nom =~ /\A[a-z0-9 ]+\z/i
-        date = Time.now.strftime("%Y-%m-%dT%H-%M-%S")
+        date = Time.now.utc.iso8601
         DB.execute(
             "INSERT INTO saved_lists (name, created_at, data) VALUES (?, ?, ?)",
             [nom, date, json["liste"].to_json]
@@ -320,7 +327,7 @@ post '/shopping-session' do
         items = json["items"]
         raise ArgumentError, "items required" unless items.is_a?(Array)
         id    = SecureRandom.hex(8)
-        date  = Time.now.strftime("%Y-%m-%dT%H-%M-%S")
+        date  = Time.now.utc.iso8601
         DB.execute(
             "INSERT INTO shopping_sessions (id, label, created_at, items) VALUES (?, ?, ?, ?)",
             [id, json["label"], date, items.to_json]
@@ -375,6 +382,7 @@ get '/shop/:id/events' do
 end
 
 post '/shop/:id/check' do
+    require_session!(params[:id])
     json_endpoint do
         session_id = params[:id]
         json       = JSON.parse(request.body.read)
@@ -403,13 +411,11 @@ post '/shop/:id/check' do
 end
 
 post '/shop/:id/override' do
-    session_id = params[:id]
-    halt 404, "Session introuvable" unless DB.execute(
-        "SELECT 1 FROM shopping_sessions WHERE id = ?", [session_id]
-    ).first
+    require_session!(params[:id])
     json_endpoint do
-        json      = JSON.parse(request.body.read)
-        item_name = json["item_name"].to_s
+        session_id = params[:id]
+        json       = JSON.parse(request.body.read)
+        item_name  = json["item_name"].to_s
         raise ArgumentError, "item_name required" if item_name.empty?
 
         DB.execute(<<~SQL, [session_id, item_name, json["rayon"], json["qty_display"], json["is_deleted"] ? 1 : 0, json["nickname"]])

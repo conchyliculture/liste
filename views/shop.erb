@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Liste de courses</title>
+    <link rel="icon" type="image/svg+xml" href="/img/logo.svg">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/shop.css">
 </head>
 <body data-session="<%= @session_id %>"
@@ -13,8 +15,8 @@
 <div id="nickname-gate" class="gate-overlay" hidden>
     <div class="gate-card">
         <h2>Votre prénom ?</h2>
-        <input id="nickname-input" type="text" placeholder="Alice" maxlength="20" autocomplete="off">
-        <button id="nickname-ok">C'est parti !</button>
+        <input id="nickname-input" class="input" type="text" placeholder="Alice" maxlength="20" autocomplete="off">
+        <button id="nickname-ok" class="btn btn-primary">C'est parti !</button>
     </div>
 </div>
 
@@ -40,15 +42,15 @@
 <!-- Add-item panel (shown in edit mode) -->
 <div id="add-item-panel" class="add-panel" hidden>
     <h3>Ajouter un article</h3>
-    <input id="add-name" type="text" placeholder="Nom de l'article" maxlength="60">
-    <input id="add-qty" type="text" placeholder="Quantité (ex: 500g)" maxlength="20">
-    <select id="add-rayon">
+    <input id="add-name" class="input" type="text" placeholder="Nom de l'article" maxlength="60">
+    <input id="add-qty" class="input" type="text" placeholder="Quantité (ex: 500g)" maxlength="20">
+    <select id="add-rayon" class="input">
         <option value="">— Rayon —</option>
         <% $enum_rayon.each do |r| %>
         <option><%= Rack::Utils.escape_html(r) %></option>
         <% end %>
     </select>
-    <button id="add-submit">Ajouter</button>
+    <button id="add-submit" class="btn btn-primary">Ajouter</button>
 </div>
 
 <script src="/js/shop.js"></script>

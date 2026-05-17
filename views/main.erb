@@ -1,175 +1,320 @@
 <!DOCTYPE html>
-<html ng-app="listeApp">
+<html lang="fr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Liste de courses</title>
-    <link rel="stylesheet" href="/css/angular-material.min.css">
-    <link href="css/icon_family=Material+Icons.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/img/logo.svg">
     <link rel="stylesheet" href="/css/style.css">
-    <script src="js/angular.min.js"></script>
-    <script src="js/angular-sanitize.js"></script>
-    <script src="js/angular-animate.min.js"></script>
-    <script src="js/angular-aria.min.js"></script>
-    <script src="js/angular-messages.min.js"></script>
-    <script src="js/angular-material.min.js"></script>
-    <script src="js/liste.helpers.js"></script>
-    <script src="js/liste.js"></script>
+    <script defer src="/js/alpine.min.js"></script>
+    <script src="/js/liste.helpers.js"></script>
+    <script src="/js/liste.js"></script>
 </head>
-<body ng-controller="ListeCtrl">
-
-<md-toolbar class="md-tall">
-    <span ><!-- Juste pour faire du vide --></span>
-    <h1><span style="margin-left:2%">El toolos de la faisaciòn dela listà dell courses</span></h1>
-</md-toolbar>
+<body x-data="listeApp()" x-cloak>
 
 <% unless @errors.empty? %>
-    <md-toolbar class="md-accent">
-        <h2 class="md-toolbar-tools">
-            <% @errors.each do |m| %><span><%= Rack::Utils.escape_html(m) %></span><% end %>
-        </h2>
-    </md-toolbar>
+<div class="banner banner-error">
+    <% @errors.each do |m| %><p><%= Rack::Utils.escape_html(m) %></p><% end %>
+</div>
 <% end %>
 
-<div layout="row">
-    <md-card flex="100">
-        <md-card-header style="width: 95%" layout="column">
-            <div layout="row" layout-sm="column" layout-align="start" style="width: 100%">
-                <div layout="row">
-                    <% if @errors.empty? %>
-                    <md-button class="md-primary md-raised" ng-click="toggleListe()" >
-                            Toggle Liste
-                    </md-button>
-                    <md-button class="md-primary md-raised" ng-click="showPromptSave($event)" >
-                            Save Liste
-                    </md-button>
-                    <md-button class="md-primary md-raised" ng-click="showPromptLoad($event)" >
-                            Load Liste
-                    </md-button>
-                    <md-button class="md-accent md-raised" ng-click="startShoppingCurrent()" ng-disabled="!liste_rayons || !liste_rayons.length">
-                            Faire les courses
-                    </md-button>
-                    <md-button href="/recettes-editor">
-                            Recettes
-                    </md-button>
-                    <% end %>
-                </div>
-            </div>
-        </md-card-header>
-        <md-card-content>
-            <h2 class="liste-title">Liste</h2>
-            <div class="liste-rayons">
-                <div ng-repeat="rayon in liste_rayons" class="rayon-section">
-                    <h3 class="rayon-header">{{rayon.name}}</h3>
-                    <ul class="rayon-items">
-                        <li ng-repeat="item in rayon.items" class="liste-item">
-                            <span class="item-name">{{item.name}}</span>
-                            <span class="item-qty" ng-if="displayQty(item) || item.editing">
-                                <button class="qty-btn" ng-click="adjustQty(item, -1)" ng-if="!item.editing">−</button>
-                                <span class="qty-value" ng-if="!item.editing" ng-click="startEditQty(item)" title="Cliquer pour modifier">{{displayQty(item)}}</span>
-                                <span class="qty-edit" ng-if="item.editing">
-                                    <input class="qty-edit-input" type="number" min="0" step="any" ng-model="item.editVal"
-                                        ng-blur="commitEditQty(item)"
-                                        ng-keydown="$event.key==='Enter' && commitEditQty(item) || $event.key==='Escape' && cancelEditQty(item)"
-                                        focus-on="item.editing">
-                                    <span class="qty-edit-unit">{{item.unit}}</span>
-                                </span>
-                                <button class="qty-btn" ng-click="adjustQty(item, 1)" ng-if="!item.editing">+</button>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="add-item-row">
-                <md-input-container class="add-item-article">
-                    <label>Article</label>
-                    <input ng-model="new_item.name" ng-keydown="$event.key==='Enter' && addCustomItem()">
-                </md-input-container>
-                <md-input-container class="add-item-qty">
-                    <label>Qté</label>
-                    <input ng-model="new_item.qty" type="number" min="0" step="any">
-                </md-input-container>
-                <md-input-container class="add-item-unit">
-                    <label>Unité</label>
-                    <input ng-model="new_item.unit">
-                </md-input-container>
-                <md-input-container class="add-item-rayon">
-                    <md-select ng-model="new_item.rayon" placeholder="Rayon">
-                        <md-option ng-repeat="r in enum_rayon" ng-value="$index">{{r}}</md-option>
-                    </md-select>
-                </md-input-container>
-                <md-button class="md-primary md-raised" ng-click="addCustomItem()" ng-disabled="!new_item.name.trim()">+</md-button>
-            </div>
-            <div ng-repeat="item in custom_items" layout="row" layout-align="start center" class="custom-item-row">
-                <span flex class="custom-item-label">{{item.name}}<span ng-if="item.qty" class="custom-item-qty"> — {{item.qty}}{{item.unit ? ' ' + item.unit : ''}}</span></span>
-                <md-button class="md-icon-button" ng-click="removeCustomItem($index)" aria-label="Supprimer">✕</md-button>
-            </div>
-            <md-input-container class="md-block">
-                <label>Texte libre</label>
-                <textarea ng-model="extras_txt" md-select-on-focus></textarea>
-            </md-input-container>
-        </md-card-content>
-    </md-card>
-
-    <div id="columnMid" flex="100">
-        <md-card>
-            <md-card-title><span class="md-headline">Valeurs globales</span></md-card-title>
-            <md-card-content>
-                <md-input-container class="md-block">
-                    <label >Nombre de jours</label>
-                    <input type="number" max="20" ng-model="nb_jours" ng-change="joursChanged()">
-                </md-input-container>
-                <md-input-container class="md-block">
-                    <label>Recette des matins</label>
-                    <md-select ng-model="recette_matin" ng-change="updateListe()" placeholder="Recette matin">
-                        <md-option ng-value="{{null}}">---</md-option>
-                        <md-option ng-repeat="recette in recettes_matin" ng-value="recette.name">{{recette.name}}</md-option>
-                    </md-select>
-                </md-input-container>
-            </md-card-content>
-        </md-card>
-        <md-list style="padding:0px">
-            <div ng-repeat="jour in range_jours track by $index" md-ink-ripple="false" md-ni-ink="true">
-                <md-card class="jour-card">
-                    <md-card-content class="jour-card-content">
-                        <span class="jour-label">Jour {{$index+1}}</span>
-                        <div class="meal-row">
-                            <span class="meal-label">Matin</span>
-                            <input type="number" max="100" class="gens-input" ng-model="gens_par_matin[$index]" ng-change="updateListe()">
-                            <span class="pers-label">pers.</span>
-                        </div>
-                        <div class="meal-row">
-                            <span class="meal-label">Midi</span>
-                            <md-select class="meal-select" ng-model="recette_dejeuner_par_jour[$index]" ng-change="updateListe()" placeholder="---">
-                                <md-option ng-value="{{null}}">---</md-option>
-                                <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
-                            </md-select>
-                            <input type="number" max="100" class="gens-input" ng-model="gens_par_dejeuner[$index]" ng-change="updateListe()">
-                            <span class="pers-label">pers.</span>
-                        </div>
-                        <div class="meal-row">
-                            <span class="meal-label">Soir</span>
-                            <md-select class="meal-select" ng-model="recette_diner_par_jour[$index]" ng-change="updateListe()" placeholder="---">
-                                <md-option ng-value="{{null}}">---</md-option>
-                                <md-option ng-repeat="recette in recettes" ng-value="recette.name">{{recette.name}}</md-option>
-                            </md-select>
-                            <input type="number" max="100" class="gens-input" ng-model="gens_par_diner[$index]" ng-change="updateListe()">
-                            <span class="pers-label">pers.</span>
-                        </div>
-                    </md-card-content>
-                </md-card>
-            </div>
-        </md-list>
+<header class="topbar">
+    <div class="topbar-inner">
+        <h1 class="brand">
+            <img class="brand-logo" src="/img/logo.svg" alt="">
+            <span class="brand-text">Liste de courses</span>
+        </h1>
+        <nav class="topbar-actions">
+            <button class="btn btn-ghost" @click="resetListe()" :disabled="!ready">
+                <span class="ico">🗑️</span><span class="label">Nouveau</span>
+            </button>
+            <button class="btn btn-ghost" @click="openSave()" :disabled="!ready">
+                <span class="ico">💾</span><span class="label">Sauver</span>
+            </button>
+            <button class="btn btn-ghost" @click="openLoad()" :disabled="!ready">
+                <span class="ico">📂</span><span class="label">Charger</span>
+            </button>
+            <a class="btn btn-ghost" href="/recettes-editor">
+                <span class="ico">📝</span><span class="label">Recettes</span>
+            </a>
+            <button class="btn btn-ghost" @click="openCook()" :disabled="!ready">
+                <span class="ico">🍳</span><span class="label">Cuisiner</span>
+            </button>
+            <button class="btn btn-accent" @click="openShop()" :disabled="totalItems === 0">
+                <span class="ico">🛒</span><span class="label">Faire les courses</span>
+            </button>
+        </nav>
     </div>
-    <md-card layout-align="start start" id="columnRight" flex="100">
-    <md-card-header layout-align=""><span class="md-headline">Extras</span></md-card-header>
-    <md-card-content>
-        <md-list layout="column">
-            <md-checkbox ng-repeat="e in extras" ng-model="e.enabled" ng-change="updateListe()">{{e.name}}</md-checkbox>
-        </md-list>
-    </md-card-content>
-    </md-card>
+</header>
+
+<div class="view-switch" role="tablist">
+    <button class="vs-tab" role="tab" :aria-selected="view === 'planner'"
+            :class="{active: view === 'planner'}" @click="view = 'planner'">Recettes</button>
+    <button class="vs-tab" role="tab" :aria-selected="view === 'list'"
+            :class="{active: view === 'list'}" @click="view = 'list'">
+        Liste <span class="vs-count" x-text="totalItems"></span>
+    </button>
 </div>
+
+<main class="layout" :data-view="view">
+    <section class="planner">
+        <div class="card">
+            <h2 class="card-title">Paramètres</h2>
+            <div class="settings">
+                <label class="field">
+                    <span class="field-label">Nombre de jours</span>
+                    <input class="input" type="number" min="1" max="20"
+                           x-model.lazy.number="nb_jours" @change="onJoursChanged()">
+                </label>
+                <label class="field">
+                    <span class="field-label">Recette des matins</span>
+                    <select class="input" x-model="recette_matin" @change="updateListe()">
+                        <option value="">—</option>
+                        <template x-for="r in recettes_matin" :key="r.name">
+                            <option :value="r.name" x-text="r.name"></option>
+                        </template>
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Repas</h2>
+            <div class="days">
+                <template x-for="i in nb_jours" :key="i">
+                    <div class="day">
+                        <div class="day-header">Jour <span x-text="i"></span></div>
+
+                        <div class="meal">
+                            <span class="meal-tag" title="Matin">M</span>
+                            <span class="meal-recette muted">(recette des matins)</span>
+                            <input class="input gens" type="number" min="0" max="100"
+                                   x-model.number="gens_par_matin[i-1]" @change="updateListe()">
+                            <span class="pers">pers.</span>
+                        </div>
+
+                        <div class="meal">
+                            <span class="meal-tag" title="Déjeuner">D</span>
+                            <select class="input meal-select" x-model="recette_dejeuner_par_jour[i-1]" @change="updateListe()">
+                                <option value="">—</option>
+                                <template x-for="r in recettes" :key="r.name">
+                                    <option :value="r.name" x-text="r.name"></option>
+                                </template>
+                            </select>
+                            <input class="input gens" type="number" min="0" max="100"
+                                   x-model.number="gens_par_dejeuner[i-1]" @change="updateListe()">
+                            <span class="pers">pers.</span>
+                        </div>
+
+                        <div class="meal">
+                            <span class="meal-tag" title="Soir">S</span>
+                            <select class="input meal-select" x-model="recette_diner_par_jour[i-1]" @change="updateListe()">
+                                <option value="">—</option>
+                                <template x-for="r in recettes" :key="r.name">
+                                    <option :value="r.name" x-text="r.name"></option>
+                                </template>
+                            </select>
+                            <input class="input gens" type="number" min="0" max="100"
+                                   x-model.number="gens_par_diner[i-1]" @change="updateListe()">
+                            <span class="pers">pers.</span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Extras</h2>
+            <div class="extras">
+                <template x-for="e in extras" :key="e.key">
+                    <label class="check">
+                        <input type="checkbox" x-model="e.enabled" @change="updateListe()">
+                        <span x-text="e.name"></span>
+                    </label>
+                </template>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Articles personnalisés</h2>
+            <div class="add-item">
+                <input class="input ai-name" type="text" placeholder="Article"
+                       x-model="new_item.name" @keydown.enter.prevent="addCustomItem()">
+                <input class="input ai-qty" type="number" min="0" step="any" placeholder="Qté"
+                       x-model="new_item.qty">
+                <input class="input ai-unit" type="text" placeholder="Unité"
+                       x-model="new_item.unit">
+                <select class="input ai-rayon" x-model.number="new_item.rayon">
+                    <option :value="null">Rayon</option>
+                    <template x-for="(r, idx) in enum_rayon" :key="r">
+                        <option :value="idx" x-text="r"></option>
+                    </template>
+                </select>
+                <button class="btn btn-primary ai-add" @click="addCustomItem()"
+                        :disabled="!new_item.name.trim()">+</button>
+            </div>
+            <ul class="custom-items" x-show="custom_items.length">
+                <template x-for="(item, idx) in custom_items" :key="idx">
+                    <li class="custom-item">
+                        <span class="ci-name" x-text="item.name"></span>
+                        <span class="ci-qty muted" x-show="item.qty"
+                              x-text="(item.qty || '') + (item.unit ? ' ' + item.unit : '')"></span>
+                        <button class="x" @click="removeCustomItem(idx)" aria-label="Supprimer">✕</button>
+                    </li>
+                </template>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Texte libre</h2>
+            <textarea class="input textarea" rows="3" placeholder="Notes…"
+                      x-model="extras_txt"></textarea>
+        </div>
+    </section>
+
+    <aside class="list-aside">
+        <div class="list-card">
+            <header class="list-head">
+                <h2 class="card-title">Liste</h2>
+                <span class="pill" x-text="totalItems + ' articles'"></span>
+            </header>
+            <div class="list-body">
+                <p class="empty" x-show="!liste_rayons.length">Sélectionnez des recettes pour voir la liste.</p>
+                <template x-for="rayon in liste_rayons" :key="rayon.name">
+                    <div class="rayon">
+                        <h3 class="rayon-name" x-text="rayon.name || '—'"></h3>
+                        <ul class="rayon-items">
+                            <template x-for="item in rayon.items" :key="item.name">
+                                <li class="liste-item">
+                                    <span class="li-name" x-text="item.name"></span>
+                                    <span class="li-qty" x-show="hasQty(item) || item.editing">
+                                        <button class="qty-btn" @click="adjustQty(item, -1)"
+                                                x-show="!item.editing" aria-label="−">−</button>
+                                        <span class="qty-val" x-show="!item.editing"
+                                              @click="startEditQty(item)"
+                                              x-text="displayQty(item)"
+                                              title="Cliquer pour modifier"></span>
+                                        <span class="qty-edit" x-show="item.editing">
+                                            <input class="qty-input" type="number" min="0" step="any"
+                                                   x-model.number="item.editVal"
+                                                   @blur="commitEditQty(item)"
+                                                   @keydown.enter.prevent="commitEditQty(item)"
+                                                   @keydown.escape.prevent="cancelEditQty(item)"
+                                                   x-effect="if (item.editing) $nextTick(() => $el.focus())">
+                                            <span class="unit muted" x-text="item.unit"></span>
+                                        </span>
+                                        <button class="qty-btn" @click="adjustQty(item, 1)"
+                                                x-show="!item.editing" aria-label="+">+</button>
+                                    </span>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </aside>
+</main>
+
+<!-- ── Save dialog ──────────────────────────────────────────────────────── -->
+<div class="modal" x-show="dialog === 'save'" @click.self="closeDialog()" x-cloak x-transition.opacity>
+    <div class="modal-card" @keydown.escape.window="closeDialog()">
+        <h2>Sauvegarder la liste</h2>
+        <p class="muted">Nom: lettres, chiffres et espaces uniquement.</p>
+        <input class="input" type="text" placeholder="ex: Kinzout 2026"
+               x-model="save_name"
+               @keydown.enter.prevent="confirmSave()"
+               x-effect="if (dialog === 'save') $nextTick(() => $el.focus())">
+        <div class="modal-actions">
+            <button class="btn btn-ghost" @click="closeDialog()">Annuler</button>
+            <button class="btn btn-primary" @click="confirmSave()"
+                    :disabled="!save_name.trim()">Sauver</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Load dialog ──────────────────────────────────────────────────────── -->
+<div class="modal" x-show="dialog === 'load'" @click.self="closeDialog()" x-cloak x-transition.opacity>
+    <div class="modal-card">
+        <h2>Charger une liste</h2>
+        <p class="muted" x-show="!load_listes.length">Aucune liste sauvegardée.</p>
+        <ul class="saved-list" x-show="load_listes.length">
+            <template x-for="l in load_listes" :key="l.id">
+                <li class="saved-item"
+                    :class="{active: load_selected && load_selected.id === l.id}"
+                    @click="load_selected = l">
+                    <span class="sl-name" x-text="l.name"></span>
+                    <span class="sl-date muted" x-text="l.date"></span>
+                </li>
+            </template>
+        </ul>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" @click="closeDialog()">Annuler</button>
+            <button class="btn btn-primary" @click="loadFromSelection()"
+                    :disabled="!load_selected">Charger</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Shop dialog ──────────────────────────────────────────────────────── -->
+<div class="modal" x-show="dialog === 'shop'" @click.self="closeDialog()" x-cloak x-transition.opacity>
+    <div class="modal-card">
+        <h2>Faire les courses</h2>
+        <div class="tabs">
+            <button class="tab" :class="{active: shop_mode === 'create'}"
+                    @click="shop_mode = 'create'">Nouvelle session</button>
+            <button class="tab" :class="{active: shop_mode === 'join'}"
+                    @click="shop_mode = 'join'">Rejoindre</button>
+        </div>
+        <div x-show="shop_mode === 'create'">
+            <p class="muted">
+                Crée une session partagée pour cocher les articles à plusieurs.
+                <span x-text="totalItems"></span> articles dans la liste.
+            </p>
+        </div>
+        <div x-show="shop_mode === 'join'">
+            <label class="field">
+                <span class="field-label">URL ou identifiant</span>
+                <input class="input" type="text" placeholder="…/shop/abc123 ou abc123"
+                       x-model="shop_join_id"
+                       @keydown.enter.prevent="confirmShop()"
+                       x-effect="if (dialog === 'shop' && shop_mode === 'join') $nextTick(() => $el.focus())">
+            </label>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" @click="closeDialog()">Annuler</button>
+            <button class="btn btn-primary" x-show="shop_mode === 'create'"
+                    @click="confirmShop()" :disabled="totalItems === 0">Nouvelle session</button>
+            <button class="btn btn-primary" x-show="shop_mode === 'join'"
+                    @click="confirmShop()" :disabled="!shop_join_id.trim()">Rejoindre</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Cook dialog ──────────────────────────────────────────────────────── -->
+<div class="modal" x-show="dialog === 'cook'" @click.self="closeDialog()" x-cloak x-transition.opacity>
+    <div class="modal-card">
+        <h2>Cuisiner une liste</h2>
+        <p class="muted" x-show="!load_listes.length">Aucune liste sauvegardée.</p>
+        <ul class="saved-list" x-show="load_listes.length">
+            <template x-for="l in load_listes" :key="l.id">
+                <li class="saved-item"
+                    :class="{active: cook_selected && cook_selected.id === l.id}"
+                    @click="cook_selected = l">
+                    <span class="sl-name" x-text="l.name"></span>
+                    <span class="sl-date muted" x-text="l.date"></span>
+                </li>
+            </template>
+        </ul>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" @click="closeDialog()">Annuler</button>
+            <button class="btn btn-primary" @click="confirmCook()"
+                    :disabled="!cook_selected">Ouvrir</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" x-show="toast" x-text="toast" x-transition.opacity></div>
 
 </body>
 </html>

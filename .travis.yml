@@ -1,8 +1,16 @@
 language: ruby
 ruby:
-    - '2.4.1'
+    - '3.3'
+addons:
+    apt:
+        packages:
+            - chromium-driver
+            - ruby-capybara
+            - ruby-selenium-webdriver
 install:
     - gem install rack-test
     - gem install sinatra
+    - gem install sqlite3
 script:
     - ruby tests/tests.rb
+    - ruby tests/browser_tests.rb

@@ -1,195 +1,247 @@
 <!DOCTYPE html>
-<html ng-app="recettesEditorApp">
+<html lang="fr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Éditeur de recettes</title>
-    <link rel="stylesheet" href="/css/angular-material.min.css">
-    <link href="/css/icon_family=Material+Icons.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/img/logo.svg">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/recettes_editor.css">
-    <script src="/js/angular.min.js"></script>
-    <script src="/js/angular-sanitize.js"></script>
-    <script src="/js/angular-animate.min.js"></script>
-    <script src="/js/angular-aria.min.js"></script>
-    <script src="/js/angular-messages.min.js"></script>
-    <script src="/js/angular-material.min.js"></script>
+    <script defer src="/js/alpine.min.js"></script>
     <script src="/js/recettes_editor.js"></script>
 </head>
-<body ng-controller="EditorCtrl">
+<body x-data="editorApp()" x-cloak>
 
-<md-toolbar>
-    <div class="md-toolbar-tools">
-        <a href="/" class="back-link">
-            <md-button class="md-icon-button" aria-label="Retour">
-                <md-icon>arrow_back</md-icon>
-            </md-button>
-        </a>
-        <h2>Éditeur de recettes</h2>
+<header class="topbar">
+    <div class="topbar-inner">
+        <h1 class="brand">
+            <img class="brand-logo" src="/img/logo.svg" alt="">
+            <span class="brand-text">Éditeur de recettes</span>
+        </h1>
+        <nav class="topbar-actions">
+            <a class="btn btn-ghost" href="/">
+                <span class="ico">←</span><span class="label">Retour</span>
+            </a>
+        </nav>
     </div>
-</md-toolbar>
+</header>
 
-<md-tabs md-border-bottom>
-    <md-tab label="Recettes" md-on-select="switchTab(0)"></md-tab>
-    <md-tab label="Recettes du matin" md-on-select="switchTab(1)"></md-tab>
-    <md-tab label="Ingrédients" md-on-select="switchTab(2)"></md-tab>
-</md-tabs>
+<div class="editor-tabs">
+    <div class="tabs">
+        <button class="tab" :class="{active: tabIndex === 0}" @click="switchTab(0)">Recettes</button>
+        <button class="tab" :class="{active: tabIndex === 1}" @click="switchTab(1)">Recettes du matin</button>
+        <button class="tab" :class="{active: tabIndex === 2}" @click="switchTab(2)">Ingrédients</button>
+    </div>
+</div>
 
 <div class="editor-container">
     <!-- Left: recipe list (tabs 0 & 1) -->
-    <div class="recipe-list-panel" ng-if="tabIndex < 2">
-        <md-button class="md-primary new-recipe-btn" ng-click="newRecette()">
-            <md-icon>add</md-icon> Nouvelle recette
-        </md-button>
-        <md-divider></md-divider>
-        <md-list>
-            <md-list-item
-                ng-repeat="r in currentList() | orderBy:'name'"
-                ng-click="selectRecette(r)"
-                ng-class="{active: selected && selected._originalName === r.name}">
-                <p>{{r.name}}</p>
-            </md-list-item>
-        </md-list>
-    </div>
+    <aside class="editor-list-panel" x-show="tabIndex < 2">
+        <button class="btn btn-primary editor-new-btn" @click="newRecette()">
+            <span class="ico">＋</span><span class="label">Nouvelle recette</span>
+        </button>
+        <ul class="editor-list">
+            <template x-for="r in currentList" :key="r.name">
+                <li class="editor-list-item"
+                    @click="selectRecette(r)"
+                    :class="{active: selected && selected._originalName === r.name}">
+                    <span class="eli-name" x-text="r.name"></span>
+                </li>
+            </template>
+        </ul>
+    </aside>
 
     <!-- Left: ingredient catalog list (tab 2) -->
-    <div class="recipe-list-panel catalog-panel" ng-if="tabIndex === 2">
-        <md-button class="md-primary new-recipe-btn" ng-click="newIng()">
-            <md-icon>add</md-icon> Nouvel ingrédient
-        </md-button>
-        <div class="catalog-search">
-            <input type="search" class="ing-input" ng-model="ingSearch" placeholder="Rechercher…">
+    <aside class="editor-list-panel" x-show="tabIndex === 2">
+        <button class="btn btn-primary editor-new-btn" @click="newIng()">
+            <span class="ico">＋</span><span class="label">Nouvel ingrédient</span>
+        </button>
+        <div class="editor-search">
+            <input type="search" class="input" x-model="ingSearch" placeholder="Rechercher…">
         </div>
-        <md-divider></md-divider>
-        <md-list>
-            <md-list-item
-                ng-repeat="ing in catalogList | filter:{name: ingSearch}"
-                ng-click="selectIng(ing)"
-                ng-class="{active: selectedIng && selectedIng._originalName === ing.name}">
-                <p>{{ing.name}}</p>
-                <p class="md-secondary catalog-rayon">{{ing.rayon}}</p>
-            </md-list-item>
-        </md-list>
-    </div>
+        <ul class="editor-list">
+            <template x-for="ing in filteredCatalog" :key="ing.name">
+                <li class="editor-list-item"
+                    @click="selectIng(ing)"
+                    :class="{active: selectedIng && selectedIng._originalName === ing.name}">
+                    <span class="eli-name" x-text="ing.name"></span>
+                    <span class="eli-meta" x-text="ing.rayon"></span>
+                </li>
+            </template>
+        </ul>
+    </aside>
 
     <!-- Right: placeholder (recipes) -->
-    <div flex class="recipe-editor-panel" ng-if="tabIndex < 2 && !selected">
+    <section class="editor-panel" x-show="tabIndex < 2 && !selected">
         <div class="editor-empty">
-            <md-icon class="editor-empty-icon">restaurant_menu</md-icon>
+            <div class="editor-empty-icon">🍽️</div>
             <p>Sélectionnez une recette ou créez-en une nouvelle.</p>
         </div>
-    </div>
+    </section>
 
     <!-- Right: placeholder (ingredients) -->
-    <div flex class="recipe-editor-panel" ng-if="tabIndex === 2 && !selectedIng">
+    <section class="editor-panel" x-show="tabIndex === 2 && !selectedIng">
         <div class="editor-empty">
-            <md-icon class="editor-empty-icon">local_grocery_store</md-icon>
+            <div class="editor-empty-icon">🛒</div>
             <p>Sélectionnez un ingrédient ou créez-en un nouveau.</p>
         </div>
-    </div>
+    </section>
 
     <!-- Right: ingredient editor -->
-    <div flex class="recipe-editor-panel" ng-if="tabIndex === 2 && selectedIng">
-        <md-card>
-            <md-card-content>
-                <md-input-container class="md-block">
-                    <label>Nom de l'ingrédient</label>
-                    <input ng-model="selectedIng.name" required>
-                </md-input-container>
+    <section class="editor-panel" x-show="tabIndex === 2 && selectedIng">
+        <div class="card editor-card" x-show="selectedIng">
+            <label class="field">
+                <span class="field-label">Nom de l'ingrédient</span>
+                <input class="input" required
+                       :value="selectedIng ? selectedIng.name : ''"
+                       @input="if (selectedIng) selectedIng.name = $event.target.value">
+            </label>
 
-                <div layout="row" layout-align="start center">
-                    <md-input-container flex>
-                        <label>Rayon</label>
-                        <md-select ng-model="selectedIng.rayon">
-                            <md-option ng-repeat="r in rayons" value="{{r}}">{{r}}</md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-button class="md-icon-button" ng-click="addRayon()" aria-label="Ajouter un rayon">
-                        <md-icon>add_circle_outline</md-icon>
-                    </md-button>
-                </div>
+            <div class="field-row">
+                <label class="field" style="flex:1">
+                    <span class="field-label">Rayon</span>
+                    <select class="input"
+                            @change="if (selectedIng) selectedIng.rayon = $event.target.value">
+                        <template x-for="r in rayons" :key="r">
+                            <option :value="r" :selected="selectedIng && selectedIng.rayon === r" x-text="r"></option>
+                        </template>
+                    </select>
+                </label>
+                <button class="btn btn-ghost ico-btn" @click="addRayon()" title="Ajouter un rayon">＋</button>
+            </div>
 
-                <md-input-container class="md-block">
-                    <label>Unité par défaut (optionnel)</label>
-                    <input ng-model="selectedIng.unit" placeholder="ex: g, cL, tranche(s)…">
-                </md-input-container>
-            </md-card-content>
+            <label class="field">
+                <span class="field-label">Unité par défaut (optionnel)</span>
+                <input class="input" placeholder="ex: g, cL, tranche(s)…"
+                       :value="selectedIng ? selectedIng.unit : ''"
+                       @input="if (selectedIng) selectedIng.unit = $event.target.value">
+            </label>
 
-            <md-card-actions layout="row" layout-align="space-between center">
-                <md-button class="md-warn" ng-click="deleteIng()" ng-if="!selectedIng._isNew">
-                    <md-icon>delete</md-icon> Supprimer
-                </md-button>
-                <span flex></span>
-                <md-button ng-click="cancelIngEdit()">Annuler</md-button>
-                <md-button class="md-primary md-raised" ng-click="saveIng()">
-                    <md-icon>save</md-icon> Enregistrer
-                </md-button>
-            </md-card-actions>
-        </md-card>
-    </div>
+            <div class="editor-actions">
+                <button class="btn btn-warn" @click="deleteIng()"
+                        x-show="selectedIng && !selectedIng._isNew">
+                    <span class="ico">🗑️</span><span class="label">Supprimer</span>
+                </button>
+                <span class="grow"></span>
+                <button class="btn btn-ghost" @click="cancelIngEdit()">Annuler</button>
+                <button class="btn btn-primary" @click="saveIng()">
+                    <span class="ico">💾</span><span class="label">Enregistrer</span>
+                </button>
+            </div>
+        </div>
+    </section>
 
-    <!-- Right: editor -->
-    <div flex class="recipe-editor-panel" ng-if="tabIndex < 2 && selected">
-        <md-card>
-            <md-card-content>
-                <md-input-container class="md-block">
-                    <label>Nom de la recette</label>
-                    <input ng-model="selected.name" required>
-                </md-input-container>
+    <!-- Right: recipe editor -->
+    <section class="editor-panel" x-show="tabIndex < 2 && selected">
+        <div class="card editor-card" x-show="selected">
+            <label class="field">
+                <span class="field-label">Nom de la recette</span>
+                <input class="input" required
+                       :value="selected ? selected.name : ''"
+                       @input="if (selected) selected.name = $event.target.value">
+            </label>
 
-                <div layout="row" layout-align="space-between center" class="ing-header">
-                    <span class="ing-title">Ingrédients</span>
-                    <md-button class="md-primary" ng-click="addIngredient()">
-                        <md-icon>add</md-icon> Ajouter
-                    </md-button>
-                </div>
+            <div class="ing-header">
+                <span class="card-title">Ingrédients</span>
+                <button class="btn btn-ghost" @click="addIngredient()">
+                    <span class="ico">＋</span><span class="label">Ajouter</span>
+                </button>
+            </div>
 
-                <datalist id="ing-list">
-                    <option ng-repeat="n in ingredientNames" value="{{n}}">
-                </datalist>
+            <datalist id="ing-list">
+                <template x-for="n in ingredientNames" :key="n">
+                    <option :value="n"></option>
+                </template>
+            </datalist>
 
-                <table class="ing-table">
-                    <thead>
-                        <tr>
-                            <th>Ingrédient</th>
-                            <th>Qté</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="ing in selected.ingredients" class="ing-row">
+            <table class="ing-table">
+                <thead>
+                    <tr>
+                        <th class="ing-name-cell">Ingrédient</th>
+                        <th class="ing-qty-cell">Qté</th>
+                        <th class="ing-del-cell"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="(ing, idx) in (selected ? selected.ingredients : [])" :key="idx">
+                        <tr class="ing-row">
                             <td class="ing-name-cell">
-                                <input type="text" class="ing-input" ng-model="ing.name"
+                                <input type="text" class="input" x-model="ing.name"
                                        list="ing-list" placeholder="Ingrédient">
                             </td>
                             <td class="ing-qty-cell">
-                                <input type="number" class="ing-input qty-input" ng-model="ing.qty"
+                                <input type="number" class="input qty-input" x-model="ing.qty"
                                        min="0" step="any" placeholder="—">
                             </td>
                             <td class="ing-del-cell">
-                                <md-button class="md-icon-button" ng-click="removeIngredient($index)"
-                                           aria-label="Supprimer l'ingrédient">
-                                    <md-icon>delete</md-icon>
-                                </md-button>
+                                <button class="x" @click="removeIngredient(idx)"
+                                        aria-label="Supprimer l'ingrédient">✕</button>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-            </md-card-content>
+                    </template>
+                </tbody>
+            </table>
 
-            <md-card-actions layout="row" layout-align="space-between center">
-                <md-button class="md-warn" ng-click="deleteRecette()" ng-if="!selected._isNew">
-                    <md-icon>delete</md-icon> Supprimer
-                </md-button>
-                <span flex></span>
-                <md-button ng-click="cancelEdit()">Annuler</md-button>
-                <md-button class="md-primary md-raised" ng-click="save()">
-                    <md-icon>save</md-icon> Enregistrer
-                </md-button>
-            </md-card-actions>
-        </md-card>
+            <label class="field">
+                <span class="field-label">Instructions (Markdown supporté)</span>
+                <textarea class="input textarea instructions-textarea" rows="10"
+                          :value="selected ? selected.instructions : ''"
+                          @input="if (selected) selected.instructions = $event.target.value"
+                          placeholder="Listes (- item), **gras**, # titres, etc."></textarea>
+            </label>
+
+            <div class="editor-actions">
+                <button class="btn btn-warn" @click="deleteRecette()"
+                        x-show="selected && !selected._isNew">
+                    <span class="ico">🗑️</span><span class="label">Supprimer</span>
+                </button>
+                <span class="grow"></span>
+                <button class="btn btn-ghost" @click="cancelEdit()">Annuler</button>
+                <button class="btn btn-primary" @click="save()">
+                    <span class="ico">💾</span><span class="label">Enregistrer</span>
+                </button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ── Confirm modal ───────────────────────────────────────────────────── -->
+<div class="modal" x-show="confirmDialog" @click.self="confirmCancel()"
+     @keydown.escape.window="confirmCancel()" x-cloak x-transition.opacity>
+    <div class="modal-card">
+        <h2 x-text="confirmDialog && confirmDialog.title"></h2>
+        <p class="muted" x-show="confirmDialog && confirmDialog.body"
+           x-text="confirmDialog && confirmDialog.body"></p>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" @click="confirmCancel()"
+                    x-text="confirmDialog && confirmDialog.cancelLabel"></button>
+            <button class="btn btn-primary" @click="confirmOk()"
+                    x-text="confirmDialog && confirmDialog.okLabel"></button>
+        </div>
     </div>
 </div>
+
+<!-- ── Prompt modal ────────────────────────────────────────────────────── -->
+<div class="modal" x-show="promptDialog" @click.self="promptCancel()"
+     @keydown.escape.window="promptCancel()" x-cloak x-transition.opacity>
+    <div class="modal-card">
+        <h2 x-text="promptDialog && promptDialog.title"></h2>
+        <input class="input"
+               :value="promptDialog ? promptDialog.value : ''"
+               @input="if (promptDialog) promptDialog.value = $event.target.value"
+               :placeholder="promptDialog ? promptDialog.placeholder : ''"
+               @keydown.enter.prevent="promptOk()"
+               x-effect="if (promptDialog) $nextTick(() => $el.focus())">
+        <div class="modal-actions">
+            <button class="btn btn-ghost" @click="promptCancel()"
+                    x-text="promptDialog && promptDialog.cancelLabel"></button>
+            <button class="btn btn-primary" @click="promptOk()"
+                    x-text="promptDialog && promptDialog.okLabel"></button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" x-show="toast" x-text="toast" x-transition.opacity></div>
 
 </body>
 </html>
