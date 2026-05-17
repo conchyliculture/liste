@@ -94,6 +94,12 @@
             { "name": "Poivre"}
         ]
     },
+    {   "name":"Paupiettes",
+        "ingredients":  [
+            { "name": "Échalottes", "qty": 0.5},
+            { "name": "Paupiette", "qty": 1}
+        ]
+    },
     {   "name":"Omelette",
         "ingredients":  [
             { "name": "Oeufs", "qty": 2.5},

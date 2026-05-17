@@ -185,6 +185,9 @@
     "rayon": "FLEG",
     "unit": "g"
   },
+  "Paupiette": {
+    "rayon": "Boucherie"
+  },
   "Pâte brisée": {
     "rayon": "Frais"
   },
