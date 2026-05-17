@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "capybara"
 gem "erb"
+gem "rack-test"
 gem "rake"
 gem "selenium-webdriver"
 gem "sinatra"
