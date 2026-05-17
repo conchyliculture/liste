@@ -44,6 +44,10 @@ class BrowserTests < Test::Unit::TestCase
     end
 
     def teardown
+        begin
+            page.execute_script("localStorage.clear()")
+        rescue StandardError
+        end
         Capybara.reset_sessions!
     end
 
@@ -175,6 +179,50 @@ class BrowserTests < Test::Unit::TestCase
         assert_selector ".modal-card h2", text: "Faire les courses"
         find(".tab", text: "Rejoindre").click
         assert_selector "input[placeholder*='abc123']"
+    end
+
+    # ── localStorage persistence ──────────────────────────────────────────────
+
+    def test_planner_state_persists_across_reload
+        visit "/"
+        assert_selector "select.meal-select option:not([value=''])", minimum: 1
+        select   = first("select.meal-select")
+        option   = select.find("option:not([value=''])", match: :first)
+        recipe   = option.value
+        option.select_option
+        assert_selector ".liste-item", minimum: 1
+
+        visit "/"
+        assert_selector "select.meal-select option:not([value=''])", minimum: 1
+        assert_selector ".liste-item", minimum: 1
+        assert_equal recipe, first("select.meal-select").value
+    end
+
+    def test_planner_reset_clears_state
+        visit "/"
+        assert_selector "select.meal-select option:not([value=''])", minimum: 1
+        first("select.meal-select").find("option:not([value=''])", match: :first).select_option
+        assert_selector ".liste-item", minimum: 1
+
+        page.accept_confirm("Réinitialiser la liste ?") do
+            find(".topbar-actions .btn-ghost", text: /Nouveau/).click
+        end
+
+        assert_no_selector ".liste-item"
+        assert_selector ".empty"
+    end
+
+    def test_planner_reset_cancel_preserves_state
+        visit "/"
+        assert_selector "select.meal-select option:not([value=''])", minimum: 1
+        first("select.meal-select").find("option:not([value=''])", match: :first).select_option
+        assert_selector ".liste-item", minimum: 1
+
+        page.dismiss_confirm("Réinitialiser la liste ?") do
+            find(".topbar-actions .btn-ghost", text: /Nouveau/).click
+        end
+
+        assert_selector ".liste-item", minimum: 1
     end
 
     # ── Recipe editor ─────────────────────────────────────────────────────────

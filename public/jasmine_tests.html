@@ -1,61 +1,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- Jasmine References -->
-    <link rel="stylesheet" type="text/css" href="jasmine-2.5.2/jasmine.css">
-    <script src="jasmine-2.5.2/jasmine.js"></script>
-    <script type="text/javascript" src="jasmine-2.5.2/jasmine-html.js"></script>
-    <script type="text/javascript" src="jasmine-2.5.2/boot.js"></script>
-    
-    <!-- Angular and Angular Mock references -->
-    <script type="text/javascript" src="/js/angular.min.js"></script>
-    <script type="text/javascript" src="/js/angular-sanitize.js"></script>
-    <script type="text/javascript" src="/js/angular-animate.min.js"></script>
-    <script type="text/javascript" src="/js/angular-aria.min.js"></script>
-    <script type="text/javascript" src="/js/angular-messages.min.js"></script>
-    <script type="text/javascript" src="/js/angular-material.min.js"></script>
-    <script type="text/javascript" src="/js/angular-mocks.js"></script>
+    <link rel="stylesheet" type="text/css" href="/jasmine-2.5.2/jasmine.css">
+    <script src="/jasmine-2.5.2/jasmine.js"></script>
+    <script src="/jasmine-2.5.2/jasmine-html.js"></script>
+    <script src="/jasmine-2.5.2/boot.js"></script>
+    <script src="/js/liste.helpers.js"></script>
+    <script>
+    describe('arrondi', function () {
 
-    <script type="text/javascript" src="/js/liste.js"></script>
-
-    <script type="text/javascript">
-
-        describe('poil', function() {
-            it('should make range', function() {
-                expect(range(5)).toEqual([1,2,3,4,5]);
-            });
+        it('returns empty string when qty and unit are both absent', function () {
+            expect(ListeHelpers.arrondi(undefined, null)).toBe('');
+            expect(ListeHelpers.arrondi(null,      null)).toBe('');
         });
 
-        describe('listeCtrlTests', function() {
-            var scope, http, service, mdDialog;
-
-            beforeEach(angular.mock.module('ngAnimateMock'));
-            beforeEach(angular.mock.module('listeApp'));
-            beforeEach(angular.mock.inject(function($rootScope, $http, $mdDialog, recettesService, $controller){
-                scope = $rootScope.$new();
-                http = $http;
-                service = recettesService;
-                mdDialog = $mdDialog;
-                $controller('ListeCtrl', {$scope: scope, $http: http, $mdDialog:mdDialog, recettesService: service});
-            }));
-            it('initValues', function() {
-                var nb_jour_def = 5;
-                expect(scope.nb_jours).toBe(nb_jour_def);
-                expect(scope.range_jours).toEqual(new Array(nb_jour_def));
-                expect(scope.range_jours_default).toEqual([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]);
-                expect(scope.range_gens_default).toEqual([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]);
-                expect(scope.extras.length).toBe(11);
-                expect(scope.gens_par_matin.length).toBe(nb_jour_def);
-                expect(scope.gens_par_dejeuner.length).toBe(nb_jour_def);
-                expect(scope.gens_par_diner.length).toBe(nb_jour_def);
-                expect(scope.recette_matin_par_jour.length).toBe(nb_jour_def);
-                expect(scope.recette_dejeuner_par_jour.length).toBe(nb_jour_def);
-                expect(scope.recette_diner_par_jour.length).toBe(nb_jour_def);
-            });
-            it('should return rayon', function() {
-            });
+        it('returns unit when qty is absent but unit is present', function () {
+            expect(ListeHelpers.arrondi(undefined, 'kg')).toBe('kg');
         });
 
+        it('rounds unitless values to integer', function () {
+            expect(ListeHelpers.arrondi(3,   null)).toBe(3);
+            expect(ListeHelpers.arrondi(3.7, null)).toBe(4);
+        });
+
+        it('strips floating-point noise for small quantities with a unit', function () {
+            expect(ListeHelpers.arrondi(1.70000000000002, 'oignons')).toBe('1.7 oignons');
+            expect(ListeHelpers.arrondi(0.10000000000001, 'oignons')).toBe('0.1 oignons');
+        });
+
+        it('rounds large quantities (>10) to nearest integer', function () {
+            expect(ListeHelpers.arrondi(12.9, 'oignons')).toBe('13 oignons');
+            expect(ListeHelpers.arrondi(10.1, 'oignons')).toBe('10 oignons');
+        });
+
+        it('converts grams to kg above 1000g', function () {
+            expect(ListeHelpers.arrondi(1500, 'g')).toBe('1.5kg');
+            expect(ListeHelpers.arrondi(2300, 'g')).toBe('2.3kg');
+            expect(ListeHelpers.arrondi(999,  'g')).toBe('999g');
+        });
+
+        it('converts cL to L above 100cL', function () {
+            expect(ListeHelpers.arrondi(150, 'cL')).toBe('1.5L');
+            expect(ListeHelpers.arrondi(75,  'cL')).toBe('75cL');
+        });
+
+        it('rounds L to integer', function () {
+            expect(ListeHelpers.arrondi(3.7, 'L')).toBe('4 L');
+            expect(ListeHelpers.arrondi(3,   'L')).toBe('3 L');
+        });
+
+        it('handles empty string unit (count with no label)', function () {
+            expect(ListeHelpers.arrondi(5.9, '')).toBe('6');
+        });
+    });
+
+    describe('addToListe', function () {
+
+        it('scales qty by nb_gens', function () {
+            var liste = [];
+            ListeHelpers.addToListe(liste, {name: 'Oeufs', qty: 2, unit: ''}, 5);
+            expect(liste[0].qty).toBe(10);
+        });
+
+        it('accumulates qty when the same ingredient appears twice', function () {
+            var liste = [];
+            ListeHelpers.addToListe(liste, {name: 'Oeufs', qty: 2, unit: ''}, 5);
+            ListeHelpers.addToListe(liste, {name: 'Oeufs', qty: 1, unit: ''}, 3);
+            expect(liste.length).toBe(1);
+            expect(liste[0].qty).toBe(13);
+        });
+
+        it('adds different ingredients as separate entries', function () {
+            var liste = [];
+            ListeHelpers.addToListe(liste, {name: 'Oeufs',  qty: 2,   unit: ''},  5);
+            ListeHelpers.addToListe(liste, {name: 'Farine', qty: 100, unit: 'g'}, 2);
+            expect(liste.length).toBe(2);
+            expect(liste[1].qty).toBe(200);
+        });
+
+        it('handles ingredient without qty (flag item)', function () {
+            var liste = [];
+            ListeHelpers.addToListe(liste, {name: 'Sel'}, 10);
+            expect(liste[0].name).toBe('Sel');
+            expect('qty' in liste[0]).toBe(false);
+        });
+
+        it('does not mutate the original ingredient object', function () {
+            var ing   = {name: 'Oeufs', qty: 2, unit: ''};
+            var liste = [];
+            ListeHelpers.addToListe(liste, ing, 5);
+            expect(ing.qty).toBe(2);
+        });
+    });
     </script>
-</head>  
-
+</head>
+</html>
